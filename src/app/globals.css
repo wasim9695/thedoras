@@ -15,7 +15,106 @@
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Open Sans, sans-serif;
+  --tw-text-opacity: 1;
+  color: rgb(90 90 90 / var(--tw-text-opacity));
+  -webkit-font-smoothing: antialiased;
 }
+
+.css-bdcj6b-MuiButtonBase-root-MuiButton-root{
+  font-size: 1rem;
+        line-height: 1.5rem;
+}
+.secondImg{
+  height: 100%;
+}
+.secondGried{
+  padding-top: 20px;
+}
+
+.css-mhc70k-MuiGrid-root>.MuiGrid-item{
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+}
+
+
+.css-mhc70k-MuiGrid-root>.MuiGrid-item img {
+  display: block;
+  width: 100%;
+}
+
+.css-mhc70k-MuiGrid-root>.MuiGrid-item::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%; /* Starts outside the image */
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    120deg, 
+    rgba(255, 255, 255, 0) 0%, 
+    rgba(255, 255, 255, 0.5) 50%, 
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: skewX(-20deg);
+  transition: none;
+  animation: none; /* Default state: no animation */
+}
+
+.css-mhc70k-MuiGrid-root>.MuiGrid-item:hover::before {
+  animation: shine 2s;
+}
+
+@keyframes shine {
+  to {
+    left: 100%; /* Ends outside the image */
+  }
+}
+
+.headingProduct{
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+  font-weight: 700;
+    padding-bottom: 10px;
+}
+.thirdGried .product-item:hover {
+cursor: pointer; /* Show pointer cursor on hover */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 6px 20px rgba(0, 0, 0, 0.1); /* Box-shadow effect */
+  animation: jump 0.3s ease-in-out; /* Add jump animation */
+}
+
+.swiper-slide{
+  cursor:pointer;
+}
+.swiper-slide:hover .bgd{
+  opacity: 1;
+  height: 229px;
+    width: 229px;
+    margin: 0 auto;
+    margin-top: 17px;
+    background-color: rgb(90 96 106 / 66%);
+}
+
+.swiper-slide:hover svg{
+  opacity: 1;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+}
+
+
+
+/* Keyframes for small jump effect */
+@keyframes jump {
+  0% {
+    transform: translateY(0); /* Initial position */
+  }
+  50% {
+    transform: translateY(-5px); /* Small upward jump */
+  }
+  100% {
+    transform: translateY(0); /* Back to initial position */
+  }
+}
+
+
