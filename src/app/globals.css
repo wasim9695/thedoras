@@ -66,6 +66,8 @@ body {
   animation: shine 2s;
 }
 
+
+
 @keyframes shine {
   to {
     left: 100%; /* Ends outside the image */
@@ -82,6 +84,23 @@ body {
 cursor: pointer; /* Show pointer cursor on hover */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 6px 20px rgba(0, 0, 0, 0.1); /* Box-shadow effect */
   animation: jump 0.3s ease-in-out; /* Add jump animation */
+}
+
+.productList .MuiPaper-root:hover{
+  cursor: pointer; /* Show pointer cursor on hover */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 6px 20px rgba(0, 0, 0, 0.1); /* Box-shadow effect */
+  animation: jump 0.3s ease-in-out; /* Add jump animation */
+}
+
+.productList .MuiCardContent-root{
+  text-align: center;
+}
+
+.productList .headingProduct {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+  font-weight: 400;
+  padding-top: 25px;
 }
 
 .swiper-slide{
@@ -102,6 +121,18 @@ cursor: pointer; /* Show pointer cursor on hover */
   --tw-scale-y: 1;
 }
 
+.iconsMenu path{
+  color: #b39f37;
+}
+.mainDigialogBox .css-19do60a-MuiDialog-container{
+height: 17% !important;
+overflow: hidden;
+}
+.mainDigialogBox .MuiSvgIcon-root{
+  position: absolute;
+  right: 12px;
+  cursor: pointer;
+}
 
 
 /* Keyframes for small jump effect */
@@ -114,6 +145,22 @@ cursor: pointer; /* Show pointer cursor on hover */
   }
   100% {
     transform: translateY(0); /* Back to initial position */
+  }
+}
+
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
   }
 }
 

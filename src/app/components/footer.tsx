@@ -1,3 +1,4 @@
+"use client"
 import React from "react";
 import { Grid, Paper, Typography } from "@mui/material";
 import { styled } from "@mui/system";
@@ -33,4 +34,4 @@ const Footer=()=> {
     </Grid>
   );
 }
-export {Footer}
+export default Footer

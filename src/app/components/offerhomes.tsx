@@ -250,9 +250,46 @@ const OfferHomes = () => {
                    >
                      $99.99
                    </Typography></Item>
+                   <Item className='product-item'>
+       
+       <Image className='' src="https://chawkbazar.vercel.app/_next/image?url=%2Fassets%2Fimages%2Fbanner%2Fmasonry%2Fbanner-4.jpg&w=640&q=100" alt="Description of the image" width={1080} height={720}/>
+        <Typography variant="h6" sx={{ mt: 2, fontWeight: 'bold' }}>
+                     Product Title 
+                   </Typography>
+                   <Typography
+                     variant="body2"
+                     sx={{ color: '#757575', marginBottom: 1 }}
+                   >
+                     Short description of the product goes here.
+                   </Typography>
+                   <Typography
+                     variant="h6"
+                     sx={{ color: '#ff5722', fontWeight: 'bold' }}
+                   >
+                     $99.99
+                   </Typography></Item>
+                   
    </Stack>
    <Stack direction={{ xs: 'column', sm: 'row' }}
      spacing={{ xs: 1, sm: 2, md: 4 }} sx={{ mt: 2 }}>
+      <Item className='product-item'>
+       
+       <Image className='' src="https://chawkbazar.vercel.app/_next/image?url=%2Fassets%2Fimages%2Fbanner%2Fmasonry%2Fbanner-4.jpg&w=640&q=100" alt="Description of the image" width={1080} height={720}/>
+        <Typography variant="h6" sx={{ mt: 2, fontWeight: 'bold' }}>
+                     Product Title 
+                   </Typography>
+                   <Typography
+                     variant="body2"
+                     sx={{ color: '#757575', marginBottom: 1 }}
+                   >
+                     Short description of the product goes here.
+                   </Typography>
+                   <Typography
+                     variant="h6"
+                     sx={{ color: '#ff5722', fontWeight: 'bold' }}
+                   >
+                     $99.99
+                   </Typography></Item>
      <Item className='product-item'>
        <Link href="#" underline="none">
        <Image className='' src="https://chawkbazar.vercel.app/_next/image?url=%2Fassets%2Fimages%2Fbanner%2Fmasonry%2Fbanner-4.jpg&w=640&q=100" alt="Description of the image" width={1080} height={720}/>

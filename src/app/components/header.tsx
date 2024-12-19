@@ -13,6 +13,9 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
+import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
+import SearchIcon from '@mui/icons-material/Search';
+import {ResponsiveDialog} from '../components';
 
 const pages = ['Products', 'Pricing', 'Blog'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
@@ -36,8 +39,14 @@ const ResponsiveAppBar =()=> {
     setAnchorElUser(null);
   };
 
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
   return (
     <AppBar position="static" sx={{ backgroundColor: '#ffffff', color:'#000000' }}>
+     
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
@@ -58,7 +67,7 @@ const ResponsiveAppBar =()=> {
           >
             LOGO
           </Typography>
-
+      <ResponsiveDialog open={open} onClose={handleClose} />
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
@@ -124,11 +133,11 @@ const ResponsiveAppBar =()=> {
             ))}
           </Box>
           <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
+            {/* <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
               </IconButton>
-            </Tooltip>
+            </Tooltip> */}
             <Menu
               sx={{ mt: '45px' }}
               id="menu-appbar"
@@ -151,6 +160,23 @@ const ResponsiveAppBar =()=> {
                 </MenuItem>
               ))}
             </Menu>
+            <Button  sx={{ my: 2, color: 'black',  }} onClick={handleClickOpen}><SearchIcon/></Button>
+            <Button
+              
+                sx={{ my: 2, color: 'black',  }}
+              >
+              <Typography>Sign In</Typography>
+              </Button>
+              <Button
+              
+                sx={{ my: 2, color: 'black',  }}
+              >
+             <ShoppingBagIcon  className='iconsMenu'/>
+              </Button>
+              
+    
+           
+            
           </Box>
         </Toolbar>
       </Container>

@@ -7,3 +7,4 @@ export * from './featuredproduct';
 export * from './discountbanner';
 export * from './newarrivale';
 export * from './footer';
+export * from './searchpage';

@@ -8,7 +8,8 @@ import { styled } from '@mui/material/styles';
 import { useAnimation, AnimationControls, inView, motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import InstagramIcon from "@mui/icons-material/Instagram"
-import {HomeSlider, OfferHomes, HomeSwiper, ShopCards, FeaturedProduct, DiscountBanner, NewArrival, Footer} from './components';
+import {HomeSlider, OfferHomes, HomeSwiper, ShopCards, FeaturedProduct, DiscountBanner,
+   NewArrival} from './components';
 
 
 const Item = styled(Paper)(({ theme }) => ({ position: "relative", cursor:'pointer',
@@ -89,7 +90,7 @@ export default function Home() {
       <NewArrival/>
       {/* Social Icons */}
        {/* Social Icons */} <Grid item xs={12}> <Grid container spacing={2}> {images.map((image, index) => ( <Grid item xs={2} key={index}> <Item> <img src={image} alt={`Instagram ${index + 1}`} /> <HoverOverlay> <InstagramIcon style={{ fontSize: 40 }} /> </HoverOverlay> </Item> </Grid> ))} </Grid> </Grid>
-      <Footer/>
+  
     </React.Fragment>
   );
 }
