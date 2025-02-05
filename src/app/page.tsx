@@ -1,7 +1,7 @@
 "use client"
 import React, { useEffect } from "react";
 import Image from "next/image";
-import { Box, Container, CssBaseline, Grid, Link, Paper, Stack, Typography } from '@mui/material';
+import { Box, Container, CssBaseline, Divider, Grid, Link, Paper, Stack, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 // import {HomeSlider} from './components/homeslider';
 // import {OfferHome} from './components/offerHome';
@@ -73,6 +73,7 @@ export default function Home() {
     <React.Fragment>
       <CssBaseline />
       <HomeSlider/>
+      
       <OfferHomes/>
     
       <HomeSwiper/>
@@ -90,6 +91,16 @@ export default function Home() {
       <NewArrival/>
       {/* Social Icons */}
        {/* Social Icons */} <Grid item xs={12}> <Grid container spacing={2}> {images.map((image, index) => ( <Grid item xs={2} key={index}> <Item> <img src={image} alt={`Instagram ${index + 1}`} /> <HoverOverlay> <InstagramIcon style={{ fontSize: 40 }} /> </HoverOverlay> </Item> </Grid> ))} </Grid> </Grid>
+       <Divider
+           orientation="vertical"
+           flexItem // Ensures the divider spans the full height of the parent
+           sx={{
+             borderColor: "#ccc", // Optional: Divider color
+             borderWidth: "1px",
+             marginTop:"20px",
+             marginBottom:"20px;" // Optional: Divider thickness
+           }}
+         />
   
     </React.Fragment>
   );

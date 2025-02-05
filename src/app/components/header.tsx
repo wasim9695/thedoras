@@ -1,186 +1,87 @@
-"use client"
+'use client';
+
 import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
+import { AppBar, Box, Toolbar, IconButton, Typography, Menu, Container, Button, MenuItem } from '@mui/material';
+import { motion } from 'framer-motion';
 import MenuIcon from '@mui/icons-material/Menu';
-import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 import SearchIcon from '@mui/icons-material/Search';
-import {ResponsiveDialog} from '../components';
+import Image from 'next/image';
+import { ResponsiveDialog } from '../components';
 
-const pages = ['Products', 'Pricing', 'Blog'];
+const pathlogo = '/logodora.jpeg';
+const pages = ['New in', 'Women', 'Collection'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
-const ResponsiveAppBar =()=> {
+const ResponsiveAppBar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
-
-  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElNav(event.currentTarget);
-  };
-  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElUser(event.currentTarget);
-  };
-
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-  };
-
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
-
   const [open, setOpen] = React.useState(false);
 
+  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => setAnchorElNav(event.currentTarget);
+  const handleCloseNavMenu = () => setAnchorElNav(null);
   const handleClickOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: '#ffffff', color:'#000000' }}>
-     
-      <Container maxWidth="xl">
-        <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
-            sx={{
-              mr: 2,
-              display: { xs: 'none', md: 'flex' },
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            LOGO
-          </Typography>
-      <ResponsiveDialog open={open} onClose={handleClose} />
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleOpenNavMenu}
-              color="inherit"
-            >
-              <MenuIcon />
-            </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
-              }}
-              open={Boolean(anchorElNav)}
-              onClose={handleCloseNavMenu}
-              sx={{ display: { xs: 'block', md: 'none' } }}
-            >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography sx={{ textAlign: 'center' }}>{page}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
-          <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
-            sx={{
-              mr: 2,
-              display: { xs: 'flex', md: 'none' },
-              flexGrow: 1,
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            LOGO
-          </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'black', display: 'block' }}
-              >
-                {page}
-              </Button>
-            ))}
-          </Box>
-          <Box sx={{ flexGrow: 0 }}>
-            {/* <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-              </IconButton>
-            </Tooltip> */}
-            <Menu
-              sx={{ mt: '45px' }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
-            <Button  sx={{ my: 2, color: 'black',  }} onClick={handleClickOpen}><SearchIcon/></Button>
-            <Button
-              
-                sx={{ my: 2, color: 'black',  }}
-              >
-              <Typography>Sign In</Typography>
-              </Button>
-              <Button
-              
-                sx={{ my: 2, color: 'black',  }}
-              >
-             <ShoppingBagIcon  className='iconsMenu'/>
-              </Button>
-              
-    
-           
+    <motion.div initial={{ opacity: 0, y: -50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+      <AppBar position="relative" sx={{ backgroundColor: '#f0d993', color: '#776248', boxShadow: 'none' }}>
+        <Container maxWidth="xl">
+          <Toolbar disableGutters>
+            <motion.div whileHover={{ scale: 1.1 }}>
+              <Image src={pathlogo} alt="logo" width={80} height={80} style={{ borderRadius: '25%' }} />
+            </motion.div>
             
-          </Box>
-        </Toolbar>
-      </Container>
-    </AppBar>
+            <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, ml: 2 }}>
+              {pages.map((page) => (
+                <motion.div whileHover={{ scale: 1.1 }} key={page}>
+                  <Button sx={{ my: 2, color: '#776248', fontSize: '1rem', fontWeight: '500' }}>{page}</Button>
+                </motion.div>
+              ))}
+            </Box>
+
+            <Box sx={{ flexGrow: 0, display: 'flex', gap: 2 }}>
+              <motion.div whileHover={{ scale: 1.2 }}>
+                <Button sx={{ color: '#776248' }} onClick={handleClickOpen}>
+                  <SearchIcon />
+                </Button>
+              </motion.div>
+
+              <motion.div whileHover={{ scale: 1.2 }}>
+                <Button sx={{ color: '#776248' }}>
+                  <Typography>Sign In</Typography>
+                </Button>
+              </motion.div>
+
+              <motion.div whileHover={{ scale: 1.2 }}>
+                <Button sx={{ color: '#776248' }}>
+                  <ShoppingBagIcon />
+                </Button>
+              </motion.div>
+            </Box>
+
+            <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+              <IconButton size="large" color="inherit" onClick={handleOpenNavMenu}>
+                <MenuIcon />
+              </IconButton>
+              <Menu
+                anchorEl={anchorElNav}
+                open={Boolean(anchorElNav)}
+                onClose={handleCloseNavMenu}
+                sx={{ display: { xs: 'block', md: 'none' } }}
+              >
+                {pages.map((page) => (
+                  <MenuItem key={page} onClick={handleCloseNavMenu}>
+                    <Typography sx={{ textAlign: 'center' }}>{page}</Typography>
+                  </MenuItem>
+                ))}
+              </Menu>
+            </Box>
+          </Toolbar>
+        </Container>
+      </AppBar>
+      <ResponsiveDialog open={open} onClose={handleClose} />
+    </motion.div>
   );
-}
+};
+
 export default ResponsiveAppBar;

@@ -20,7 +20,7 @@ const FeaturedProduct = () => {
           <Box sx={{ flexGrow: 1, padding: 4, // Padding inside the container
            border: "1px solid #dddddd", // Border starts after padding
            boxSizing: "border-box", }} >
-             <Typography className='headingProduct' variant="h3">Featured Products</Typography>
+             <Typography className='headingProduct' variant="h4" fontWeight="bold">Featured Products</Typography>
              
       {/* Left Column */}
       <Grid container spacing={2}>

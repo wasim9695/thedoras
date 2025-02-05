@@ -122,7 +122,7 @@ cursor: pointer; /* Show pointer cursor on hover */
 }
 
 .iconsMenu path{
-  color: #b39f37;
+  color: #ffffff;
 }
 .mainDigialogBox .css-19do60a-MuiDialog-container{
 height: 17% !important;
@@ -134,6 +134,9 @@ overflow: hidden;
   cursor: pointer;
 }
 
+.swiper-button-next, .swiper-button-prev {
+  color: #a1893f !important; /* Your desired arrow color */
+}
 
 /* Keyframes for small jump effect */
 @keyframes jump {

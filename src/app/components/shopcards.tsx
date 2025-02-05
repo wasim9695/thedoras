@@ -50,7 +50,7 @@ const ShopCards = () =>{
 <><Container className='fourthCards' maxWidth="xl">
           <Box sx={{ flexGrow: 1, padding: 4, // Padding inside the container
            }} >
-<Typography className='headingProduct' variant="h3">Shop By Category</Typography>
+<Typography className='headingProduct' variant="h4" fontWeight="bold">Shop By Category</Typography>
 <Swiper 
         modules={[Pagination, Navigation, Autoplay]}
         spaceBetween={5} // Set to 0 if unnecessary spacing occurs

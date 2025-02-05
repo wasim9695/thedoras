@@ -16,11 +16,11 @@ const Item = styled(Paper)(({ theme }) => ({
 
 const OfferHomes = () => {
     return(      
-          <><Container className='thirdGried' maxWidth="lg">
+          <><Container className='thirdGried' maxWidth="xl">
           <Box sx={{ flexGrow: 1, padding: 4, // Padding inside the container
            border: "1px solid #dddddd", // Border starts after padding
            boxSizing: "border-box", }} >
-             <Typography className='headingProduct' variant="h3">Flash Sale</Typography>
+             <Typography className='headingProduct' variant="h4" fontWeight="bold">Flash Sale</Typography>
          {/* <Grid container spacing={2}>
          
          <Grid item xs={3}>
@@ -290,10 +290,10 @@ const OfferHomes = () => {
                    >
                      $99.99
                    </Typography></Item>
-     <Item className='product-item'>
-       <Link href="#" underline="none">
-       <Image className='' src="https://chawkbazar.vercel.app/_next/image?url=%2Fassets%2Fimages%2Fbanner%2Fmasonry%2Fbanner-4.jpg&w=640&q=100" alt="Description of the image" width={1080} height={720}/>
-        <Typography variant="h6" sx={{ mt: 2, fontWeight: 'bold' }}>
+                    <Item className='product-item'>
+                    <Link href="#" underline="none">
+                    <Image className='' src="https://chawkbazar.vercel.app/_next/image?url=%2Fassets%2Fimages%2Fbanner%2Fmasonry%2Fbanner-4.jpg&w=640&q=100" alt="Description of the image" width={1080} height={720}/>
+                    <Typography variant="h6" sx={{ mt: 2, fontWeight: 'bold' }}>
                      Product Title 
                    </Typography>
                    <Typography

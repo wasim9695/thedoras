@@ -1,6 +1,8 @@
 "use client"
 import React, { useState } from 'react';
-import { Box, Typography, Grid, Card, CardContent, CardMedia, Checkbox, FormControlLabel, Button, Divider } from '@mui/material';
+import { Box, Typography, Grid, Card, CardContent, CardMedia, Checkbox, FormControlLabel, Button, Divider, 
+  Skeleton } from '@mui/material';
+  import Image from 'next/image';
 
 interface Product {
   id: number;
@@ -58,7 +60,8 @@ const collection : React.FC = () => {
             variant="contained"
             fullWidth
             onClick={() => setSelectedFilters([])}
-            sx={{ marginTop: '20px' }}
+            style={{ marginTop: '20px', color: '#ffffff',
+              backgroundColor:"#D4AF37" }}
           >
             Clear Filters
           </Button>
@@ -73,21 +76,104 @@ const collection : React.FC = () => {
             {products.map((product) => (
               <Grid item xs={12} sm={6} md={3} key={product.id}>
                 <Card>
-                  <CardMedia
-                    component="img"
-                    height="140"
-                    image={product.image}
-                    alt={product.name}
+                  
+                <Box sx={{ position: 'relative', height: 250, width: '100%' }}>
+                  {/* Skeleton Placeholder */}
+                  <Skeleton
+                    variant="rectangular"
+                    sx={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      height: 250,
+                      width: '100%',
+                      display: 'block',
+                    }}
                   />
-                  <CardContent>
-                    <Typography variant="h6">{product.name}</Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {product.description}
-                    </Typography>
-                    <Typography variant="body1" color="primary">
-                      ${product.price}
-                    </Typography>
-                  </CardContent>
+                  {/* Next.js Image with lazy loading */}
+                  <Image
+                    src={product.image}
+                    alt={product.name}
+                    layout="fill"
+                    objectFit="cover"
+                    style={{ display: 'block' }}
+                  />
+                </Box>
+                <CardContent sx={{ textAlign: 'center', padding: '16px' }}>
+  {/* Product Name */}
+  <Typography
+    variant="h6"
+    sx={{
+      color: '#D4AF37',
+      fontWeight: 'bold',
+      fontSize: '1.2rem',
+      marginBottom: '8px',
+    }}
+  >
+    {product.name}
+  </Typography>
+
+  {/* Product Description */}
+  <Typography
+    variant="body2"
+    color="text.secondary"
+    sx={{ fontSize: '0.9rem', marginBottom: '16px' }}
+  >
+    {product.description}
+  </Typography>
+
+  {/* Product Price Section */}
+  <Box
+    sx={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      gap: '8px',
+      marginBottom: '12px',
+    }}
+  >
+    {/* Crossed Original Price */}
+    <Typography
+      variant="body2"
+      sx={{
+        textDecoration: 'line-through',
+        color: 'gray',
+        fontSize: '0.9rem',
+      }}
+    >
+      ${product.price + 50}
+    </Typography>
+
+    {/* Highlighted Discounted Price */}
+    <Typography
+      variant="body1"
+      sx={{
+        color: '#FF5722',
+        fontWeight: 'bold',
+        fontSize: '1.2rem',
+      }}
+    >
+      ${product.price}
+    </Typography>
+  </Box>
+
+  {/* Add to Cart Button */}
+  <Button
+    variant="contained"
+    size="small"
+    sx={{
+      textTransform: 'none',
+      fontWeight: 'bold',
+      borderRadius: '20px',
+      paddingX: '16px',
+      color: '#ffffff',
+      backgroundColor:"#D4AF37"
+    }}
+    
+  >
+    Add to Cart
+  </Button>
+</CardContent>
                 </Card>
               </Grid>
             ))}

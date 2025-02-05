@@ -20,7 +20,7 @@ const NewArrival = () => {
           <Box sx={{ flexGrow: 1, padding: 4, // Padding inside the container
            border: "1px solid #dddddd", // Border starts after padding
            boxSizing: "border-box", }} >
-             <Typography className='headingProduct' variant="h3">New Arrivals</Typography>
+             <Typography className='headingProduct' variant="h4" fontWeight="bold">New Arrivals</Typography>
          {/* <Grid container spacing={2}>
          
          <Grid item xs={3}>
