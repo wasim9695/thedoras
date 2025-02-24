@@ -9,6 +9,7 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
+  Box,
 } from "@mui/material";
 import { styled } from "@mui/system";
 import InstagramIcon from "@mui/icons-material/Instagram";
@@ -20,174 +21,131 @@ import PhoneIcon from "@mui/icons-material/Phone";
 import SupportAgentIcon from "@mui/icons-material/SupportAgent";
 import InfoIcon from "@mui/icons-material/Info";
 
-const Item = styled(Paper)(({ theme }) => ({
-  padding: theme.spacing(2),
-  textAlign: "center",
+const FooterContainer = styled(Box)(({ theme }) => ({
+  backgroundColor: "#1a1a1a",
+  color: "#ffffff",
+  padding: theme.spacing(4),
+  [theme.breakpoints.down("sm")]: {
+    padding: theme.spacing(2),
+  },
+}));
+
+const StyledListItem = styled(ListItem)(({ theme }) => ({
+  padding: theme.spacing(1, 0),
+  transition: "all 0.3s ease",
+  "&:hover": {
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    transform: "translateX(5px)",
+  },
+}));
+
+const SectionTitle = styled(Typography)(({ theme }) => ({
+  fontFamily: "Arial, Helvetica, sans-serif",
+  fontWeight: 600,
+  marginBottom: theme.spacing(2),
+  color: "#ffffff",
 }));
 
 const Footer = () => {
   return (
-    <>
-      <Grid
-        container
-        spacing={2}
-        sx={{ padding: 2, backgroundColor: "#644c01", color: "#ffffff" }}
-      >
-        {/* Footer Sections */}
-        <Grid item xs={3}>
-          <Typography
-            className="headingProduct"
-            variant="h5"
-            style={{
-              paddingLeft: "20px",
-              fontFamily: "Arial, Helvetica, sans-serif",
-              color: "#f0d993",
-            }}
-          >
-            Social
-          </Typography>
+    <FooterContainer component="footer">
+      <Grid container spacing={4} justifyContent="space-between">
+        {/* Social Section */}
+        <Grid item xs={12} sm={6} md={3}>
+          <SectionTitle variant="h6">Social</SectionTitle>
           <List>
-            <ListItem component="a" href="https://www.instagram.com">
-              <ListItemIcon>
-                <InstagramIcon style={{ color: "#E4405F" }} />
-              </ListItemIcon>
-              <ListItemText primary="Instagram" />
-            </ListItem>
+            {[
+              { icon: <InstagramIcon />, text: "Instagram", url: "https://www.instagram.com" },
+              { icon: <FacebookIcon />, text: "Facebook", url: "https://www.facebook.com" },
+              { icon: <YouTubeIcon />, text: "YouTube", url: "https://www.youtube.com" },
+              { icon: <TwitterIcon />, text: "Twitter", url: "https://www.twitter.com" },
+            ].map((item, index) => (
+              <StyledListItem key={index} component="a" href={item.url} target="_blank">
+                <ListItemIcon sx={{ color: "#ffffff", minWidth: "40px" }}>
+                  {item.icon}
+                </ListItemIcon>
+                <ListItemText primary={item.text} sx={{ color: "#ffffff" }} />
+              </StyledListItem>
+            ))}
+          </List>
+        </Grid>
 
-            <ListItem component="a" href="https://www.facebook.com">
-              <ListItemIcon>
-                <FacebookIcon style={{ color: "#1877F2" }} />
-              </ListItemIcon>
-              <ListItemText primary="Facebook" />
-            </ListItem>
-            <ListItem component="a" href="https://www.youtube.com">
-              <ListItemIcon>
-                <YouTubeIcon style={{ color: "#FF0000" }} />
-              </ListItemIcon>
-              <ListItemText primary="YouTube" />
-            </ListItem>
-          </List>
-        </Grid>
-        <Grid item xs={3}>
-          <Typography
-            className="headingProduct"
-            variant="h5"
-            style={{
-              paddingLeft: "20px",
-              fontFamily: "Arial, Helvetica, sans-serif",
-              color: "#f0d993",
-            }}
-          >
-            About
-          </Typography>
+        {/* About Section */}
+        <Grid item xs={12} sm={6} md={3}>
+          <SectionTitle variant="h6">About</SectionTitle>
           <List>
-            <ListItem component="a" href="/customer-support">
-              <ListItemIcon>
-                <SupportAgentIcon style={{ color: "#0072E5" }} />
-              </ListItemIcon>
-              <ListItemText primary="Support Center" />
-            </ListItem>
-            <ListItem component="a" href="/about-us">
-              <ListItemIcon>
-                <InfoIcon style={{ color: "#34A853" }} />
-              </ListItemIcon>
-              <ListItemText primary="Customer Support" />
-            </ListItem>
-            <ListItem component="a" href="/about-us">
-              <ListItemIcon>
-                <InfoIcon style={{ color: "#34A853" }} />
-              </ListItemIcon>
-              <ListItemText primary="About Us" />
-            </ListItem>
+            {[
+              { icon: <SupportAgentIcon />, text: "Support Center", url: "/customer-support" },
+              { icon: <InfoIcon />, text: "Customer Support", url: "/about-us" },
+              { icon: <InfoIcon />, text: "About Us", url: "/about-us" },
+            ].map((item, index) => (
+              <StyledListItem key={index} component="a" href={item.url}>
+                <ListItemIcon sx={{ color: "#ffffff", minWidth: "40px" }}>
+                  {item.icon}
+                </ListItemIcon>
+                <ListItemText primary={item.text} sx={{ color: "#ffffff" }} />
+              </StyledListItem>
+            ))}
           </List>
         </Grid>
-        <Grid item xs={3}>
-          <Typography
-            className="headingProduct"
-            variant="h5"
-            style={{
-              paddingLeft: "20px",
-              fontFamily: "Arial, Helvetica, sans-serif",
-              color: "#f0d993",
-            }}
-          >
-            Contact
-          </Typography>
+
+        {/* Contact Section */}
+        <Grid item xs={12} sm={6} md={3}>
+          <SectionTitle variant="h6">Contact</SectionTitle>
           <List>
-            <ListItem component="a" href="mailto:yourexample@email.com">
-              <ListItemIcon>
-                <EmailIcon style={{ color: "#0072E5" }} />
-              </ListItemIcon>
-              <ListItemText primary="yourexample@email.com" />
-            </ListItem>
-            <ListItem component="a" href="mailto:example@email.com">
-              <ListItemIcon>
-                <EmailIcon style={{ color: "#0072E5" }} />
-              </ListItemIcon>
-              <ListItemText primary="example@email.com" />
-            </ListItem>
-            <ListItem component="a" href="tel:+12545685479">
-              <ListItemIcon>
-                <PhoneIcon style={{ color: "#34A853" }} />
-              </ListItemIcon>
-              <ListItemText primary="+1 254 568-5479" />
-            </ListItem>
+            {[
+              { icon: <EmailIcon />, text: "yourexample@email.com", url: "mailto:yourexample@email.com" },
+              { icon: <EmailIcon />, text: "example@email.com", url: "mailto:example@email.com" },
+              { icon: <PhoneIcon />, text: "+1 254 568-5479", url: "tel:+12545685479" },
+            ].map((item, index) => (
+              <StyledListItem key={index} component="a" href={item.url}>
+                <ListItemIcon sx={{ color: "#ffffff", minWidth: "40px" }}>
+                  {item.icon}
+                </ListItemIcon>
+                <ListItemText primary={item.text} sx={{ color: "#ffffff" }} />
+              </StyledListItem>
+            ))}
           </List>
         </Grid>
-        <Grid item xs={3}>
-          <Typography
-            className="headingProduct"
-            variant="h5"
-            style={{
-              paddingLeft: "20px",
-              fontFamily: "Arial, Helvetica, sans-serif",
-              color: "#f0d993",
-            }}
-          >
-            Customer Care
-          </Typography>
+
+        {/* Customer Care Section */}
+        <Grid item xs={12} sm={6} md={3}>
+          <SectionTitle variant="h6">Customer Care</SectionTitle>
           <List>
-            <ListItem component="a" href="/customer-support">
-              <ListItemIcon>
-                <SupportAgentIcon style={{ color: "#0072E5" }} />
-              </ListItemIcon>
-              <ListItemText primary="FAQ & Helps" />
-            </ListItem>
-            <ListItem component="a" href="/about-us">
-              <ListItemIcon>
-                <InfoIcon style={{ color: "#34A853" }} />
-              </ListItemIcon>
-              <ListItemText primary="Shipping & Delivery" />
-            </ListItem>
-            <ListItem component="a" href="/about-us">
-              <ListItemIcon>
-                <InfoIcon style={{ color: "#34A853" }} />
-              </ListItemIcon>
-              <ListItemText primary="Return & Exchanges" />
-            </ListItem>
+            {[
+              { icon: <SupportAgentIcon />, text: "FAQ & Helps", url: "/customer-support" },
+              { icon: <InfoIcon />, text: "Shipping & Delivery", url: "/about-us" },
+              { icon: <InfoIcon />, text: "Return & Exchanges", url: "/about-us" },
+            ].map((item, index) => (
+              <StyledListItem key={index} component="a" href={item.url}>
+                <ListItemIcon sx={{ color: "#ffffff", minWidth: "40px" }}>
+                  {item.icon}
+                </ListItemIcon>
+                <ListItemText primary={item.text} sx={{ color: "#ffffff" }} />
+              </StyledListItem>
+            ))}
           </List>
-        </Grid>
-        <Divider
-          style={{
-            borderColor: "#ccc",
-            borderWidth: "1px",
-            marginTop: "20px",
-            width: "100%",
-          }}
-        />
-        {/* Copyright */}
-        <Grid item xs={12}>
-          <Typography
-            variant="body2"
-            color="textSecondary"
-            align="center"
-            style={{ color: "#ffffff" }}
-          >
-            © {new Date().getFullYear()} Your Company. All rights reserved.
-          </Typography>
         </Grid>
       </Grid>
-    </>
+
+      <Divider sx={{ bgcolor: "rgba(255, 255, 255, 0.2)", my: 4 }} />
+
+      <Typography
+        variant="body2"
+        align="center"
+        sx={{
+          color: "rgba(255, 255, 255, 0.7)",
+          "& a": {
+            color: "#ffffff",
+            textDecoration: "none",
+            "&:hover": { textDecoration: "underline" },
+          },
+        }}
+      >
+        © {new Date().getFullYear()} Your Company. All rights reserved. |{" "}
+        <a href="/privacy">Privacy Policy</a> | <a href="/terms">Terms of Service</a>
+      </Typography>
+    </FooterContainer>
   );
 };
 

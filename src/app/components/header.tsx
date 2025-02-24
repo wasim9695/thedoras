@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { AppBar, Box, Toolbar, IconButton, Typography, Menu, Container, Button, MenuItem } from '@mui/material';
+import { AppBar, Box, Toolbar, IconButton, Typography, Menu, Container, Button, MenuItem, InputBase } from '@mui/material';
 import { motion } from 'framer-motion';
 import MenuIcon from '@mui/icons-material/Menu';
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
@@ -9,8 +9,8 @@ import SearchIcon from '@mui/icons-material/Search';
 import Image from 'next/image';
 import { ResponsiveDialog } from '../components';
 
-const pathlogo = '/logodora.jpeg';
-const pages = ['New in', 'Women', 'Collection'];
+const pathlogo = '/thedoralogo.png';
+const pages = ['HOME','NEW IN', 'WOMEN', 'COLLECTIONS','PRODUCTS', 'SALE', 'CONTACT'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 const ResponsiveAppBar = () => {
@@ -24,59 +24,81 @@ const ResponsiveAppBar = () => {
 
   return (
     <motion.div initial={{ opacity: 0, y: -50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-      <AppBar position="relative" sx={{ backgroundColor: '#f0d993', color: '#776248', boxShadow: 'none' }}>
+      <AppBar position="relative" sx={{ backgroundColor: 'transparent', color: '#000', boxShadow: 'none' }}>
         <Container maxWidth="xl">
-          <Toolbar disableGutters>
+          <Toolbar disableGutters sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            {/* Logo on the left */}
             <motion.div whileHover={{ scale: 1.1 }}>
-              <Image src={pathlogo} alt="logo" width={80} height={80} style={{ borderRadius: '25%' }} />
+              <Image src={pathlogo} alt="logo" width={200} height={200} style={{ borderRadius: '25%' }} />
             </motion.div>
-            
-            <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, ml: 2 }}>
-              {pages.map((page) => (
-                <motion.div whileHover={{ scale: 1.1 }} key={page}>
-                  <Button sx={{ my: 2, color: '#776248', fontSize: '1rem', fontWeight: '500' }}>{page}</Button>
-                </motion.div>
-              ))}
+
+            {/* Search bar in the middle */}
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                backgroundColor: 'rgba(0, 0, 0, 0.05)',
+                borderRadius: '25px',
+                px: 2,
+                py: 0.5,
+                width: '40%',
+                maxWidth: '500px',
+                mx: 2,
+              }}
+            >
+              <SearchIcon sx={{ color: '#000', mr: 1 }} />
+              <InputBase
+                placeholder="Search..."
+                sx={{
+                  flex: 1,
+                  color: '#000',
+                  '&::placeholder': {
+                    color: '#000',
+                    opacity: 0.7,
+                  },
+                }}
+              />
             </Box>
 
-            <Box sx={{ flexGrow: 0, display: 'flex', gap: 2 }}>
+            {/* Icons on the right */}
+            <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
               <motion.div whileHover={{ scale: 1.2 }}>
-                <Button sx={{ color: '#776248' }} onClick={handleClickOpen}>
-                  <SearchIcon />
+                <Button sx={{ color: '#000', textTransform: 'none' }}>
+                  <Typography variant="body1" sx={{ fontWeight: 500 }}>Sign In</Typography>
                 </Button>
               </motion.div>
 
               <motion.div whileHover={{ scale: 1.2 }}>
-                <Button sx={{ color: '#776248' }}>
-                  <Typography>Sign In</Typography>
+                <Button sx={{ color: '#000', textTransform: 'none' }}>
+                  <ShoppingBagIcon sx={{ fontSize: '1.5rem' }} />
                 </Button>
               </motion.div>
-
-              <motion.div whileHover={{ scale: 1.2 }}>
-                <Button sx={{ color: '#776248' }}>
-                  <ShoppingBagIcon />
-                </Button>
-              </motion.div>
-            </Box>
-
-            <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
-              <IconButton size="large" color="inherit" onClick={handleOpenNavMenu}>
-                <MenuIcon />
-              </IconButton>
-              <Menu
-                anchorEl={anchorElNav}
-                open={Boolean(anchorElNav)}
-                onClose={handleCloseNavMenu}
-                sx={{ display: { xs: 'block', md: 'none' } }}
-              >
-                {pages.map((page) => (
-                  <MenuItem key={page} onClick={handleCloseNavMenu}>
-                    <Typography sx={{ textAlign: 'center' }}>{page}</Typography>
-                  </MenuItem>
-                ))}
-              </Menu>
             </Box>
           </Toolbar>
+
+          {/* Menu Below */}
+          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+            {pages.map((page) => (
+              <motion.div whileHover={{ scale: 1.1 }} key={page}>
+                <Button
+                  sx={{
+                    my: 2,
+                    color: '#000',
+                    fontSize: '1rem',
+                    fontWeight: '500',
+                    textTransform: 'none',
+                    mx: 2,
+                    '&:hover': {
+                      backgroundColor: 'rgba(0, 0, 0, 0.05)',
+                      borderRadius: '4px',
+                    },
+                  }}
+                >
+                  {page}
+                </Button>
+              </motion.div>
+            ))}
+          </Box>
         </Container>
       </AppBar>
       <ResponsiveDialog open={open} onClose={handleClose} />
