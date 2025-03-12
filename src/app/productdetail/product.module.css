@@ -1,0 +1,144 @@
+.container {
+    display: flex;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .imageSection {
+    flex: 1;
+    display: flex;
+    gap: 20px;
+    padding-right: 20px;
+    border-right: 1px solid #e0e0e0;
+  }
+  
+  .thumbnailGallery {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .thumbnail {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    cursor: pointer;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    transition: border-color 0.3s ease;
+  }
+  
+  .thumbnail:hover {
+    border-color: #000;
+  }
+  
+  .mainImageWrapper {
+    position: relative;
+    width: 500px; /* Increased size */
+    height: 700px; /* Increased size */
+    overflow: hidden;
+  }
+  
+  .mainImage {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: transform 0.2s ease;
+    cursor: zoom-in;
+  }
+  
+  .detailsSection {
+    flex: 1;
+    padding-left: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .productName {
+    font-size: 32px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 10px;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .color {
+    font-size: 18px;
+    color: #666;
+    margin-bottom: 15px;
+    font-style: italic;
+  }
+  
+  .price {
+    font-size: 24px;
+    font-weight: 600;
+    color: #000;
+    margin-bottom: 20px;
+  }
+  
+  .taxInfo {
+    font-size: 14px;
+    color: #777;
+    margin-left: 10px;
+  }
+  
+  .sizeSection {
+    margin-bottom: 25px;
+  }
+  
+  .sizeLabel {
+    font-size: 16px;
+    font-weight: 500;
+    margin-right: 10px;
+    color: #333;
+  }
+  
+  .sizeSelect {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 150px;
+    background-color: #fff;
+    cursor: pointer;
+  }
+  
+  .sizeSelect:hover {
+    border-color: #000;
+  }
+  
+  .addToCart {
+    background-color: #000;
+    color: #fff;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    margin-right: 15px;
+  }
+  
+  .addToCart:hover {
+    background-color: #333;
+  }
+  
+  .enquire {
+    background-color: transparent;
+    color: #000;
+    padding: 12px 25px;
+    border: 1px solid #000;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .enquire:hover {
+    background-color: #f0f0f0;
+  }

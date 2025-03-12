@@ -11,6 +11,7 @@ import InstagramIcon from "@mui/icons-material/Instagram"
 import {HomeSlider, OfferHomes, HomeSwiper, ShopCards, FeaturedProduct, DiscountBanner,
    NewArrival} from './components';
 
+   import ShoppingCart from './components/shoppingcart';
 
 const Item = styled(Paper)(({ theme }) => ({ position: "relative", cursor:'pointer',
     padding: theme.spacing(0), textAlign: "center",
@@ -101,6 +102,7 @@ export default function Home() {
              marginBottom:"20px;" // Optional: Divider thickness
            }}
          />
+         <ShoppingCart />
   
     </React.Fragment>
   );

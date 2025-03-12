@@ -48,7 +48,7 @@ const SectionTitle = styled(Typography)(({ theme }) => ({
 
 const Footer = () => {
   return (
-    <FooterContainer component="footer">
+    <FooterContainer>
       <Grid container spacing={4} justifyContent="space-between">
         {/* Social Section */}
         <Grid item xs={12} sm={6} md={3}>
