@@ -7,26 +7,32 @@ import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 import SearchIcon from '@mui/icons-material/Search';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const pathlogo = '/thedoralogo.png';
 const pathlogo2 = '/thedora second.png';
 const pages = ['HOME', 'NEW IN', 'WOMEN', 'COLLECTIONS', 'PRODUCTS', 'SALE', 'ABOUT US', 'CONTACT'];
 
 const ResponsiveAppBar = () => {
+  const router = useRouter();
+ const onpageHome = () =>{
+  router.push('/');
+}
+
   return (
     <motion.div initial={{ opacity: 0, y: -50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
       <AppBar position="relative" sx={{ backgroundColor: 'transparent', color: '#000', boxShadow: 'none' }}>
         {/* Top centered logo */}
         <Box sx={{ display: 'flex', justifyContent: 'center', pt: 2 }}>
-          <motion.div whileHover={{ scale: 1.1 }}>
-            <Image src={pathlogo2} alt="top logo" width={200} height={200} style={{ borderRadius: '0%' }} />
+          <motion.div whileHover={{ scale: 1.1 }} style={{cursor:"pointer"}} onClick={onpageHome}>
+            <Image  src={pathlogo2} alt="top logo" width={200} height={200} style={{ borderRadius: '0%' }} />
           </motion.div>
         </Box>
 
         <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 2 }}>
           {/* Left logo */}
-          <motion.div whileHover={{ scale: 1.1 }}>
-            <Image src={pathlogo} alt="left logo" width={150} height={150} style={{ borderRadius: '0%' }} />
+          <motion.div whileHover={{ scale: 1.1 }} style={{cursor:"pointer"}} onClick={onpageHome}>
+            <Image  src={pathlogo} alt="left logo" width={150} height={150} style={{ borderRadius: '0%' }} />
           </motion.div>
 
           {/* Center search bar */}
