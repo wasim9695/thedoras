@@ -163,7 +163,7 @@ const HomeSlider = () => {
                     <Box sx={{ fontSize: "2rem", fontWeight: "bold" }}>
                                     UP TO 20% OFF
                                   </Box>
-                                  <Box sx={{ fontSize: "1.2rem" }}>FOR ALL WOMEN'S CLOTHING</Box>
+                                  <Box sx={{ fontSize: "1.2rem" }}>FOR ALL WOMEN CLOTHING</Box>
                                   <Button
                                     variant="contained"
                                     sx={{
@@ -200,7 +200,7 @@ const HomeSlider = () => {
                     <Box sx={{ fontSize: "2rem", fontWeight: "bold" }}>
                                     UP TO 20% OFF
                                   </Box>
-                                  <Box sx={{ fontSize: "1.2rem" }}>FOR ALL WOMEN'S CLOTHING</Box>
+                                  <Box sx={{ fontSize: "1.2rem" }}>FOR ALL WOMENS CLOTHING</Box>
                                   <Button
                                     variant="contained"
                                     sx={{

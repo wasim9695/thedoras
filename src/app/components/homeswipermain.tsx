@@ -106,7 +106,7 @@ const HomeSwiperMain = () => {
               <Box sx={{ fontSize: "2rem", fontWeight: "bold" }}>
                 UP TO 60% OFF
               </Box>
-              <Box sx={{ fontSize: "1.2rem" }}>FOR ALL WOMEN'S CLOTHING</Box>
+              <Box sx={{ fontSize: "1.2rem" }}>FOR ALL WOMENS CLOTHING</Box>
               <Button
                 variant="contained"
                 sx={{

@@ -1,11 +1,11 @@
 "use client"
 import React, { useEffect } from "react";
 import Image from "next/image";
-import { Box, Container, CssBaseline, Divider, Grid, Link, Paper, Stack, Typography } from '@mui/material';
+import {CssBaseline, Divider, Grid, Paper } from '@mui/material';
 import { styled } from '@mui/material/styles';
 // import {HomeSlider} from './components/homeslider';
 // import {OfferHome} from './components/offerHome';
-import { useAnimation, AnimationControls, inView, motion } from "framer-motion";
+import { useAnimation, AnimationControls, motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import InstagramIcon from "@mui/icons-material/Instagram"
 import {HomeSlider, OfferHomes, HomeSwiper, ShopCards, FeaturedProduct, DiscountBanner,
@@ -18,7 +18,7 @@ const Item = styled(Paper)(({ theme }) => ({ position: "relative", cursor:'point
     color: theme.palette.text.secondary, backgroundColor: "#fff", 
     overflow: "hidden", "& img": { width: "100%", height: "auto", display: "block", },
      "&:hover div": { opacity: 1, }, })); const HoverOverlay = styled("div")(
-      ({ theme }) => ({ position: "absolute", top: 0, left: 0, width: "100%", height: "100%",
+      ({ }) => ({ position: "absolute", top: 0, left: 0, width: "100%", height: "100%",
          backgroundColor: "rgba(0, 0, 0, 0.6)", display: "flex", alignItems: "center"
          , justifyContent: "center", opacity: 0, transition: "opacity 0.3s ease-in-out", color: "#fff", }));
 
@@ -91,7 +91,7 @@ export default function Home() {
       <DiscountBanner/>
       <NewArrival/>
       {/* Social Icons */}
-       {/* Social Icons */} <Grid item xs={12}> <Grid container spacing={2}> {images.map((image, index) => ( <Grid item xs={2} key={index}> <Item> <img src={image} alt={`Instagram ${index + 1}`} /> <HoverOverlay> <InstagramIcon style={{ fontSize: 40 }} /> </HoverOverlay> </Item> </Grid> ))} </Grid> </Grid>
+       {/* Social Icons */} <Grid item xs={12}> <Grid container spacing={2}> {images.map((image, index) => ( <Grid item xs={2} key={index}> <Item> <Image src={image} width={50} height={50} alt={`Instagram ${index + 1}`} /> <HoverOverlay> <InstagramIcon style={{ fontSize: 40 }} /> </HoverOverlay> </Item> </Grid> ))} </Grid> </Grid>
        <Divider
            orientation="vertical"
            flexItem // Ensures the divider spans the full height of the parent

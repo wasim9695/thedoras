@@ -53,7 +53,7 @@ const CheckoutPage = () => {
   const router = useRouter();
 
   // Event Handlers
-  const handleStateChange = (event:any) => {
+  const handleStateChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
     setSelectedState(event.target.value);
   };
 

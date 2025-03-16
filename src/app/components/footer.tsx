@@ -1,8 +1,8 @@
 "use client";
+
 import React from "react";
 import {
   Grid,
-  Paper,
   Typography,
   Divider,
   List,
@@ -10,6 +10,7 @@ import {
   ListItemIcon,
   ListItemText,
   Box,
+  ListItemProps,
 } from "@mui/material";
 import { styled } from "@mui/system";
 import InstagramIcon from "@mui/icons-material/Instagram";
@@ -21,21 +22,30 @@ import PhoneIcon from "@mui/icons-material/Phone";
 import SupportAgentIcon from "@mui/icons-material/SupportAgent";
 import InfoIcon from "@mui/icons-material/Info";
 
+// Define a custom interface that extends ListItemProps with anchor props
+interface StyledListItemProps extends ListItemProps {
+  component?: "a"; // Specify the component type
+  href?: string;
+  target?: string;
+  rel?: string;
+}
+
+// Type the styled component with the custom interface
+const StyledListItem = styled(ListItem)<StyledListItemProps>(({ theme }) => ({
+  padding: theme.spacing(1, 0),
+  transition: "all 0.3s ease",
+  "&:hover": {
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    transform: "translateX(5px)",
+  },
+}));
+
 const FooterContainer = styled(Box)(({ theme }) => ({
   backgroundColor: "#1a1a1a",
   color: "#ffffff",
   padding: theme.spacing(4),
   [theme.breakpoints.down("sm")]: {
     padding: theme.spacing(2),
-  },
-}));
-
-const StyledListItem = styled(ListItem)(({ theme }) => ({
-  padding: theme.spacing(1, 0),
-  transition: "all 0.3s ease",
-  "&:hover": {
-    backgroundColor: "rgba(255, 255, 255, 0.1)",
-    transform: "translateX(5px)",
   },
 }));
 
@@ -60,7 +70,13 @@ const Footer = () => {
               { icon: <YouTubeIcon />, text: "YouTube", url: "https://www.youtube.com" },
               { icon: <TwitterIcon />, text: "Twitter", url: "https://www.twitter.com" },
             ].map((item, index) => (
-              <StyledListItem key={index} component="a" href={item.url} target="_blank">
+              <StyledListItem
+                key={index}
+                component="a"
+                href={item.url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <ListItemIcon sx={{ color: "#ffffff", minWidth: "40px" }}>
                   {item.icon}
                 </ListItemIcon>
@@ -79,7 +95,12 @@ const Footer = () => {
               { icon: <InfoIcon />, text: "Customer Support", url: "/about-us" },
               { icon: <InfoIcon />, text: "About Us", url: "/about-us" },
             ].map((item, index) => (
-              <StyledListItem key={index} component="a" href={item.url}>
+              <StyledListItem
+                key={index}
+                component="a"
+                href={item.url}
+                rel="noopener noreferrer"
+              >
                 <ListItemIcon sx={{ color: "#ffffff", minWidth: "40px" }}>
                   {item.icon}
                 </ListItemIcon>
@@ -98,7 +119,12 @@ const Footer = () => {
               { icon: <EmailIcon />, text: "example@email.com", url: "mailto:example@email.com" },
               { icon: <PhoneIcon />, text: "+1 254 568-5479", url: "tel:+12545685479" },
             ].map((item, index) => (
-              <StyledListItem key={index} component="a" href={item.url}>
+              <StyledListItem
+                key={index}
+                component="a"
+                href={item.url}
+                rel="noopener noreferrer"
+              >
                 <ListItemIcon sx={{ color: "#ffffff", minWidth: "40px" }}>
                   {item.icon}
                 </ListItemIcon>
@@ -117,7 +143,12 @@ const Footer = () => {
               { icon: <InfoIcon />, text: "Shipping & Delivery", url: "/about-us" },
               { icon: <InfoIcon />, text: "Return & Exchanges", url: "/about-us" },
             ].map((item, index) => (
-              <StyledListItem key={index} component="a" href={item.url}>
+              <StyledListItem
+                key={index}
+                component="a"
+                href={item.url}
+                rel="noopener noreferrer"
+              >
                 <ListItemIcon sx={{ color: "#ffffff", minWidth: "40px" }}>
                   {item.icon}
                 </ListItemIcon>

@@ -71,7 +71,7 @@ const backgroundImg = "/offerimages.jpg";
 
 const Collection: React.FC = () => {
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<string>('');
+  // const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [sortOption, setSortOption] = useState<string>('default');
   const [priceRange, setPriceRange] = useState<number[]>([50, 500]);
   const [currentPage, setCurrentPage] = useState(1);

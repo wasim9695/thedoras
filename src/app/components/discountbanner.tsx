@@ -1,18 +1,18 @@
 "use client";
 import * as React from 'react';
-import { Box, Container, Grid, Typography, Button, Paper, styled } from '@mui/material';
+import { Box, Container, Grid, Typography, Button } from '@mui/material';
 import Image from "next/image";
 
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: '#fff',
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: 'center',
-  color: theme.palette.text.secondary,
-  ...theme.applyStyles('dark', {
-    backgroundColor: '#1A2027',
-  }),
-}));
+// const Item = styled(Paper)(({ theme }) => ({
+//   backgroundColor: '#fff',
+//   ...theme.typography.body2,
+//   padding: theme.spacing(1),
+//   textAlign: 'center',
+//   color: theme.palette.text.secondary,
+//   ...theme.applyStyles('dark', {
+//     backgroundColor: '#1A2027',
+//   }),
+// }));
 
 const DiscountBanner = () => {
   return (

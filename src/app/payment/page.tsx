@@ -1,5 +1,4 @@
-"use client";
-
+"use client"
 import React, { useState } from "react";
 import {
   Container,
@@ -18,33 +17,37 @@ import {
   RadioGroup,
   FormControlLabel,
   Radio,
+  CardProps, // Import CardProps
 } from "@mui/material";
 import { styled } from "@mui/system";
 import Link from "next/link";
 
+// Define a custom interface for PaymentMethodCard props
+interface PaymentMethodCardProps extends CardProps {
+  selected?: boolean; // Add the selected prop
+}
+
 // Styled Components
-const PaymentMethodCard = styled(Card)(({ theme, selected }) => ({
+const PaymentMethodCard = styled(Card)<PaymentMethodCardProps>(({ theme, selected }) => ({
   border: selected ? `2px solid` : "1px solid #e0e0e0",
   marginBottom: theme.spacing(2),
   cursor: "pointer",
   transition: "all 0.2s ease-in-out",
   "&:hover": {
-   
     boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
   },
 }));
 
+// Rest of your code remains the same...
 const StyledButton = styled(Button)(({ theme }) => ({
   padding: theme.spacing(1.5, 3),
   borderRadius: 4,
 }));
 
-// Main Payment Component
 const PaymentPage = () => {
   const [paymentMethod, setPaymentMethod] = useState("online");
   const [promoCode, setPromoCode] = useState("");
 
-  // Sample Cart Data
   const cartItems = [
     {
       id: 1,
@@ -65,12 +68,11 @@ const PaymentPage = () => {
   const subtotal = cartItems.reduce((sum, item) => sum + item.price, 0);
   const total = subtotal;
 
-  // Event Handlers
-  const handlePaymentMethodChange = (event) => {
+  const handlePaymentMethodChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPaymentMethod(event.target.value);
   };
 
-  const handlePromoCodeChange = (event) => {
+  const handlePromoCodeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPromoCode(event.target.value);
   };
 
@@ -80,16 +82,13 @@ const PaymentPage = () => {
 
   return (
     <Container maxWidth="lg" sx={{ py: 6 }}>
-      {/* Header Section */}
       <Box sx={{ mb: 4, textAlign: "center" }}>
         <Typography variant="h4" component="h1" gutterBottom>
           Payment
         </Typography>
-       
       </Box>
 
       <Grid container spacing={4}>
-        {/* Payment Methods Section */}
         <Grid item xs={12} md={6}>
           <Typography variant="h6" gutterBottom sx={{ mb: 3 }}>
             Payment Method
@@ -143,18 +142,12 @@ const PaymentPage = () => {
           </FormControl>
 
           <Box sx={{ mt: 3 }}>
-            <Button
-              component={Link}
-              href="/checkout"
-              variant="outlined"
-              color="primary"
-            >
+            <Button component={Link} href="/checkout" variant="outlined" color="primary">
               Back to Address
             </Button>
           </Box>
         </Grid>
 
-        {/* Order Summary Section */}
         <Grid item xs={12} md={6}>
           <Card elevation={3} sx={{ p: 3 }}>
             <Typography variant="h6" gutterBottom sx={{ mb: 3 }}>
@@ -180,7 +173,6 @@ const PaymentPage = () => {
 
               <Divider sx={{ my: 2 }} />
 
-              {/* Promo Code Section */}
               <ListItem sx={{ py: 2 }}>
                 <Box sx={{ display: "flex", gap: 2, width: "100%" }}>
                   <TextField
@@ -191,17 +183,12 @@ const PaymentPage = () => {
                     onChange={handlePromoCodeChange}
                     fullWidth
                   />
-                  <StyledButton
-                    variant="outlined"
-                    color="primary"
-                    onClick={handleApplyPromoCode}
-                  >
+                  <StyledButton variant="outlined" color="primary" onClick={handleApplyPromoCode}>
                     Apply
                   </StyledButton>
                 </Box>
               </ListItem>
 
-              {/* Totals Section */}
               <ListItem sx={{ py: 1 }}>
                 <ListItemText primary="Subtotal" />
                 <Typography variant="subtitle1" fontWeight="medium">
@@ -218,7 +205,7 @@ const PaymentPage = () => {
 
             <StyledButton
               variant="contained"
-             style={{background:"#000000"}}
+              style={{ background: "#000000" }}
               fullWidth
               sx={{ mt: 3 }}
               disabled={!paymentMethod}

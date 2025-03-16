@@ -3,6 +3,7 @@ import { Drawer, Button, Box, Typography, IconButton, Stack } from "@mui/materia
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import CloseIcon from "@mui/icons-material/Close";
+import Image from 'next/image';
 
 interface Product {
     id: number;
@@ -160,9 +161,11 @@ const ShoppingCart: React.FC = () => {
                                     }}
                                 >
                                     <Box sx={{ display: "flex", alignItems: "center" }}>
-                                        <img
+                                        <Image
                                             src={item.image}
                                             alt={item.name}
+                                            width={200}
+                                            height={200}
                                             style={{ width: "80px", height: "80px", objectFit: "cover", marginRight: "10px" }}
                                         />
                                         <Box>

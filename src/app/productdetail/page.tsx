@@ -1,12 +1,11 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Typography,
   Button,
   Collapse,
-  IconButton,
   Table,
   TableBody,
   TableCell,
@@ -29,11 +28,11 @@ const ProductDetail = () => {
   const [selectedSize, setSelectedSize] = useState("XS");
   const [openSizeChart, setOpenSizeChart] = useState(false);
   const [openLegal, setOpenLegal] = useState(false);
-  const mainImageRef = useRef(null);
+  // const mainImageRef = useRef(null);
   const router = useRouter();
 
 
-  const handleThumbnailClick = (image: any) => {
+  const handleThumbnailClick = (image: React.SetStateAction<string>) => {
     setMainImage(image);
   };
 
