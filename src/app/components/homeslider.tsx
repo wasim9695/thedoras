@@ -14,7 +14,7 @@ import Image from "next/image";
 import Link from "next/link"; // Added for linking to pathUrl
 import { keyframes } from "@mui/system";
 import { HomeSwiperMain } from "../components";
-import { fetchLeftBanner } from "../api/bannerAll/banners";
+import { fetchLeftBanner, fetchRightBanner, fetchBottomTwoBanner } from "../api/bannerAll/banners";
 
 // Define the expected banner data structure
 interface BannerData {
@@ -63,6 +63,8 @@ const holographicShine = keyframes`
 
 const HomeSlider: React.FC = () => {
   const [leftBanner, setLeftBanner] = useState<BannerData | null>(null);
+  const [rightBanner, setRightBanner] = useState<BannerData[]>([]);
+ const [bottomBanners, setBottomBanners] = useState<BannerData[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   const getBanner = async () => {
@@ -80,8 +82,37 @@ const HomeSlider: React.FC = () => {
     }
   };
 
+  const getRightBanner = async () => {
+  try {
+    const bannerData = await fetchRightBanner();
+    if (bannerData.data && bannerData.data.length > 0) {
+      setRightBanner(bannerData.data); // set as array
+    } else {
+      setRightBanner([]);
+      setError("No right banner data available");
+    }
+  } catch (err) {
+    setError("Failed to load right banners");
+    setRightBanner([]);
+  }
+};
+
+
+const getBottomBanners = async () => {
+  try {
+    const bannerData: BannerResponse = await fetchBottomTwoBanner();
+    if (bannerData.data && bannerData.data.length > 0) {
+      setBottomBanners(bannerData.data);
+    }
+  } catch (err) {
+    // Optionally handle error
+  }
+};
+
   useEffect(() => {
     getBanner();
+    getRightBanner();
+     getBottomBanners();
   }, []);
 
   return (
@@ -109,7 +140,7 @@ const HomeSlider: React.FC = () => {
                     src={leftBanner.imageUrl}
                     alt={leftBanner.altText}
                     width={1080}
-                    height={420}
+                    height={720}
                     style={{ animation: `${holographicShine} 3s infinite` }}
                   />
                   <Box
@@ -162,6 +193,11 @@ const HomeSlider: React.FC = () => {
                 <Typography>Loading banner...</Typography>
               )}
             </Grid>
+
+             {error ? (
+    <Typography color="error">{error}</Typography>
+  ) : rightBanner && rightBanner.length > 0 ? (
+    rightBanner.map((banner) => (
             <Grid
               item
               xs={2.5}
@@ -170,54 +206,69 @@ const HomeSlider: React.FC = () => {
                 position: "relative",
               }}
             >
-              <Image
-                className="secondImg"
-                src="https://sakshigirri.com/cdn/shop/files/preview_images/cd8da969291f4aadbc2f51c4e0231233.thumbnail.0000000000_360x.jpg?v=1714636716"
-                alt="Secondary banner"
-                width={1080}
-                height={420}
+               
+    
+        <Image
+          className="secondImg"
+          src={banner.imageUrl}
+          alt={banner.altText || "Secondary banner"}
+           width={1080}
+                height={720}
                 style={{ height: "92%", animation: `${holographicShine} 3s infinite` }}
-              />
-              <Box
-                sx={{
-                  position: "absolute",
-                  top: "50%",
-                  left: "50%",
-                  transform: "translate(-50%, -50%)",
-                  color: "white",
-                  textAlign: "center",
-                  bgcolor: "rgba(0, 0, 0, 0.5)",
-                  p: 2,
-                  borderRadius: 2,
-                  maxWidth: "90%",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Typography variant="h4" fontWeight="bold" mb={1}>
-                  New Collection
-                </Typography>
-                <Typography variant="body1" mb={2}>
-                  Discover our latest fashion arrivals
-                </Typography>
-                <Button
-                  variant="contained"
-                  sx={{
-                    background: "#ba9e75",
-                    "&:hover": {
-                      background: "#a78b63",
-                      transform: "scale(1.05)",
-                      transition: "all 0.3s ease",
-                    },
-                  }}
-                >
-                  Shop Now
-                </Button>
-              </Box>
+        />
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            color: "white",
+            textAlign: "center",
+            bgcolor: "rgba(0, 0, 0, 0.5)",
+            p: 2,
+            borderRadius: 2,
+            maxWidth: "90%",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Typography variant="h4" fontWeight="bold" mb={1}>
+            {banner.heading || "New Collection"}
+          </Typography>
+          <Typography variant="body1" mb={2}>
+            {banner.subheading || "Discover our latest fashion arrivals"}
+          </Typography>
+          <Link
+            href={`/shop/${banner.pathUrl}/${banner.categoriesId}`}
+            passHref
+            legacyBehavior
+          >
+            <Button
+              variant="contained"
+              component="a"
+              sx={{
+                background: "#ba9e75",
+                "&:hover": {
+                  background: "#a78b63",
+                  transform: "scale(1.05)",
+                  transition: "all 0.3s ease",
+                },
+              }}
+            >
+              Shop Now
+            </Button>
+          </Link>
+        </Box>
+    
+    
             </Grid>
-            <Grid
+             ))
+  ) : (
+    <Typography>Loading banner...</Typography>
+  )}
+            {/* <Grid
               item
               xs={2.5}
               sx={{ animation: `${fadeIn} 1s ease-out 1s`, position: "relative" }}
@@ -268,7 +319,7 @@ const HomeSlider: React.FC = () => {
                   Shop Now
                 </Button>
               </Box>
-            </Grid>
+            </Grid> */}
           </Grid>
         </Box>
       </Container>
@@ -276,6 +327,8 @@ const HomeSlider: React.FC = () => {
       <Container className="secondGried" maxWidth="xl" sx={{ mb: 5 }}>
         <Box sx={{ flexGrow: 1 }}>
           <Grid container spacing={2}>
+             {bottomBanners.length > 0 ? (
+        bottomBanners.slice(0, 2).map((banner) => (
             <Grid
               item
               xs={3}
@@ -283,8 +336,8 @@ const HomeSlider: React.FC = () => {
             >
               <Image
                 className="secondImg"
-                src={imgss1}
-                alt="Banner image"
+                src={banner.imageUrl}
+                alt={banner.altText}
                 width={1080}
                 height={720}
                 style={{ animation: `${holographicShine} 3s infinite` }}
@@ -304,9 +357,14 @@ const HomeSlider: React.FC = () => {
                 }}
               >
                 <Box sx={{ fontSize: "2rem", fontWeight: "bold" }}>
-                  UP TO 20% OFF
+              {banner.heading}
                 </Box>
-                <Box sx={{ fontSize: "1.2rem" }}>FOR ALL WOMEN CLOTHING</Box>
+                <Box sx={{ fontSize: "1.2rem" }}> {banner.subheading}</Box>
+                <Link
+                                href={`/shop/${banner.pathUrl}/${banner.categoriesId}`}
+                                passHref
+                                legacyBehavior
+                              >
                 <Button
                   variant="contained"
                   sx={{
@@ -322,64 +380,26 @@ const HomeSlider: React.FC = () => {
                 >
                   EXPLORE NOW
                 </Button>
+                </Link>
               </Box>
             </Grid>
-            <Grid
-              item
-              xs={3}
-              sx={{ animation: `${fadeIn} 1s ease-out 1s`, position: "relative" }}
-            >
-              <Image
-                className="secondImg"
-                src={imgss1}
-                alt="Banner image"
-                width={1080}
-                height={720}
-                style={{ animation: `${holographicShine} 3s infinite` }}
-              />
-              <Box
-                sx={{
-                  position: "absolute",
-                  top: "50%",
-                  left: "50%",
-                  transform: "translate(-50%, -50%)",
-                  textAlign: "center",
-                  color: "white",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Box sx={{ fontSize: "2rem", fontWeight: "bold" }}>
-                  UP TO 20% OFF
-                </Box>
-                <Box sx={{ fontSize: "1.2rem" }}>FOR ALL WOMENS CLOTHING</Box>
-                <Button
-                  variant="contained"
-                  sx={{
-                    mt: 2,
-                    backgroundColor: "black",
-                    color: "white",
-                    "&:hover": {
-                      backgroundColor: "#333",
-                      transform: "scale(1.05)",
-                      transition: "all 0.3s ease",
-                    },
-                  }}
-                >
-                  EXPLORE NOW
-                </Button>
-              </Box>
-            </Grid>
+            ))
+      ) : (
+        // Optionally, show a loading or fallback UI
+        <Typography>Loading banners...</Typography>
+      )}
+
+       {bottomBanners.length > 0 ? (
+        bottomBanners.slice(2, 3).map((banner) => (
+            
             <Grid
               item
               xs={6}
               sx={{ animation: `${fadeIn} 1s ease-out 1.5s`, position: "relative" }}
             >
               <Image
-                src="https://sakshigirri.com/cdn/shop/files/HERO_BANNER_aaa759d2-4b9a-4511-bc90-0f5e64488ee2_720x.jpg?v=1679728081"
-                alt="Feature collection banner"
+                src={banner.imageUrl}
+                alt={banner.altText}
                 width={1080}
                 height={720}
                 style={{ animation: `${holographicShine} 3s infinite` }}
@@ -399,9 +419,14 @@ const HomeSlider: React.FC = () => {
                 }}
               >
                 <Box sx={{ fontSize: "2rem", fontWeight: "bold" }}>
-                  UP TO 30% OFF
+                  {banner.heading}
                 </Box>
-                <Box sx={{ fontSize: "1.2rem" }}>FEATURE COLLECTION</Box>
+                <Box sx={{ fontSize: "1.2rem" }}>{banner.subheading}</Box>
+                <Link
+                                href={`/shop/${banner.pathUrl}/${banner.categoriesId}`}
+                                passHref
+                                legacyBehavior
+                              >
                 <Button
                   variant="contained"
                   sx={{
@@ -417,8 +442,14 @@ const HomeSlider: React.FC = () => {
                 >
                   EXPLORE NOW
                 </Button>
+                </Link>
               </Box>
             </Grid>
+                ))
+      ) : (
+        // Optionally, show a loading or fallback UI
+        <Typography>Loading banners...</Typography>
+      )}
           </Grid>
         </Box>
       </Container>

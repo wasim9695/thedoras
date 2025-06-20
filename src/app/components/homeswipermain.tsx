@@ -8,10 +8,53 @@ import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
+import { fetchBottomBanner } from "../api/bannerAll/banners";
+import { useEffect, useState } from "react";
+import Link from "next/link";
 
 const imgs = "/imgs.jpg";
 
+interface BannerData {
+  id: number;
+  categoriesId: number;
+  imageUrl: string;
+  altText: string;
+  pathUrl: string;
+  heading: string;
+  subheading: string;
+  status: string;
+  typeImages: string;
+}
+
+interface BannerResponse {
+  status: number;
+  message: string;
+  data: BannerData[];
+}
+
 const HomeSwiperMain = () => {
+  const [rightBanner, setRightBanner] = useState<BannerData[]>([]);
+  const [error, setError] = useState<string | null>(null);
+
+const getRightBanner = async () => {
+  try {
+    const bannerData = await fetchBottomBanner();
+    if (bannerData.data && bannerData.data.length > 0) {
+      setRightBanner(bannerData.data); // set as array
+    } else {
+      setRightBanner([]);
+      setError("No right banner data available");
+    }
+  } catch (err) {
+    setError("Failed to load right banners");
+    setRightBanner([]);
+  }
+};
+
+  useEffect(() => {
+    getRightBanner();
+  }, []);
+
   const products = [
     {
       id: 1,
@@ -67,7 +110,7 @@ const HomeSwiperMain = () => {
         1024: { slidesPerView: 3, spaceBetween: 24 }, // Desktop: 3 slides
       }}
     >
-      {products.map((product) => (
+      {rightBanner.map((product) => (
         <SwiperSlide key={product.id}>
           <Box
             sx={{
@@ -82,8 +125,8 @@ const HomeSwiperMain = () => {
             }}
           >
             <Image
-              src={product.image}
-              alt={product.title}
+              src={product.imageUrl}
+              alt={product.altText}
               width={700}
               height={400}
               style={{
@@ -104,9 +147,14 @@ const HomeSwiperMain = () => {
               }}
             >
               <Box sx={{ fontSize: "2rem", fontWeight: "bold" }}>
-                UP TO 60% OFF
+                {product.heading}
               </Box>
-              <Box sx={{ fontSize: "1.2rem" }}>FOR ALL WOMENS CLOTHING</Box>
+              <Box sx={{ fontSize: "1.2rem" }}>{product.subheading}</Box>
+              <Link
+                href={`/shop/${product.pathUrl}/${product.categoriesId}`}
+                passHref
+                legacyBehavior
+              >
               <Button
                 variant="contained"
                 sx={{
@@ -120,6 +168,7 @@ const HomeSwiperMain = () => {
               >
                 SHOP NOW
               </Button>
+              </Link>
             </Box>
             
           </Box>
