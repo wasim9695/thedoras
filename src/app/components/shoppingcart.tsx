@@ -1,74 +1,84 @@
-import React, { useState } from "react";
+import React, { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 import { Drawer, Button, Box, Typography, IconButton, Stack } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import CloseIcon from "@mui/icons-material/Close";
 import Image from 'next/image';
+import { fetchCartsAll } from '../api/products/productsAll';
 
 interface Product {
-    id: number;
+    productId: number; // Changed to string to accommodate product._id
     name: string;
-    image: string;
-    price: number;
+    productImage: string;
+    totalPrice: number;
     quantity: number;
     size: string;
 }
 
-const ShoppingCart: React.FC = () => {
-    const [cartItems, setCartItems] = useState<Product[]>([
-        {
-            id: 1,
-            name: "Ivory Botanical Printed Shirt & Chantilly Lace Skirt Set",
-            image:
-                "https://chawkbazar.vercel.app/_next/image?url=%2Fassets%2Fimages%2Finstagram%2F1.jpg&w=384&q=75",
-            price: 13050,
-            quantity: 1,
-            size: "XS",
-        },
-        {
-            id: 2,
-            name: "Off-White Botanical Cropped Blazer & Drawstring Skirt",
-            image:
-                "https://chawkbazar.vercel.app/_next/image?url=%2Fassets%2Fimages%2Finstagram%2F1.jpg&w=384&q=75",
-            price: 15750,
-            quantity: 1,
-            size: "XS",
-        },
-    ]);
+// Define the ref handle interface
+export interface ShoppingCartHandle {
+  handleAddToCart: (product: Product) => void; // product: any because it comes with _id
+}
+
+// No props for this example
+interface ShoppingCartProps {}
+
+const ShoppingCart = forwardRef<ShoppingCartHandle, ShoppingCartProps>((props, ref) => {
+    const [cartItems, setCartItems] = useState<any[]>([]); // Explicitly type cartItems
     const [isCartOpen, setIsCartOpen] = useState(false);
 
-    const handleAddToCart = (product: Product) => {
-        const existingItem = cartItems.find((item) => item.id === product.id);
-        if (existingItem) {
-            setCartItems(
-                cartItems.map((item) =>
-                    item.id === product.id
-                        ? { ...item, quantity: item.quantity + 1 }
-                        : item
-                )
-            );
-        } else {
-            setCartItems([...cartItems, { ...product, quantity: 1 }]);
-        }
-        setIsCartOpen(true); // Open the sidebar when an item is added
+    useImperativeHandle(ref, () => ({
+  handleAddToCart: (product: any) => {
+    console.log("Adding to cart:", product, cartItems);
+    
+    // Find existing item using product._id
+    const existingItem = cartItems.find((item: Product) => item.productId === product._id);
+
+    if (existingItem) {
+        console.log("exsiting");
+      setCartItems(
+        cartItems.map((item: Product) =>
+          item.productId === product._id 
+            ? { ...item, quantity: item.quantity + 1 } 
+            : item
+        )
+      );
+    } else {
+         console.log("nonexsiting");
+      // Add new product to cart
+      setCartItems([
+        ...cartItems,
+        {
+          productId: product._id,
+          name: product.name,
+          productImage: product.image || product.productImage || '',
+          totalPrice: product.price || product.totalPrice || 0,
+          quantity: 1,
+          size: product.size || 'N/A',
+        },
+      ]);
+    }
+    
+    setIsCartOpen(true); // Open the sidebar
+  },
+}));
+
+    const handleRemoveFromCart = (id: string) => { // Changed id type to string
+        setCartItems(cartItems.filter((item) => item.cartId !== id));
     };
 
-    const handleRemoveFromCart = (id: number) => {
-        setCartItems(cartItems.filter((item) => item.id !== id));
-    };
-
-    const handleIncreaseQuantity = (id: number) => {
+    const handleIncreaseQuantity = (id: string) => { // Changed id type to string
         setCartItems(
             cartItems.map((item) =>
-                item.id === id ? { ...item, quantity: item.quantity + 1 } : item
+                item.cartId === id ? { ...item, quantity: item.quantity + 1 } : item
             )
         );
     };
 
-    const handleDecreaseQuantity = (id: number) => {
+    const handleDecreaseQuantity = (id: string) => { // Changed id type to string
         setCartItems(
             cartItems.map((item) =>
-                item.id === id && item.quantity > 1
+                item.cartId === id && item.quantity > 1
                     ? { ...item, quantity: item.quantity - 1 }
                     : item
             )
@@ -77,7 +87,7 @@ const ShoppingCart: React.FC = () => {
 
     // Calculate subtotal
     const subtotal = cartItems.reduce(
-        (acc, item) => acc + item.price * item.quantity,
+        (acc, item) => acc + item.totalPrice * item.quantity,
         0
     );
 
@@ -85,35 +95,57 @@ const ShoppingCart: React.FC = () => {
         return subtotal.toLocaleString(undefined, { maximumFractionDigits: 2 });
     };
 
-    return (
-        <div style={{ backgroundColor: "#f9f9f9", minHeight: "100vh" }}>
-            {/* Example Product */}
-            <Button
-                onClick={() =>
-                    handleAddToCart({
-                        id: 3,
-                        name: "Another Product",
-                        image:
-                            "https://chawkbazar.vercel.app/_next/image?url=%2Fassets%2Fimages%2Finstagram%2F1.jpg&w=384&q=75",
-                        price: 12000,
-                        quantity: 1,
-                        size: "XS",
-                    })
-                }
-                sx={{
-                    backgroundColor: "#000",
-                    color: "#fff",
-                    padding: "10px 20px",
-                    borderRadius: "5px",
-                    border: "none",
-                    cursor: "pointer",
-                    margin: "20px",
-                }}
-            >
-                Add to Cart
-            </Button>
+   const getCarts = async () => {
+//   setIsLoading(true);
+//   setError(null);
+  try {
+    const response = await fetchCartsAll();
+    console.log('Fetched cart data:', response);
 
-            {/* Cart Sidebar with Smooth Animation */}
+    if (response.status === 1 && response.data?.cartDetails?.length > 0) {
+      const { cartItems } = response.data.cartDetails[0];
+
+      // Ensure cartItems is an array
+      if (!Array.isArray(cartItems)) {
+        console.error('cartItems is not an array:', cartItems);
+        // setError('Invalid cart data format');
+        setCartItems([]);
+        return;
+      }
+
+      // Map cartItems to Product interface
+      const formattedItems: any[] = cartItems.map((item: any) => ({
+        productId: item.productId, // Ensure cartId is a string
+        name: item.name,
+        productImage: item.productImage,
+        totalPrice: item.totalPrice,
+        quantity: item.quantity,
+        size: item.size || 'N/A', // Fallback for missing size
+      }));
+
+      setCartItems(formattedItems);
+    } else {
+      setCartItems([]);
+      //setError(response.message || 'No cart items found');
+    }
+  } catch (err: any) {
+    console.error('Error fetching cart:', err);
+    //setError(err.message || 'Failed to fetch cart data');
+    setCartItems([]);
+  } finally {
+   // setIsLoading(false);
+  }
+};
+
+    useEffect(() => {
+        getCarts();
+        // Consider if you always want the cart to open on mount.
+        // If not, remove setIsCartOpen(true); here.
+        setIsCartOpen(true); 
+    }, []);
+
+    return (
+        <div>
             <Drawer
                 anchor="right"
                 open={isCartOpen}
@@ -145,13 +177,14 @@ const ShoppingCart: React.FC = () => {
                         <IconButton onClick={() => setIsCartOpen(false)} sx={{ alignSelf: 'flex-start' }}>
                             <CloseIcon />
                         </IconButton>
-                    </Box>... {cartItems.length === 0 ? (
+                    </Box>
+                    {cartItems.length === 0 ? (
                         <Typography>Your cart is empty</Typography>
                     ) : (
                         <Box sx={{ overflowY: "auto", flexGrow: 1 }}>
                             {cartItems.map((item) => (
                                 <Box
-                                    key={item.id}
+                                    key={item.cartId} // Ensure cartId is unique and consistent
                                     sx={{
                                         display: "flex",
                                         justifyContent: "space-between",
@@ -162,7 +195,7 @@ const ShoppingCart: React.FC = () => {
                                 >
                                     <Box sx={{ display: "flex", alignItems: "center" }}>
                                         <Image
-                                            src={item.image}
+                                            src={item.productImage}
                                             alt={item.name}
                                             width={200}
                                             height={200}
@@ -186,12 +219,12 @@ const ShoppingCart: React.FC = () => {
                                                 },
                                                 alignSelf: "flex-end",
                                             }}
-                                            onClick={() => handleRemoveFromCart(item.id)}
+                                            onClick={() => handleRemoveFromCart(item.cartId)}
                                         >
                                             <CloseIcon />
                                         </IconButton>
                                         <Typography sx={{ fontSize: "14px", color: "#333", textAlign: "right" }}>
-                                            Rs. {item.price.toLocaleString()}
+                                            Rs. {item.totalPrice}
                                         </Typography>
                                         <Stack direction="row" alignItems="center" sx={{ mt: 1, border: '1px solid #ddd', borderRadius: '5px', overflow: 'hidden' }}>
                                             <IconButton
@@ -208,7 +241,7 @@ const ShoppingCart: React.FC = () => {
                                                     justifyContent: "center",
                                                     borderRight: '1px solid #ddd', // Add border between buttons and quantity
                                                 }}
-                                                onClick={() => handleDecreaseQuantity(item.id)}
+                                                onClick={() => handleDecreaseQuantity(item.cartId)}
                                             >
                                                 <RemoveIcon sx={{ fontSize: "1rem" }} />
                                             </IconButton>
@@ -227,7 +260,7 @@ const ShoppingCart: React.FC = () => {
                                                     justifyContent: "center",
                                                     borderLeft: '1px solid #ddd', // Add border between buttons and quantity
                                                 }}
-                                                onClick={() => handleIncreaseQuantity(item.id)}
+                                                onClick={() => handleIncreaseQuantity(item.cartId)}
                                             >
                                                 <AddIcon sx={{ fontSize: "1rem" }} />
                                             </IconButton>
@@ -269,7 +302,7 @@ const ShoppingCart: React.FC = () => {
                 </Box>
             </Drawer>
         </div>
-    );
-};
+   );
+});
 
 export default ShoppingCart;

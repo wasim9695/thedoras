@@ -1,8 +1,11 @@
 "use client";
 import * as React from "react";
+import { useEffect, useState, useRef } from 'react';
 import { Box, Button, Container, Link, Paper, Stack, Typography } from "@mui/material";
 import Image from "next/image";
 import { styled } from "@mui/material/styles";
+import ShoppingCart, { ShoppingCartHandle } from '../components/shoppingcart';
+import {fetchProductsAll} from '../api/products/productsAll';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: "#fff",
@@ -44,6 +47,52 @@ const img54 = "https://sakshigirri.com/cdn/shop/files/5_cc7f7567-7ffd-4935-ad06-
 const img55 = "https://sakshigirri.com/cdn/shop/files/3.3_540x.jpg"; // Secondary image (replace with your actual secondary image path)
 
 const OfferHomes = () => {
+
+const [offerBanner, setOfferBanner] = useState([]);
+ const [error, setError] = useState<string | null>(null);
+const cartRef = useRef<ShoppingCartHandle>(null);
+const getOfferBanner = async () => {
+    try {
+      const bannerData = await fetchProductsAll();
+      if (bannerData?.data?.length > 0) {
+        // Parse gallaryImages for each product
+        const parsedData = bannerData.data.map((product: any) => ({
+          ...product,
+          gallaryImages: typeof product.gallaryImages === "string"
+            ? JSON.parse(product.gallaryImages)
+            : product.gallaryImages || [],
+        }));
+        setOfferBanner(parsedData);
+      } else {
+        setOfferBanner([]);
+        setError("No products available");
+      }
+    } catch (err) {
+      console.error("Error fetching products:", err);
+      setError("Failed to load products");
+    }
+  };
+
+
+ useEffect(() => {
+    getOfferBanner();
+  }, []);
+
+
+   const addToCart = async (product:any) => {
+    try {
+      console.log(product);
+      if (cartRef.current) {
+      cartRef.current.handleAddToCart(product);
+    }
+
+    } catch (err) {
+      console.error("Error adding to cart:", err);
+      // setCartMessage("Failed to add product to cart");
+      // setTimeout(() => setCartMessage(null), 3000);
+    }
+  };
+
   return (
     <Container className="thirdGried" maxWidth="xl">
       <Box
@@ -60,15 +109,16 @@ const OfferHomes = () => {
         <Typography variant="h6" sx={{ color: 'black', marginBottom: 2 }}>
           Special Discounts Available!
         </Typography>
+        <ShoppingCart ref={cartRef} />
         {/* First Stack */}
         <Stack direction={{ xs: "column", sm: "row" }} spacing={{ xs: 1, sm: 2, md: 4 }}>
-          {[1, 2, 3, 4].map((item, index) => (
+         {offerBanner.slice(0, 4).map((product: any, index: any) => (
             <Item className="product-item" key={index}>
-              <Link href="#" underline="none">
+              <Link href={`/product/${product._id}`} underline="none">
                 <ImageContainer>
                   <Image
                     className="primary-image"
-                    src={img54}
+                    src={product?.productImage}
                     alt="Primary image"
                     width={1080}
                     height={720}
@@ -76,7 +126,7 @@ const OfferHomes = () => {
                   />
                   <Image
                     className="secondary-image"
-                    src={img55}
+                    src={product?.gallaryImages?.[1] || img55}
                     alt="Secondary image"
                     width={1080}
                     height={720}
@@ -84,14 +134,15 @@ const OfferHomes = () => {
                   />
                 </ImageContainer>
                 <Typography variant="h6" sx={{ mt: 2, fontWeight: "bold", color: "black" }}>
-                  Product Title
+                 {product?.name}
                 </Typography>
                 <Typography variant="body2" sx={{ color: "#757575", marginBottom: 1 }}>
-                  Short description of the product goes here.
+                 {product?.description}
                 </Typography>
                 <Typography variant="h6" sx={{ color: "#ff5722", fontWeight: "bold" }}>
-                  $99.99
+                  ₹ {product?.totalPrice}
                 </Typography>
+                </Link>
                 <Button
                   variant="contained"
                   sx={{
@@ -104,10 +155,11 @@ const OfferHomes = () => {
                       backgroundColor: "#333",
                     },
                   }}
+                  onClick={() => addToCart(product)}
                 >
                   Buy Now
                 </Button>
-              </Link>
+              
             </Item>
           ))}
         </Stack>
@@ -117,13 +169,13 @@ const OfferHomes = () => {
           spacing={{ xs: 1, sm: 2, md: 4 }}
           sx={{ mt: 2 }}
         >
-          {[1, 2, 3, 4].map((item, index) => (
+         {offerBanner.slice(4, 8).map((product: any, index: any) => (
             <Item className="product-item" key={index}>
-              <Link href="#" underline="none">
+              <Link href={`/product/${product._id}`} underline="none">
                 <ImageContainer>
                   <Image
                     className="primary-image"
-                    src={img54}
+                     src={product?.productImage}
                     alt="Primary image"
                     width={1080}
                     height={720}
@@ -131,7 +183,7 @@ const OfferHomes = () => {
                   />
                   <Image
                     className="secondary-image"
-                    src={img55}
+                    src={product?.gallaryImages?.[1] || img55}
                     alt="Secondary image"
                     width={1080}
                     height={720}
@@ -139,14 +191,15 @@ const OfferHomes = () => {
                   />
                 </ImageContainer>
                 <Typography variant="h6" sx={{ mt: 2, fontWeight: "bold", color: "black" }}>
-                  Product Title
+                 {product?.name}
                 </Typography>
                 <Typography variant="body2" sx={{ color: "#757575", marginBottom: 1 }}>
-                  Short description of the product goes here.
+                  {product?.description}
                 </Typography>
                 <Typography variant="h6" sx={{ color: "#ff5722", fontWeight: "bold" }}>
-                  $99.99
+                  ₹ {product?.totalPrice}
                 </Typography>
+                 </Link>
                 <Button
                   variant="contained"
                   sx={{
@@ -159,10 +212,11 @@ const OfferHomes = () => {
                       backgroundColor: "#333",
                     },
                   }}
+                  onClick={() => addToCart(product)}
                 >
                   Buy Now
                 </Button>
-              </Link>
+             
             </Item>
           ))}
         </Stack>
