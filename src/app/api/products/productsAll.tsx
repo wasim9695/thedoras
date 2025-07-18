@@ -1,7 +1,7 @@
 // lib/apiClient.ts
 
 // Use process.env.NEXT_PUBLIC_API_BASE_URL for client-side accessible variables
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
 
 // Helper function to get auth token
 const getAuthToken = (): string | null => {
@@ -10,17 +10,21 @@ const getAuthToken = (): string | null => {
     return localStorage.getItem('authToken');
   }
   // Fallback to environment variable for server-side
-  return process.env.NEXT_PUBLIC_AUTH_TOKEN || null;
+  return process.env.AUTH_TOKEN || null; // Removed NEXT_PUBLIC_ prefix as auth tokens shouldn't be public
 };
 
 async function fetchJson(path: string, options: RequestInit = {}): Promise<any> {
-  const url = `${API_BASE_URL}${path}`;
+  if (!API_BASE_URL) {
+    throw new Error('API_BASE_URL is not defined');
+  }
+
+  const url = `${API_BASE_URL}${path.startsWith('/') ? path : `/${path}`}`;
   
   // Add auth token to headers if it exists
   const authToken = getAuthToken();
   const headers = {
     'Content-Type': 'application/json',
-    ...(authToken && { 'Authorization': `Bearer ${authToken}` }),
+    ...(authToken && { Authorization: `Bearer ${authToken}` }),
     ...options.headers,
   };
 
@@ -36,7 +40,7 @@ async function fetchJson(path: string, options: RequestInit = {}): Promise<any> 
     }
 
     const contentType = response.headers.get('content-type');
-    if (contentType && contentType.includes('application/json')) {
+    if (contentType?.includes('application/json')) {
       return response.json();
     }
     return response.text();
@@ -47,21 +51,30 @@ async function fetchJson(path: string, options: RequestInit = {}): Promise<any> 
 }
 
 /**
- * Fetches the left banner from the /common/leftbanner endpoint.
- * @returns {Promise<any>} - A promise that resolves to the banner data.
+ * Fetches all products from the /getTodayDeal endpoint.
+ * @returns {Promise<any>} - A promise that resolves to the products data.
  */
-export const fetchProductsAll = (): Promise<any> => fetchJson('/getTodayDeal', {
-  method: 'GET',
-  headers: { 'Content-Type': 'application/json' },
-});
+export const fetchProductsAll = (): Promise<any> =>
+  fetchJson('/getTodayDeal', {
+    method: 'GET',
+  });
 
 /**
  * Fetches cart details from the /getCartDetails endpoint.
  * @returns {Promise<any>} - A promise that resolves to the cart data.
  */
-export const fetchCartsAll = (): Promise<any> => fetchJson('/getCartDetails', {
-  method: 'GET',
-  headers: { 'Content-Type': 'application/json' },
-});
+export const fetchCartsAll = (): Promise<any> =>
+  fetchJson('/getCartDetails', {
+    method: 'GET',
+  });
 
-
+/**
+ * Adds an item to the cart via the /addToCart endpoint.
+ * @param data - The data to send with the request.
+ * @returns {Promise<any>} - A promise that resolves to the response data.
+ */
+export const fetchAddToCart = (data: any): Promise<any> =>
+  fetchJson('/addToCart', {
+    method: 'POST', // Changed to POST as adding to cart typically modifies server state
+    body: JSON.stringify(data),
+  });
