@@ -1,7 +1,7 @@
 // CartDetails.tsx
 "use client";
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CartItem from './CartItem';
 import {
   Container,
@@ -13,56 +13,112 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useRouter } from 'next/navigation';
+import { fetchCartsAll } from '../api/products/productsAll';
 
 interface CartItemType {
-  id: string;
-  imageUrl: string;
+  cartId: number;
+  productImage: string;
   name: string;
   color: string;
   size: string;
-  price: number;
+  totalPrice: number;
   quantity: number;
 }
 
 const CartDetails: React.FC = () => {
   const router = useRouter();
-  const [cartItems, setCartItems] = useState<CartItemType[]>([
-    {
-      id: '1',
-      imageUrl:
-        'https://sakshigirri.com/cdn/shop/files/0N5A7016_s_1080x.jpg?v=1735279856',
-      name: 'MIJWAN BLACK THREAD EMBROIDERED BANDHGALA SET',
-      color: 'Black',
-      size: 'CUSTOM SIZE',
-      price: 182000,
-      quantity: 1,
-    },
-    {
-      id: '2',
-      imageUrl:
-        'https://sakshigirri.com/cdn/shop/files/0N5A7016_s_1080x.jpg?v=1735279856',
-      name: 'MIJWAN CHIKANKARI IVORY GRID SHERWANI SET',
-      color: 'Ivory',
-      size: 'CUSTOM SIZE',
-      price: 480000,
-      quantity: 1,
-    },
-  ]);
+  // const [cartItems, setCartItems] = useState<CartItemType[]>([
+  //   {
+  //     id: '1',
+  //     imageUrl:
+  //       'https://sakshigirri.com/cdn/shop/files/0N5A7016_s_1080x.jpg?v=1735279856',
+  //     name: 'MIJWAN BLACK THREAD EMBROIDERED BANDHGALA SET',
+  //     color: 'Black',
+  //     size: 'CUSTOM SIZE',
+  //     price: 182000,
+  //     quantity: 1,
+  //   },
+  //   {
+  //     id: '2',
+  //     imageUrl:
+  //       'https://sakshigirri.com/cdn/shop/files/0N5A7016_s_1080x.jpg?v=1735279856',
+  //     name: 'MIJWAN CHIKANKARI IVORY GRID SHERWANI SET',
+  //     color: 'Ivory',
+  //     size: 'CUSTOM SIZE',
+  //     price: 480000,
+  //     quantity: 1,
+  //   },
+  // ]);
+
+  
+  const [cartItems, setCartItems] = useState<CartItemType[]>([]);
+  
+  const getCarts = async () => {
+      try {
+        const response = await fetchCartsAll();
+        if ((!localStorage.getItem('authToken')) || (response.status !== 1)) {
+          router.push('/signin'); // Redirect to sign-in page
+          return;
+        }
+        console.log('Fetched cart data:', response);
+  
+        if (response.status === 1 && response.data?.cartDetails?.length > 0) {
+          const { cartItems } = response.data.cartDetails[0];
+  
+          if (!Array.isArray(cartItems)) {
+            console.error('cartItems is not an array:', cartItems);
+            setCartItems([]);
+            return;
+          }
+  
+          const formattedItems: any[] = cartItems.map((item: any) => ({
+            productId: Number(item.productId),
+            name: item.name,
+            productImage: item.productImage,
+            totalPrice: Number(item.totalPrice),
+            quantity: Number(item.quantity),
+            size: item.size || 'N/A',
+          }));
+  
+          setCartItems(formattedItems);
+        } else {
+          setCartItems([]);
+        }
+      } catch (err) {
+        console.error('Error fetching cart:', err);
+        setCartItems([]);
+      }
+    };
+  
+   
+  
+    // const subtotal = cartItems.reduce(
+    //   (acc, item) => acc + item.totalPrice * item.quantity,
+    //   0
+    // );
+  
+    const calculateTotal = () => {
+      // return subtotal.toLocaleString('en-IN', {
+      //   style: 'currency',
+      //   currency: 'INR',
+      //   maximumFractionDigits: 2,
+      // });
+    };
 
   const handleRemoveFromCart = (id: string) => {
-    setCartItems(cartItems.filter((item) => item.id !== id));
+    // setCartItems(cartItems.filter((item) => item.id !== id));
   };
 
   const handleQuantityChange = (id: string, newQuantity: number) => {
     setCartItems(
-      cartItems.map((item) =>
-        item.id === id ? { ...item, quantity: newQuantity } : item
+      cartItems.map((item: any) =>
+        item.cartId === 1 ? { ...item, quantity: newQuantity } : item
       )
     );
   };
 
   const subtotal = cartItems.reduce(
-    (total, item) => total + item.price * item.quantity,
+    (total, item) => total + item.totalPrice * item.quantity,
     0
   );
   const total = subtotal; // In this example, total is same as subtotal
@@ -74,6 +130,11 @@ const CartDetails: React.FC = () => {
   const checkOuts = () =>{
     router.push('/checkout');
   }
+
+
+   useEffect(() => {
+      getCarts();
+    }, []);
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4 }}>
@@ -87,17 +148,14 @@ const CartDetails: React.FC = () => {
         <Box sx={{ flex: '3' }}>
           {cartItems.map((item) => (
             <CartItem
-              key={item.id}
-              id={item.id}
-              imageUrl={item.imageUrl}
+              productImage={item.productImage}
               name={item.name}
               color={item.color}
               size={item.size}
-              price={item.price}
+              totalPrice={item.totalPrice}
               quantity={item.quantity}
               onRemove={handleRemoveFromCart}
-              onQuantityChange={handleQuantityChange}
-            />
+              onQuantityChange={handleQuantityChange} cartId={0}            />
           ))}
         </Box>
         <Box sx={{ flex: '2' }}>
@@ -107,7 +165,7 @@ const CartDetails: React.FC = () => {
                 SUBTOTAL:
               </Typography>
               <Typography variant="subtitle1" color="text.primary">
-                (INR) ₹{subtotal.toLocaleString()}
+                {/* (INR) ₹{subtotal.toLocaleString()} */}
               </Typography>
             </Box>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>

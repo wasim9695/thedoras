@@ -31,8 +31,9 @@ const router = useRouter();
 
   useImperativeHandle(ref, () => ({
     handleAddToCart: async (product: any) => {
-  
-        if (!localStorage.getItem('authToken')) {
+      const response = await fetchCartsAll();
+  console.log(response);
+        if ((!localStorage.getItem('authToken')) || (response.status !== 1)) {
         router.push('/signin'); // Redirect to sign-in page
         return;
       }
@@ -212,12 +213,12 @@ const router = useRouter();
                     onError={() => console.error(`Failed to load image: ${item.productImage}`)}
                   />
                   <Box>
-                    <Typography sx={{ fontSize: '14px', fontWeight: 'bold' }}>
+                    <Typography sx={{ fontSize: '14px', fontWeight: 'bold', marginLeft:'20px' }}>
                       {item.name}
                     </Typography>
-                    <Typography sx={{ fontSize: '12px', color: '#666' }}>
+                    {/* <Typography sx={{ fontSize: '12px', color: '#666' }}>
                       Size: {item.size}
-                    </Typography>
+                    </Typography> */}
                   </Box>
                 </Box>
                 <Stack direction="column" alignItems="flex-end" justifyContent="space-between">
@@ -282,7 +283,7 @@ const router = useRouter();
           <Typography sx={{ fontSize: '12px', color: '#666', mb: 2 }}>
             Shipping, taxes, and discount codes calculated at checkout.
           </Typography>
-          <Button
+          <Button onClick={() => router.push('/cartdetail')}
             variant="contained"
             fullWidth
             sx={{
@@ -293,7 +294,7 @@ const router = useRouter();
               '&:hover': { bgcolor: '#333' },
             }}
           >
-            CHECK OUT
+            CHECK To CART
           </Button>
         </Box>
       </Box>

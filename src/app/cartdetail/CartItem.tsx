@@ -1,5 +1,5 @@
 // CartItem.tsx
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Card,
   CardMedia,
@@ -13,16 +13,18 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { styled } from '@mui/material/styles';
+import { useRouter } from 'next/navigation';
+import { fetchCartsAll } from '../api/products/productsAll';
 
 interface CartItemProps {
-  id: string;
-  imageUrl: string;
+  cartId: number;
+  productImage: string;
   name: string;
   color: string;
   size: string;
-  price: number;
+  totalPrice: number;
   quantity: number;
-  onRemove: (id: string) => void;
+  onRemove: (id: any) => void;
   onQuantityChange: (id: string, newQuantity: number) => void;
 }
 
@@ -40,30 +42,89 @@ const StyledCardMedia = styled(CardMedia)({
 });
 
 const CartItem: React.FC<CartItemProps> = ({
-  id,
-  imageUrl,
+  cartId,
+  productImage,
   name,
   color,
   size,
-  price,
+  totalPrice,
   quantity,
   onRemove,
   onQuantityChange,
 }) => {
   const handleDecrement = () => {
     if (quantity > 1) {
-      onQuantityChange(id, quantity - 1);
+      // onQuantityChange(id, quantity - 1);
+    }
+  };
+const router = useRouter();
+
+const [cartItems, setCartItems] = useState<any[]>([]);
+
+const getCarts = async () => {
+    try {
+      const response = await fetchCartsAll();
+      if ((!localStorage.getItem('authToken')) || (response.status !== 1)) {
+        router.push('/signin'); // Redirect to sign-in page
+        return;
+      }
+      console.log('Fetched cart data:', response);
+
+      if (response.status === 1 && response.data?.cartDetails?.length > 0) {
+        const { cartItems } = response.data.cartDetails[0];
+
+        if (!Array.isArray(cartItems)) {
+          console.error('cartItems is not an array:', cartItems);
+          setCartItems([]);
+          return;
+        }
+
+        const formattedItems: any[] = cartItems.map((item: any) => ({
+          productId: Number(item.productId),
+          name: item.name,
+          productImage: item.productImage,
+          totalPrice: Number(item.totalPrice),
+          quantity: Number(item.quantity),
+          size: item.size || 'N/A',
+        }));
+
+        setCartItems(formattedItems);
+      } else {
+        setCartItems([]);
+      }
+    } catch (err) {
+      console.error('Error fetching cart:', err);
+      setCartItems([]);
     }
   };
 
+  useEffect(() => {
+    getCarts();
+  }, []);
+
+  const subtotal = cartItems.reduce(
+    (acc, item) => acc + item.totalPrice * item.quantity,
+    0
+  );
+
+  const calculateTotal = () => {
+    return subtotal.toLocaleString('en-IN', {
+      style: 'currency',
+      currency: 'INR',
+      maximumFractionDigits: 2,
+    });
+  };
+
+
+
   const handleIncrement = () => {
-    onQuantityChange(id, quantity + 1);
+    // onQuantityChange(id, quantity + 1);
   };
 
   const handleQuantityInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newQuantity = parseInt(event.target.value);
     if (!isNaN(newQuantity) && newQuantity > 0) {
-      onQuantityChange(id, newQuantity);
+      // onQuantityChange(id, newQuantity);
     } else {
       // Handle invalid input (e.g., show an error message)
       console.error("Invalid quantity input");
@@ -72,7 +133,7 @@ const CartItem: React.FC<CartItemProps> = ({
 
   return (
     <StyledCard>
-      <StyledCardMedia image={imageUrl} title={name} />
+      <StyledCardMedia image={ productImage} title={name} />
       <CardContent sx={{ flex: '1 1 auto', padding: 2 }}>
         <Typography component="h3" variant="h6" color="text.primary" fontWeight="semibold">
           {name}
@@ -101,11 +162,11 @@ const CartItem: React.FC<CartItemProps> = ({
           </IconButton>
         </Box>
         <Typography variant="subtitle1" color="text.primary" fontWeight="semibold">
-          (INR) ₹{price.toLocaleString()}
+          (INR) ₹{totalPrice.toLocaleString()}
         </Typography>
       </CardContent>
       <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-around', padding: 1}}>
-        <IconButton aria-label="delete" onClick={() => onRemove(id)}>
+        <IconButton aria-label="delete" onClick={() => onRemove(cartId)}>
           <DeleteIcon />
         </IconButton>
       </Box>

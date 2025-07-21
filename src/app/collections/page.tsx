@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Typography,
@@ -22,6 +22,7 @@ import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import Image from 'next/image';
 import { styled } from "@mui/material/styles";
 import Link from 'next/link';
+import { fetchGetAllProducts } from '../api/bannerAll/banners';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: "#fff",
@@ -75,6 +76,37 @@ const Collection: React.FC = () => {
   const [sortOption, setSortOption] = useState<string>('default');
   const [priceRange, setPriceRange] = useState<number[]>([50, 500]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [listProduts, setListProducts] = useState<any[]>([]);
+
+  const fetchProducts = async () => {
+    try {
+      const response = await fetchGetAllProducts();
+      console.log(response);
+      if (response?.data?.length > 0) {
+        // Parse gallaryImages for each product
+        const parsedData = response.data.map((product: any) => ({
+          ...product,
+          gallaryImages: typeof product.gallaryImages === "string"
+            ? JSON.parse(product.gallaryImages)
+            : product.gallaryImages || [],
+        }));
+        setListProducts(parsedData);
+      } else {
+        setListProducts([]);
+        // setError("No products available");
+      }
+}
+    catch (err) {
+      console.error('Error fetching products:', err);
+      setListProducts([]);
+    }
+  }
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+
 
   const categories = ['All', 'Clothing', 'Accessories', 'Electronics', 'Home'];
   const colors = ['Black', 'Red', 'Green', 'Blue', 'White'];
@@ -294,13 +326,14 @@ const Collection: React.FC = () => {
                 mb: 2
               }}
             >
-              {firstRow.map((product) => (
-                <Item className="product-item" key={product.id}>
+              {listProduts.map((product: any, index: any) => (
+                console.log("under data", product),
+                <Item className="product-item" key={index}>
                   <Link href={"/productdetail"}>
                     <ImageContainer>
                       <Image
                         className="primary-image"
-                        src={product.primaryImage}
+                        src={product?.productImage}
                         alt="Primary image"
                         width={540}
                         height={360}
@@ -308,7 +341,7 @@ const Collection: React.FC = () => {
                       />
                       <Image
                         className="secondary-image"
-                        src={product.secondaryImage}
+                        src={product?.gallaryImages?.[1] || product.secondaryImage}
                         alt="Secondary image"
                         width={540}
                         height={360}
@@ -319,19 +352,19 @@ const Collection: React.FC = () => {
                       variant="h6" 
                       sx={{ mt: 2, fontWeight: "bold", color: "#333" }}
                     >
-                      {product.title}
+                      {product?.name}
                     </Typography>
                     <Typography 
                       variant="body2" 
                       sx={{ color: "#666", marginBottom: 1 }}
                     >
-                      {product.description}
+                      {product?.description}
                     </Typography>
                     <Typography 
                       variant="h6" 
                       sx={{ color: "#ff5722", fontWeight: "bold" }}
                     >
-                      ${product.price}
+                      ₹{product?.totalPrice}
                     </Typography>
                     <Button
                       variant="contained"
@@ -355,7 +388,7 @@ const Collection: React.FC = () => {
             </Stack>
 
             {/* Second Row */}
-            <Stack 
+            {/* <Stack 
               direction="row" 
               spacing={2}
               sx={{ 
@@ -423,7 +456,7 @@ const Collection: React.FC = () => {
                   </Link>
                 </Item>
               ))}
-            </Stack>
+            </Stack> */}
 
             {/* Pagination */}
             <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
