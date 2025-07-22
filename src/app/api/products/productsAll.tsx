@@ -59,6 +59,11 @@ export const fetchProductsAll = (): Promise<any> =>
     method: 'GET',
   });
 
+
+  export const fetchProductsAllNewAr = (): Promise<any> =>
+  fetchJson('/getTodayNewArrivals', {
+    method: 'GET',
+  });
 /**
  * Fetches cart details from the /getCartDetails endpoint.
  * @returns {Promise<any>} - A promise that resolves to the cart data.

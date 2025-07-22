@@ -51,6 +51,11 @@ export const fetchBottomThreeBanner = (): Promise<any> => fetchJson('/common/bot
   headers: { 'Content-Type': 'application/json' },
 });
 
+export const fetchFeatured = (): Promise<any> => fetchJson('/common/getFetauredProducts', {
+  method: 'GET',
+  headers: { 'Content-Type': 'application/json' },
+});
+
 export const fetchFastivalOffer = (): Promise<any> => fetchJson('/getfastival', {
   method: 'GET',
   headers: { 'Content-Type': 'application/json' },

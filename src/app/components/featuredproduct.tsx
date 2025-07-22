@@ -2,6 +2,9 @@
 import * as React from 'react';
 import { Box, Container, Grid, Typography, Button, Paper, styled } from '@mui/material';
 import Image from "next/image";
+import {fetchFeatured} from '../api/bannerAll/banners';
+import { useEffect, useState } from "react";
+import Link from "next/link"; // Added for linking to pathUrl
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: '#fff',
@@ -17,6 +20,26 @@ const Item = styled(Paper)(({ theme }) => ({
 const fp = '/f01.jpg'; // Replace with your actual image path
 
 const FeaturedProduct = () => {
+
+  const [getFeatured, setFeatured] = useState<any[]>([]);
+
+  const getFeatureAllData = async () => {
+    try {
+      const bannerData = await fetchFeatured();
+      if (bannerData.data && bannerData.data.length > 0) {
+        setFeatured(bannerData.data);
+      }
+    } catch (err) {
+      // Optionally handle error
+    }
+  };
+  
+    useEffect(() => {
+      getFeatureAllData();
+    }, []);
+
+
+
   return (
     <Container className="thirdGried" maxWidth="xl">
       <Box
@@ -34,6 +57,7 @@ const FeaturedProduct = () => {
         {/* Left Column */}
         <Grid container spacing={2}>
           {/* Left Column */}
+           {getFeatured.slice(0, 1).map((product: any, index: any) => (
           <Grid item xs={12} md={6}>
             <Box
               sx={{
@@ -46,7 +70,7 @@ const FeaturedProduct = () => {
               }}
             >
               <Image
-                src={fp}
+                src={product.imageUrl}
                 alt="Description of the image"
                 width={1080}
                 height={720}
@@ -78,8 +102,13 @@ const FeaturedProduct = () => {
                 }}
               >
                 <Typography variant="h5" fontWeight="bold">
-                  Product Title
+                  {product.heading}
                 </Typography>
+                <Link
+                  href={`/shop/${product.pathUrl}/${product.categoriesId}`}
+                  passHref
+                  legacyBehavior
+                >
                 <Button
                   variant="contained"
                   sx={{
@@ -95,23 +124,25 @@ const FeaturedProduct = () => {
                 >
                   Shop Now
                 </Button>
+                </Link>
               </Box>
             </Box>
             <Typography variant="h6" sx={{ mt: 2, fontWeight: 'bold' }}>
-              Product Title
+             {product.heading}
             </Typography>
             <Typography variant="body2" sx={{ color: '#757575', marginBottom: 1 }}>
-              Short description of the product goes here.
+              {product.subheading}
             </Typography>
             <Typography variant="h6" sx={{ color: '#ff5722', fontWeight: 'bold' }}>
-              $99.99
+              ${product.banner_price}
             </Typography>
           </Grid>
 
+                 ))}
           {/* Right Columns */}
           <Grid item xs={12} md={6}>
             <Grid container spacing={2}>
-              {[1, 2, 3, 4].map((item, index) => (
+              {getFeatured.slice(1, 5).map((product: any, index: any) => (
                 <Grid item xs={12} sm={6} key={index}>
                   <Item>
                     <Box
@@ -125,7 +156,7 @@ const FeaturedProduct = () => {
                       }}
                     >
                       <Image
-                        src="https://sakshigirri.com/cdn/shop/files/5_cc7f7567-7ffd-4935-ad06-5c31742ee3d5_720x.jpg"
+                        src={product.imageUrl}
                         alt="Description of the image"
                         width={1080}
                         height={720}
@@ -135,7 +166,7 @@ const FeaturedProduct = () => {
                           transition: 'transform 0.3s ease-in-out',
                         }}
                       />
-                      {/* Overlay */}
+                  
                       <Box
                         sx={{
                           position: 'absolute',
@@ -157,8 +188,13 @@ const FeaturedProduct = () => {
                         }}
                       >
                         <Typography variant="h6" fontWeight="bold">
-                          Product Title
+                          {product.heading}
                         </Typography>
+                        <Link
+                  href={`/shop/${product.pathUrl}/${product.categoriesId}`}
+                  passHref
+                  legacyBehavior
+                >
                         <Button
                           variant="contained"
                           sx={{
@@ -174,16 +210,17 @@ const FeaturedProduct = () => {
                         >
                           Shop Now
                         </Button>
+                        </Link>
                       </Box>
                     </Box>
                     <Typography variant="h6" sx={{ mt: 2, fontWeight: 'bold' }}>
-                      Product Title
+                     {product.heading}
                     </Typography>
                     <Typography variant="body2" sx={{ color: '#757575', marginBottom: 1 }}>
-                      Short description of the product goes here.
+                      {product.subheading}
                     </Typography>
                     <Typography variant="h6" sx={{ color: '#ff5722', fontWeight: 'bold' }}>
-                      $99.99
+                      ${product.banner_price}
                     </Typography>
                   </Item>
                 </Grid>
