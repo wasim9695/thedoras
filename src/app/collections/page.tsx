@@ -13,10 +13,10 @@ import {
   MenuItem,
   Slider,
   Container,
-  Stack,
   Paper,
   Breadcrumbs,
   Pagination,
+  Stack,
 } from '@mui/material';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import Image from 'next/image';
@@ -26,7 +26,7 @@ import { fetchGetAllProducts } from '../api/bannerAll/banners';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: "#fff",
-  padding: theme.spacing(1),
+  padding: theme.spacing(2),
   textAlign: "center",
   color: theme.palette.text.secondary,
   position: "relative",
@@ -40,23 +40,27 @@ const Item = styled(Paper)(({ theme }) => ({
   ...theme.applyStyles("dark", {
     backgroundColor: "#1A2027",
   }),
-  flex: '1 0 21%', // Ensures 4 items per row
-  margin: theme.spacing(1),
 }));
 
 const ImageContainer = styled("div")({
   position: "relative",
   width: "100%",
-  height: "auto",
-  "& .primary-image": {
-    transition: "opacity 0.3s ease-in-out",
-  },
-  "& .secondary-image": {
+  paddingTop: "120%", // Aspect ratio 3:2
+  "& .product-image": {
     position: "absolute",
     top: 0,
     left: 0,
-    opacity: 0,
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+    borderRadius: '4px',
     transition: "opacity 0.3s ease-in-out",
+  },
+  "& .primary-image": {
+    zIndex: 1,
+  },
+  "& .secondary-image": {
+    opacity: 0,
   },
   "&:hover .primary-image": {
     opacity: 0,
@@ -66,24 +70,19 @@ const ImageContainer = styled("div")({
   },
 });
 
-const img54 = "https://sakshigirri.com/cdn/shop/files/5_cc7f7567-7ffd-4935-ad06-5c31742ee3d5_720x.jpg";
-const img55 = "https://sakshigirri.com/cdn/shop/files/3.3_540x.jpg";
 const backgroundImg = "/offerimages.jpg";
 
 const Collection: React.FC = () => {
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
-  // const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [sortOption, setSortOption] = useState<string>('default');
   const [priceRange, setPriceRange] = useState<number[]>([50, 500]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [listProduts, setListProducts] = useState<any[]>([]);
+  const [listProducts, setListProducts] = useState<any[]>([]);
 
   const fetchProducts = async () => {
     try {
       const response = await fetchGetAllProducts();
-      console.log(response);
       if (response?.data?.length > 0) {
-        // Parse gallaryImages for each product
         const parsedData = response.data.map((product: any) => ({
           ...product,
           gallaryImages: typeof product.gallaryImages === "string"
@@ -93,33 +92,25 @@ const Collection: React.FC = () => {
         setListProducts(parsedData);
       } else {
         setListProducts([]);
-        // setError("No products available");
       }
-}
-    catch (err) {
+    } catch (err) {
       console.error('Error fetching products:', err);
       setListProducts([]);
     }
-  }
+  };
 
   useEffect(() => {
     fetchProducts();
   }, []);
 
-
-
   const categories = ['All', 'Clothing', 'Accessories', 'Electronics', 'Home'];
   const colors = ['Black', 'Red', 'Green', 'Blue', 'White'];
-  const itemsPerPage = 8; // 8 items per page
-
-  const allProducts = Array(24).fill(null).map((_, index) => ({
-    id: index + 1,
-    title: "Product Title",
-    description: "Short description of the product goes here.",
-    price: 99.99,
-    primaryImage: img54,
-    secondaryImage: img55,
-  }));
+  const itemsPerPage = 8;
+  const totalPages = Math.ceil(listProducts.length / itemsPerPage);
+  const paginatedProducts = listProducts.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   const handleFilterChange = (filter: string) => {
     setSelectedFilters((prev) =>
@@ -135,22 +126,12 @@ const Collection: React.FC = () => {
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, page: number) => {
     setCurrentPage(page);
-    console.log(page);
   };
-
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const paginatedProducts = allProducts.slice(startIndex, endIndex);
-  const totalPages = Math.ceil(allProducts.length / itemsPerPage);
-
-  // Split into two rows of 4
-  const firstRow = paginatedProducts.slice(0, 4);
-  const secondRow = paginatedProducts.slice(4, 8);
 
   return (
     <Container maxWidth="xl">
       <Box sx={{ flexGrow: 1, padding: 4, boxSizing: "border-box" }}>
-        {/* Title Section unchanged */}
+        {/* Title Section - Unchanged */}
         <Box 
           sx={{ 
             textAlign: 'center', 
@@ -192,13 +173,13 @@ const Collection: React.FC = () => {
               aria-label="breadcrumb"
               sx={{ justifyContent: 'center', display: 'flex', alignItems: 'center' }}
             >
-              <Link  color="inherit" href="/" style={{ color: '#fff' }}>
+              <Link href="/" style={{ color: '#fff' }}>
                 Home
               </Link>
-              <Link  color="inherit" href="/products" style={{ color: '#fff' }}>
+              <Link href="/products" style={{ color: '#fff' }}>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                   <Image
-                    src={img54}
+                    src="https://sakshigirri.com/cdn/shop/files/5_cc7f7567-7ffd-4935-ad06-5c31742ee3d5_720x.jpg"
                     alt="Breadcrumb image"
                     width={24}
                     height={24}
@@ -224,7 +205,7 @@ const Collection: React.FC = () => {
         </Box>
 
         <Grid container spacing={3}>
-          {/* Filter Panel unchanged */}
+          {/* Filter Panel - Unchanged */}
           <Grid item xs={12} md={2}>
             <Paper 
               elevation={3} 
@@ -296,7 +277,7 @@ const Collection: React.FC = () => {
             </Paper>
           </Grid>
 
-          {/* Products and Pagination */}
+          {/* Products Grid */}
           <Grid item xs={12} md={10}>
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
               <Select
@@ -315,148 +296,64 @@ const Collection: React.FC = () => {
               </Select>
             </Box>
 
-            {/* First Row */}
-            <Stack 
-              direction="row" 
-              spacing={2}
-              sx={{ 
-                display: 'flex',
-                flexWrap: 'wrap',
-                justifyContent: 'space-between',
-                mb: 2
-              }}
-            >
-              {listProduts.map((product: any, index: any) => (
-                console.log("under data", product),
-                <Item className="product-item" key={index}>
-                  <Link href={"/productdetail"}>
-                    <ImageContainer>
-                      <Image
-                        className="primary-image"
-                        src={product?.productImage}
-                        alt="Primary image"
-                        width={540}
-                        height={360}
-                        style={{ width: "100%", height: "auto", borderRadius: '4px' }}
-                      />
-                      <Image
-                        className="secondary-image"
-                        src={product?.gallaryImages?.[1] || product.secondaryImage}
-                        alt="Secondary image"
-                        width={540}
-                        height={360}
-                        style={{ width: "100%", height: "auto", borderRadius: '4px' }}
-                      />
-                    </ImageContainer>
-                    <Typography 
-                      variant="h6" 
-                      sx={{ mt: 2, fontWeight: "bold", color: "#333" }}
-                    >
-                      {product?.name}
-                    </Typography>
-                    <Typography 
-                      variant="body2" 
-                      sx={{ color: "#666", marginBottom: 1 }}
-                    >
-                      {product?.description}
-                    </Typography>
-                    <Typography 
-                      variant="h6" 
-                      sx={{ color: "#ff5722", fontWeight: "bold" }}
-                    >
-                      ₹{product?.totalPrice}
-                    </Typography>
-                    <Button
-                      variant="contained"
-                      sx={{
-                        mt: 2,
-                        fontWeight: "bold",
-                        padding: "8px 16px",
-                        background: 'linear-gradient(45deg, #000000 30%, #333333 90%)',
-                        borderRadius: '20px',
-                        color: "white",
-                        "&:hover": {
+            <Grid container spacing={2}>
+              {paginatedProducts.map((product: any, index: number) => (
+                <Grid item xs={12} sm={6} md={3} key={index}>
+                  <Item className="product-item">
+                    <Link href="/productdetail">
+                      <ImageContainer>
+                        <Image
+                          className="product-image primary-image"
+                          src={product?.productImage || "https://sakshigirri.com/cdn/shop/files/5_cc7f7567-7ffd-4935-ad06-5c31742ee3d5_720x.jpg"}
+                          alt="Primary image"
+                          fill
+                        />
+                        <Image
+                          className="product-image secondary-image"
+                          src={product?.gallaryImages?.[1] || "https://sakshigirri.com/cdn/shop/files/3.3_540x.jpg"}
+                          alt="Secondary image"
+                          fill
+                        />
+                      </ImageContainer>
+                      <Typography 
+                        variant="h6" 
+                        sx={{ mt: 2, fontWeight: "bold", color: "#333" }}
+                      >
+                        {product?.name || "Product Title"}
+                      </Typography>
+                      <Typography 
+                        variant="body2" 
+                        sx={{ color: "#666", marginBottom: 1 }}
+                      >
+                        {product?.description || "Short description of the product goes here."}
+                      </Typography>
+                      <Typography 
+                        variant="h6" 
+                        sx={{ color: "#ff5722", fontWeight: "bold" }}
+                      >
+                        ₹{product?.totalPrice || "99.99"}
+                      </Typography>
+                      <Button
+                        variant="contained"
+                        sx={{
+                          mt: 2,
+                          fontWeight: "bold",
+                          padding: "8px 16px",
                           background: 'linear-gradient(45deg, #000000 30%, #333333 90%)',
-                        },
-                      }}
-                    >
-                      Buy Now
-                    </Button>
-                  </Link>
-                </Item>
+                          borderRadius: '20px',
+                          color: "white",
+                          "&:hover": {
+                            background: 'linear-gradient(45deg, #000000 30%, #333333 90%)',
+                          },
+                        }}
+                      >
+                        Buy Now
+                      </Button>
+                    </Link>
+                  </Item>
+                </Grid>
               ))}
-            </Stack>
-
-            {/* Second Row */}
-            {/* <Stack 
-              direction="row" 
-              spacing={2}
-              sx={{ 
-                display: 'flex',
-                flexWrap: 'wrap',
-                justifyContent: 'space-between',
-                mb: 2
-              }}
-            >
-              {secondRow.map((product) => (
-                <Item className="product-item" key={product.id}>
-                  <Link href="#" >
-                    <ImageContainer>
-                      <Image
-                        className="primary-image"
-                        src={product.primaryImage}
-                        alt="Primary image"
-                        width={540}
-                        height={360}
-                        style={{ width: "100%", height: "auto", borderRadius: '4px' }}
-                      />
-                      <Image
-                        className="secondary-image"
-                        src={product.secondaryImage}
-                        alt="Secondary image"
-                        width={540}
-                        height={360}
-                        style={{ width: "100%", height: "auto", borderRadius: '4px' }}
-                      />
-                    </ImageContainer>
-                    <Typography 
-                      variant="h6" 
-                      sx={{ mt: 2, fontWeight: "bold", color: "#333" }}
-                    >
-                      {product.title}
-                    </Typography>
-                    <Typography 
-                      variant="body2" 
-                      sx={{ color: "#666", marginBottom: 1 }}
-                    >
-                      {product.description}
-                    </Typography>
-                    <Typography 
-                      variant="h6" 
-                      sx={{ color: "#ff5722", fontWeight: "bold" }}
-                    >
-                      ${product.price}
-                    </Typography>
-                    <Button
-                      variant="contained"
-                      sx={{
-                        mt: 2,
-                        fontWeight: "bold",
-                        padding: "8px 16px",
-                        background: 'linear-gradient(45deg, #000000 30%, #333333 90%)',
-                        borderRadius: '20px',
-                        color: "white",
-                        "&:hover": {
-                          background: 'linear-gradient(45deg, #000000 30%, #333333 90%)',
-                        },
-                      }}
-                    >
-                      Buy Now
-                    </Button>
-                  </Link>
-                </Item>
-              ))}
-            </Stack> */}
+            </Grid>
 
             {/* Pagination */}
             <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
@@ -464,7 +361,7 @@ const Collection: React.FC = () => {
                 count={totalPages}
                 page={currentPage}
                 onChange={handlePageChange}
-                style={{color:"#000000"}}
+                color="primary"
                 size="large"
                 showFirstButton
                 showLastButton
