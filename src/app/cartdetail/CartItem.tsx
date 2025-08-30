@@ -14,18 +14,19 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { styled } from '@mui/material/styles';
 import { useRouter } from 'next/navigation';
-import { fetchCartsAll } from '../api/products/productsAll';
+import { fetchCartsAll, fetchSingleUpdate } from '../api/products/productsAll';
 
 interface CartItemProps {
   cartId: number;
   productImage: string;
+  productId: number;
   name: string;
-  color: string;
-  size: string;
+  colorname: string;
+  sizename: string;
   totalPrice: number;
   quantity: number;
-  onRemove: (id: any) => void;
-  onQuantityChange: (id: string, newQuantity: number) => void;
+  onRemove: (cartId: any, productId: any) => void;
+  onQuantityChange: (cartId: number, newQuantity: number) => void;
 }
 
 const StyledCard = styled(Card)(({ theme }) => ({
@@ -45,8 +46,9 @@ const CartItem: React.FC<CartItemProps> = ({
   cartId,
   productImage,
   name,
-  color,
-  size,
+  productId,
+  colorname,
+  sizename,
   totalPrice,
   quantity,
   onRemove,
@@ -54,7 +56,9 @@ const CartItem: React.FC<CartItemProps> = ({
 }) => {
   const handleDecrement = () => {
     if (quantity > 1) {
-      // onQuantityChange(id, quantity - 1);
+      onQuantityChange(cartId, quantity - 1);
+      console.log(cartId, quantity, productId);
+      updateCarts(productId, cartId , quantity - 1);
     }
   };
 const router = useRouter();
@@ -82,10 +86,12 @@ const getCarts = async () => {
         const formattedItems: any[] = cartItems.map((item: any) => ({
           productId: Number(item.productId),
           name: item.name,
+          cartId: item.cartId,
           productImage: item.productImage,
           totalPrice: Number(item.totalPrice),
           quantity: Number(item.quantity),
-          size: item.size || 'N/A',
+          sizename: item.sizename || 'N/A',
+          colorname: item.colorname || 'N/A',
         }));
 
         setCartItems(formattedItems);
@@ -97,6 +103,21 @@ const getCarts = async () => {
       setCartItems([]);
     }
   };
+
+
+  const updateCarts = async (productId: number, cartId: number, quantity: number) =>{
+    const dataRespons = [{
+      "productId":productId,
+      "quantity":quantity,
+      "_id": cartId,
+    }]
+    const res = await fetchSingleUpdate(dataRespons);
+    try {
+      console.log(res);
+    } catch (error) {
+      console.error('Error updating cart:', error);
+      }
+  }
 
   useEffect(() => {
     getCarts();
@@ -118,13 +139,16 @@ const getCarts = async () => {
 
 
   const handleIncrement = () => {
-    // onQuantityChange(id, quantity + 1);
+    onQuantityChange(cartId, quantity + 1);
+   console.log(quantity + 1);
+   updateCarts(productId, cartId , quantity + 1)
+   
   };
 
   const handleQuantityInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newQuantity = parseInt(event.target.value);
     if (!isNaN(newQuantity) && newQuantity > 0) {
-      // onQuantityChange(id, newQuantity);
+      onQuantityChange(cartId, newQuantity);
     } else {
       // Handle invalid input (e.g., show an error message)
       console.error("Invalid quantity input");
@@ -139,10 +163,10 @@ const getCarts = async () => {
           {name}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Color: {color}
+          Color: {colorname}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Size: {size}
+          Size:  {sizename}
         </Typography>
         <Box sx={{ display: 'flex', alignItems: 'center', mt: 1, mb:1 }}>
           <IconButton aria-label="remove" size="small" onClick={handleDecrement}>
@@ -166,7 +190,7 @@ const getCarts = async () => {
         </Typography>
       </CardContent>
       <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-around', padding: 1}}>
-        <IconButton aria-label="delete" onClick={() => onRemove(cartId)}>
+        <IconButton aria-label="delete" onClick={() => onRemove(cartId, productId)}>
           <DeleteIcon />
         </IconButton>
       </Box>

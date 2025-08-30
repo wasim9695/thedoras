@@ -1,7 +1,8 @@
 "use client";
 import * as React from "react";
 import { useEffect, useState, useRef } from 'react';
-import { Box, Button, Container, Link, Paper, Stack, Typography } from "@mui/material";
+import { Box, Button, Container, Paper, Stack, Typography } from "@mui/material";
+import Link from 'next/link';
 import Image from "next/image";
 import { styled } from "@mui/material/styles";
 import ShoppingCart, { ShoppingCartHandle } from '../components/shoppingcart';
@@ -114,7 +115,7 @@ const getOfferBanner = async () => {
         <Stack direction={{ xs: "column", sm: "row" }} spacing={{ xs: 1, sm: 2, md: 4 }}>
          {offerBanner.slice(0, 4).map((product: any, index: any) => (
             <Item className="product-item" key={index}>
-              <Link href={`/product/${product._id}`} underline="none">
+              <Link href={`/productdetail/${product._id}`}>
                 <ImageContainer>
                   <Image
                     className="primary-image"
@@ -171,7 +172,7 @@ const getOfferBanner = async () => {
         >
          {offerBanner.slice(4, 8).map((product: any, index: any) => (
             <Item className="product-item" key={index}>
-              <Link href={`/product/${product._id}`} underline="none">
+              <Link href={`/productdetail/${product._id}`}>
                 <ImageContainer>
                   <Image
                     className="primary-image"

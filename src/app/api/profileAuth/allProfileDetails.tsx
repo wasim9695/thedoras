@@ -54,54 +54,24 @@ async function fetchJson(path: string, options: RequestInit = {}): Promise<any> 
  * Fetches all products from the /getTodayDeal endpoint.
  * @returns {Promise<any>} - A promise that resolves to the products data.
  */
-export const fetchProductsAll = (): Promise<any> =>
-  fetchJson('/getTodayDeal', {
+export const fetchGetProfileDetails = (): Promise<any> =>
+  fetchJson('/getUserProfile', {
+    method: 'GET',
+  });
+
+  export const fetchGetFetchDetails = (): Promise<any> =>
+  fetchJson('/getuserAddr', {
     method: 'GET',
   });
 
 
-  export const fetchProductsAllNewAr = (): Promise<any> =>
-  fetchJson('/getTodayNewArrivals', {
-    method: 'GET',
-  });
-/**
- * Fetches cart details from the /getCartDetails endpoint.
- * @returns {Promise<any>} - A promise that resolves to the cart data.
- */
-export const fetchCartsAll = (): Promise<any> =>
-  fetchJson('/getCartDetails', {
+  export const fetchLogout = (): Promise<any> =>
+  fetchJson('/logOut', {
     method: 'GET',
   });
 
-/**
- * Adds an item to the cart via the /addToCart endpoint.
- * @param data - The data to send with the request.
- * @returns {Promise<any>} - A promise that resolves to the response data.
- */
-export const fetchAddToCart = (data: any): Promise<any> =>
-  fetchJson('/addToCart', {
-    method: 'POST', // Changed to POST as adding to cart typically modifies server state
-    body: JSON.stringify(data),
-  });
+  
 
-
-  export const fetchProductListDetail = (data: any): Promise<any> =>
-  fetchJson(`/getProductListDetail/${data}`, {
-    method: 'GET', // Changed to POST as adding to cart typically modifies server state
-  });
-
-
-  export const fetchSingleUpdate = (data: any): Promise<any> =>
-  fetchJson('/singleupdate/', {
-    method: 'POST', // Changed to POST as adding to cart typically modifies server state
-    body: JSON.stringify(data),
-  });
-
-  export const fetchDeletes = (data: any): Promise<any> =>
-  fetchJson('/deleteCartProducts/', {
-    method: 'POST', // Changed to POST as adding to cart typically modifies server state
-    body: JSON.stringify(data),
-  });
 
 
 

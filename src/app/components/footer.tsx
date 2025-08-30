@@ -21,10 +21,11 @@ import EmailIcon from "@mui/icons-material/Email";
 import PhoneIcon from "@mui/icons-material/Phone";
 import SupportAgentIcon from "@mui/icons-material/SupportAgent";
 import InfoIcon from "@mui/icons-material/Info";
+import Link from "next/link";
 
 // Define a custom interface that extends ListItemProps with anchor props
 interface StyledListItemProps extends ListItemProps {
-  component?: "a"; // Specify the component type
+  component?: "a" | typeof Link; // Support both <a> and Next.js Link
   href?: string;
   target?: string;
   rel?: string;
@@ -97,9 +98,8 @@ const Footer = () => {
             ].map((item, index) => (
               <StyledListItem
                 key={index}
-                component="a"
+                component={Link}
                 href={item.url}
-                rel="noopener noreferrer"
               >
                 <ListItemIcon sx={{ color: "#ffffff", minWidth: "40px" }}>
                   {item.icon}
@@ -115,9 +115,9 @@ const Footer = () => {
           <SectionTitle variant="h6">Contact</SectionTitle>
           <List>
             {[
-              { icon: <EmailIcon />, text: "yourexample@email.com", url: "mailto:yourexample@email.com" },
-              { icon: <EmailIcon />, text: "example@email.com", url: "mailto:example@email.com" },
-              { icon: <PhoneIcon />, text: "+1 254 568-5479", url: "tel:+12545685479" },
+              { icon: <EmailIcon />, text: "Golf View Apartments Saket, South Delhi, New Delhi - 110017", url: "mailto:yourexample@email.com" },
+              { icon: <EmailIcon />, text: "alienagargi@gmail.com", url: "mailto:alienagargi@gmail.com" },
+              { icon: <PhoneIcon />, text: "+91 956046 1148", url: "tel:+919560461148" },
             ].map((item, index) => (
               <StyledListItem
                 key={index}
@@ -145,9 +145,8 @@ const Footer = () => {
             ].map((item, index) => (
               <StyledListItem
                 key={index}
-                component="a"
+                component={Link}
                 href={item.url}
-                rel="noopener noreferrer"
               >
                 <ListItemIcon sx={{ color: "#ffffff", minWidth: "40px" }}>
                   {item.icon}
@@ -174,7 +173,7 @@ const Footer = () => {
         }}
       >
         © {new Date().getFullYear()} Your Company. All rights reserved. |{" "}
-        <a href="/privacy">Privacy Policy</a> | <a href="/terms">Terms of Service</a>
+        <Link href="/privacy">Privacy Policy</Link> | <Link href="/terms">Terms of Service</Link>
       </Typography>
     </FooterContainer>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Box,
   Typography,
@@ -21,6 +21,7 @@ import {
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import Image from 'next/image';
 import { styled } from "@mui/material/styles";
+import ShoppingCart, { ShoppingCartHandle } from '../components/shoppingcart';
 import Link from 'next/link';
 import { fetchGetAllProducts } from '../api/bannerAll/banners';
 
@@ -78,6 +79,22 @@ const Collection: React.FC = () => {
   const [priceRange, setPriceRange] = useState<number[]>([50, 500]);
   const [currentPage, setCurrentPage] = useState(1);
   const [listProducts, setListProducts] = useState<any[]>([]);
+  const cartRef = useRef<ShoppingCartHandle>(null);
+
+
+  const addToCart = async (product:any) => {
+    try {
+      console.log(product);
+      if (cartRef.current) {
+      cartRef.current.handleAddToCart(product);
+    }
+
+    } catch (err) {
+      console.error("Error adding to cart:", err);
+      // setCartMessage("Failed to add product to cart");
+      // setTimeout(() => setCartMessage(null), 3000);
+    }
+  };
 
   const fetchProducts = async () => {
     try {
@@ -167,7 +184,7 @@ const Collection: React.FC = () => {
             >
               India Price The Dora
             </Typography>
-            
+            <ShoppingCart ref={cartRef} />
             <Breadcrumbs
               separator={<NavigateNextIcon fontSize="small" sx={{ color: '#fff' }} />}
               aria-label="breadcrumb"
@@ -300,7 +317,7 @@ const Collection: React.FC = () => {
               {paginatedProducts.map((product: any, index: number) => (
                 <Grid item xs={12} sm={6} md={3} key={index}>
                   <Item className="product-item">
-                    <Link href="/productdetail">
+                    <Link href={`/productdetail/${product._id}`}>
                       <ImageContainer>
                         <Image
                           className="product-image primary-image"
@@ -333,6 +350,7 @@ const Collection: React.FC = () => {
                       >
                         ₹{product?.totalPrice || "99.99"}
                       </Typography>
+                      </Link>
                       <Button
                         variant="contained"
                         sx={{
@@ -346,10 +364,11 @@ const Collection: React.FC = () => {
                             background: 'linear-gradient(45deg, #000000 30%, #333333 90%)',
                           },
                         }}
+                         onClick={() => addToCart(product)}
                       >
                         Buy Now
                       </Button>
-                    </Link>
+                    
                   </Item>
                 </Grid>
               ))}

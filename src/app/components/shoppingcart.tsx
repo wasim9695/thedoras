@@ -52,7 +52,7 @@ const router = useRouter();
         setCartItems(updatedItems);
         try {
             console.log(product);
-          await fetchAddToCart({ productId: product._id, quantity: 1 });
+          await fetchAddToCart({ productId: product._id, quantity: 1 , attri_size: product.attri_size, attri_color: product.attri_color });
         } catch (error) {
           console.error('Failed to add to cart:', error);
         }

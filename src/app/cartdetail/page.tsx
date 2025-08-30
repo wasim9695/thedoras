@@ -13,14 +13,15 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useRouter } from 'next/navigation';
-import { fetchCartsAll } from '../api/products/productsAll';
+import { fetchCartsAll, fetchDeletes } from '../api/products/productsAll';
 
 interface CartItemType {
   cartId: number;
   productImage: string;
+  productId: number;
   name: string;
-  color: string;
-  size: string;
+  colorname: string;
+  sizename: string;
   totalPrice: number;
   quantity: number;
 }
@@ -74,10 +75,12 @@ const CartDetails: React.FC = () => {
           const formattedItems: any[] = cartItems.map((item: any) => ({
             productId: Number(item.productId),
             name: item.name,
+            cartId: item.cartId,
             productImage: item.productImage,
             totalPrice: Number(item.totalPrice),
             quantity: Number(item.quantity),
-            size: item.size || 'N/A',
+            sizename: item.sizename || 'N/A',
+            colorname: item.colorname || 'N/A',
           }));
   
           setCartItems(formattedItems);
@@ -91,6 +94,19 @@ const CartDetails: React.FC = () => {
     };
   
    
+
+    const deletesCarts = async (productId: number, cartId: number, ) =>{
+        const dataRespons = {
+          "productId":productId,
+          "cartId": cartId,
+        }
+        const res = await fetchDeletes(dataRespons);
+        try {
+          console.log(res);
+        } catch (error) {
+          console.error('Error updating cart:', error);
+          }
+      }
   
     // const subtotal = cartItems.reduce(
     //   (acc, item) => acc + item.totalPrice * item.quantity,
@@ -105,14 +121,17 @@ const CartDetails: React.FC = () => {
       // });
     };
 
-  const handleRemoveFromCart = (id: string) => {
-    // setCartItems(cartItems.filter((item) => item.id !== id));
+  const handleRemoveFromCart = (cartId: number, productId: number) => {
+    setCartItems(cartItems.filter((item) => item.cartId !== cartId));
+    console.log(cartId, productId);
+    deletesCarts(productId, cartId);
   };
 
-  const handleQuantityChange = (id: string, newQuantity: number) => {
+  const handleQuantityChange = (cartId: number, newQuantity: number) => {
+    console.log(cartId, newQuantity);
     setCartItems(
       cartItems.map((item: any) =>
-        item.cartId === 1 ? { ...item, quantity: newQuantity } : item
+        item.cartId === cartId ? { ...item, quantity: newQuantity } : item
       )
     );
   };
@@ -149,13 +168,14 @@ const CartDetails: React.FC = () => {
           {cartItems.map((item) => (
             <CartItem
               productImage={item.productImage}
+              productId={item.productId}
               name={item.name}
-              color={item.color}
-              size={item.size}
+              colorname={item.colorname}
+              sizename={item.sizename}
               totalPrice={item.totalPrice}
               quantity={item.quantity}
               onRemove={handleRemoveFromCart}
-              onQuantityChange={handleQuantityChange} cartId={0}            />
+              onQuantityChange={handleQuantityChange} cartId={item.cartId}            />
           ))}
         </Box>
         <Box sx={{ flex: '2' }}>
@@ -165,7 +185,7 @@ const CartDetails: React.FC = () => {
                 SUBTOTAL:
               </Typography>
               <Typography variant="subtitle1" color="text.primary">
-                {/* (INR) ₹{subtotal.toLocaleString()} */}
+                (INR) ₹{subtotal.toLocaleString()}
               </Typography>
             </Box>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
