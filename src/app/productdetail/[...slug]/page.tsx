@@ -277,7 +277,7 @@ console.log(modifiedProduct);
 </Typography> */}
 
         <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
-          MRP: ₹ {product.price.toFixed(2)}
+          MRP: ₹ {product.price.toFixed(2)} &nbsp; <span style={{ textDecoration: "line-through", color:"#e04a4a" }}>₹ {product.price.toFixed(2)}</span>
         </Typography>
 
         {/* Size Selection */}

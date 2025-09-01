@@ -212,7 +212,7 @@ const logOuts = () =>{
     }}
   >
     <Badge 
-      badgeContent={totalCart?.cartDetails?.[0]?.totalQuantity || 0}
+      badgeContent={totalCart?.cartDetails?.[0]?.cartTotalRows || 0}
       color="error"
       overlap="circular"
       sx={{

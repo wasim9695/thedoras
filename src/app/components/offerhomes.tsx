@@ -141,7 +141,7 @@ const getOfferBanner = async () => {
                  {product?.description}
                 </Typography>
                 <Typography variant="h6" sx={{ color: "#ff5722", fontWeight: "bold" }}>
-                  ₹ {product?.totalPrice}
+                  ₹ {product?.totalPrice} &nbsp; <span style={{ textDecoration: "line-through", color:"#e04a4a" }}>₹ {product?.totalPrice}</span>
                 </Typography>
                 </Link>
                 <Button
@@ -198,7 +198,7 @@ const getOfferBanner = async () => {
                   {product?.description}
                 </Typography>
                 <Typography variant="h6" sx={{ color: "#ff5722", fontWeight: "bold" }}>
-                  ₹ {product?.totalPrice}
+                  ₹ {product?.totalPrice} &nbsp; <span style={{ textDecoration: "line-through", color:"#e04a4a" }}>₹ {product?.totalPrice}</span>
                 </Typography>
                  </Link>
                 <Button

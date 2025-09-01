@@ -15,6 +15,7 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import { styled } from '@mui/material/styles';
 import { useRouter } from 'next/navigation';
 import { fetchCartsAll, fetchSingleUpdate } from '../api/products/productsAll';
+import Link from 'next/link';
 
 interface CartItemProps {
   cartId: number;
@@ -157,7 +158,7 @@ const getCarts = async () => {
 
   return (
     <StyledCard>
-      <StyledCardMedia image={ productImage} title={name} />
+      <Link href={`/productdetail/${productId}`}><StyledCardMedia image={ productImage} title={name} /></Link>
       <CardContent sx={{ flex: '1 1 auto', padding: 2 }}>
         <Typography component="h3" variant="h6" color="text.primary" fontWeight="semibold">
           {name}
