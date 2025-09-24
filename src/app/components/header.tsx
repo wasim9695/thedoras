@@ -13,7 +13,7 @@ import {fetchCartsAll} from '../api/products/productsAll';
 
 const pathlogo = '/thedoralogo.png';
 const pathlogo2 = '/thedora second.png';
-const pages = ['HOME', 'NEW IN', 'WOMEN', 'COLLECTIONS', 'PRODUCTS', 'SALE', 'ABOUT US', 'CONTACT'];
+const pages = ['HOME', 'NEW IN', 'WOMEN', 'COLLECTIONS', 'ACCESSORIES', 'WORLD OF THE DORA', 'ABOUT US', 'CONTACT'];
 
 const ResponsiveAppBar = () => {
   const router = useRouter();

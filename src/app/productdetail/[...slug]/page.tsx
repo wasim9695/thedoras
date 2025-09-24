@@ -228,7 +228,8 @@ console.log(modifiedProduct);
       {/* Details Section */}
       <Box sx={{ flex: 1, paddingLeft: "40px" }}>
         <Typography variant="h5" sx={{ fontWeight: 600, mb: 1 }}>
-          {product.name} (User ID: {id})
+          {product.name} 
+          {/* (User ID: {id}) */}
         </Typography>
 
         <Typography sx={{ color: "gray", mb: 2 }}>{product.description}</Typography>
@@ -341,9 +342,9 @@ console.log(modifiedProduct);
         <Typography sx={{ color: "gray", mb: 2, mt: 5 }}>
           {product.longDescription}
         </Typography>
-        <Typography sx={{ color: "gray", mb: 2, mt: 5 }}>FABRIC : 100% Cotton Twill</Typography>
+        <Typography sx={{ color: "gray", mb: 2, mt: 5 }}>Material:  Pure Brass</Typography>
         <Typography sx={{ color: "gray", mb: 2, mt: 5 }}>
-          WASH & CARE : Dry Clean Only; Do Not Iron on Embellishments; Gentle Steaming Recommended
+          Approximate weight: 20 gm
         </Typography>
 
         {/* Size Chart Section */}
