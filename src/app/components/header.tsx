@@ -109,6 +109,7 @@ const logOuts = () =>{
             <SearchIcon sx={{ color: '#000', mr: 1 }} />
             <InputBase
               placeholder="Search..."
+              
               sx={{
                 flex: 1,
                 color: '#000',
