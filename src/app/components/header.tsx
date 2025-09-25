@@ -179,9 +179,9 @@ const logOuts = () =>{
     <MenuItem onClick={handleMenuClose} component={Link} href="/account">
       My Profile
     </MenuItem>
-    <MenuItem onClick={handleMenuClose} component={Link} href="/orders">
+    {/* <MenuItem onClick={handleMenuClose} component={Link} href="/orders">
       My Orders
-    </MenuItem>
+    </MenuItem> */}
     <MenuItem
       onClick={() => {
         logOuts();
