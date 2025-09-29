@@ -13,12 +13,15 @@ import {
   TableHead,
   TableRow,
   Paper,
+  IconButton,
 } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ReactImageMagnify from "react-image-magnify";
 import ShoppingCart, { ShoppingCartHandle } from '../../components/shoppingcart';
 import { useRouter, useParams } from "next/navigation";
 import { fetchProductListDetail } from "../../api/products/productsAll";
+import CustomOrderForm from '../../components/CustomOrderForm';
 
 
 interface Category {
@@ -242,7 +245,7 @@ const ProductDetailList: React.FC = () => {
                   },
                 }}
               >
-                Color: {colors}
+                {colors}
               </Button>
             )) : <Typography>No available</Typography>}
           </Box>
@@ -440,7 +443,7 @@ const ProductDetailList: React.FC = () => {
           overflowY: "auto",
         }}
       >
-        <Button
+        {/* <Button
           onClick={() => setSideFormOpen(false)}
           sx={{
             marginBottom: 2,
@@ -450,16 +453,25 @@ const ProductDetailList: React.FC = () => {
           variant="outlined"
         >
           Close
-        </Button>
+        </Button> */}
 
-        <Typography variant="h6" gutterBottom>
+        <IconButton
+                aria-label="close"
+                onClick={() => setSideFormOpen(false)}
+                sx={{ position: "absolute", top: 0, left: 2, zIndex:1 }}
+              >
+                <CloseIcon />
+              </IconButton>
+
+        {/* <Typography variant="h6" gutterBottom>
           Custom Side Form
-        </Typography>
+        </Typography> */}
 
         {/* Add your form fields here */}
-        <Typography>
+       {/* <Typography>
           This is where the custom form or content can go.
-        </Typography>
+        </Typography> */}
+       <CustomOrderForm/>
       </Box>
 
       {/* Optional overlay to close side form when clicking outside */}
