@@ -20,6 +20,7 @@ import ShoppingCart, { ShoppingCartHandle } from '../../components/shoppingcart'
 import { useRouter, useParams } from "next/navigation";
 import { fetchProductListDetail } from "../../api/products/productsAll";
 
+
 interface Category {
   _id: number;
   categoryName: string;
@@ -78,7 +79,6 @@ interface Product {
 
 const ProductDetailList: React.FC = () => {
   const params = useParams();
-  // slug might be undefined - handle properly
   const slug = params.slug as string[] | undefined;
   const id = slug ? slug[slug.length - 1] : undefined;
 
@@ -93,8 +93,8 @@ const ProductDetailList: React.FC = () => {
   const cartRef = useRef<ShoppingCartHandle>(null);
   const [openSizeChart, setOpenSizeChart] = useState<boolean>(false);
   const [openLegal, setOpenLegal] = useState<boolean>(false);
+  const [sideFormOpen, setSideFormOpen] = useState<boolean>(false); // State to handle side form open/close
 
-  // Fetch product detail by id
   const fetchProductDetails = async () => {
     if (!id) {
       setError("Product ID not found in URL");
@@ -131,27 +131,19 @@ const ProductDetailList: React.FC = () => {
     setMainImage(image);
   };
 
-  const handleAddToCartDetail = async (product:any) => {
+  const handleAddToCartDetail = async (product: any) => {
     try {
-      console.log(product, selectedColor, selectedSize);
-
-     const modifiedProduct = {
-  ...product,
-  attri_size: selectedSize,
-  attri_color: selectedColor,
-    // Replace totalPrice with 'Free'
-};
-
-console.log(modifiedProduct);
+      const modifiedProduct = {
+        ...product,
+        attri_size: selectedSize,
+        attri_color: selectedColor,
+      };
 
       if (cartRef.current) {
-      cartRef.current.handleAddToCart(modifiedProduct);
-    }
-
+        cartRef.current.handleAddToCart(modifiedProduct);
+      }
     } catch (err) {
       console.error("Error adding to cart:", err);
-      // setCartMessage("Failed to add product to cart");
-      // setTimeout(() => setCartMessage(null), 3000);
     }
   };
 
@@ -172,290 +164,320 @@ console.log(modifiedProduct);
   }
 
   const sizes = product.attributes
-  .filter(attr => attr.name.toLowerCase() === "size")
-  .map(attr => attr.type);
+    .filter(attr => attr.name.toLowerCase() === "size")
+    .map(attr => attr.type);
 
   const color = product.attributes
-  .filter(attr => attr.name.toLowerCase() === "color")
-  .map(attr => attr.type);
+    .filter(attr => attr.name.toLowerCase() === "color")
+    .map(attr => attr.type);
 
   return (
-    <Box sx={{ maxWidth: "1600px", margin: "auto", padding: "40px", display: "flex" }}>
-      {/* Image Section */}
-      <Box sx={{ flex: 1, display: "flex", gap: 2 }}>
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-          {product.gallaryImages.map((image, index) => (
-            <Box
-              key={index}
-              component="img"
-              src={image}
-              alt={`Thumbnail ${index + 1}`}
-              sx={{
-                width: "80px",
-                height: "80px",
-                objectFit: "cover",
-                cursor: "pointer",
-                border: mainImage === image ? "2px solid black" : "1px solid gray",
-                borderRadius: "4px",
+    <>
+      <Box sx={{ maxWidth: "1600px", margin: "auto", padding: "40px", display: "flex" }}>
+        {/* Image Section */}
+        <Box sx={{ flex: 1, display: "flex", gap: 2 }}>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            {product.gallaryImages.map((image, index) => (
+              <Box
+                key={index}
+                component="img"
+                src={image}
+                alt={`Thumbnail ${index + 1}`}
+                sx={{
+                  width: "80px",
+                  height: "80px",
+                  objectFit: "cover",
+                  cursor: "pointer",
+                  border: mainImage === image ? "2px solid black" : "1px solid gray",
+                  borderRadius: "4px",
+                }}
+                onClick={() => handleThumbnailClick(image)}
+              />
+            ))}
+          </Box>
+          <ShoppingCart ref={cartRef} />
+          <Box sx={{ flex: 1, display: "flex", justifyContent: "center" }}>
+            <ReactImageMagnify
+              {...{
+                smallImage: {
+                  alt: product.name || "Product Image",
+                  isFluidWidth: true,
+                  src: mainImage,
+                },
+                largeImage: {
+                  src: mainImage,
+                  width: 1200,
+                  height: 1600,
+                },
+                enlargedImageContainerDimensions: {
+                  width: "150%",
+                  height: "150%",
+                },
               }}
-              onClick={() => handleThumbnailClick(image)}
             />
-          ))}
+          </Box>
         </Box>
-<ShoppingCart ref={cartRef} />
-        <Box sx={{ flex: 1, display: "flex", justifyContent: "center" }}>
-          <ReactImageMagnify
-            {...{
-              smallImage: {
-                alt: product.name || "Product Image",
-                isFluidWidth: true,
-                src: mainImage,
-              },
-              largeImage: {
-                src: mainImage,
-                width: 1200,
-                height: 1600,
-              },
-              enlargedImageContainerDimensions: {
-                width: "150%",
-                height: "150%",
-              },
-            }}
-          />
+
+        {/* Details Section */}
+        <Box sx={{ flex: 1, paddingLeft: "40px" }}>
+          <Typography variant="h5" sx={{ fontWeight: 600, mb: 1 }}>
+            {product.name}
+          </Typography>
+
+          <Typography sx={{ color: "gray", mb: 2 }}>{product.description}</Typography>
+
+          <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
+            {color.length > 0 ? color.map((colors) => (
+              <Button
+                key={colors}
+                variant={selectedColor === colors ? "contained" : "outlined"}
+                onClick={() => setSelectedColor(colors)}
+                sx={{
+                  backgroundColor: selectedColor === colors ? "black" : "transparent",
+                  color: selectedColor === colors ? "white" : "black",
+                  borderColor: "black",
+                  "&:hover": {
+                    backgroundColor: "black",
+                    color: "white",
+                  },
+                }}
+              >
+                Color: {colors}
+              </Button>
+            )) : <Typography>No available</Typography>}
+          </Box>
+
+          <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
+            MRP: ₹ {product.price.toFixed(2)} &nbsp; <span style={{ textDecoration: "line-through", color: "#e04a4a" }}>₹ {product.price.toFixed(2)}</span>
+          </Typography>
+
+          {/* Size Selection */}
+          <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
+            {sizes.length > 0 ? sizes.map((size) => (
+              <Button
+                key={size}
+                variant={selectedSize === size ? "contained" : "outlined"}
+                onClick={() => setSelectedSize(size)}
+                sx={{
+                  backgroundColor: selectedSize === size ? "black" : "transparent",
+                  color: selectedSize === size ? "white" : "black",
+                  borderColor: "black",
+                  "&:hover": {
+                    backgroundColor: "black",
+                    color: "white",
+                  },
+                }}
+              >
+                {size}
+              </Button>
+            )) : <Typography>No sizes available</Typography>}
+
+            <Button
+              onClick={() => setSideFormOpen(true)} // Open side form on click
+              sx={{
+                backgroundColor: "black",
+                color: "white",
+                borderColor: "black",
+                "&:hover": {
+                  backgroundColor: "black",
+                  color: "white",
+                },
+              }}
+            >
+              CUSTOM
+            </Button>
+          </Box>
+
+          <Box sx={{ display: "flex", gap: 2, mb: 4 }}>
+            <Button
+              onClick={() => handleAddToCartDetail(product)}
+              variant="contained"
+              sx={{ padding: "10px 30px", backgroundColor: "black", "&:hover": { backgroundColor: "#333" } }}
+            >
+              ADD TO CART
+            </Button>
+
+            <Button variant="contained" sx={{ padding: "10px 30px", backgroundColor: "black", "&:hover": { backgroundColor: "#333" } }}>
+              BUY NOW
+            </Button>
+
+            <Button variant="outlined" sx={{ padding: "10px 30px" }}>
+              ENQUIRE
+            </Button>
+          </Box>
+
+          <Typography sx={{ color: "gray", mb: 2, mt: 5 }}>
+            {product.longDescription}
+          </Typography>
+          <Typography sx={{ color: "gray", mb: 2, mt: 5 }}>Material: Pure Brass</Typography>
+          <Typography sx={{ color: "gray", mb: 2, mt: 5 }}>
+            Approximate weight: 20 gm
+          </Typography>
+
+          {/* Size Chart Section */}
+          <Box sx={{ mb: 3 }}>
+            <Button
+              fullWidth
+              onClick={() => setOpenSizeChart(!openSizeChart)}
+              endIcon={
+                <ExpandMoreIcon
+                  sx={{ transform: openSizeChart ? "rotate(180deg)" : "rotate(0deg)", transition: "0.3s" }}
+                />
+              }
+              sx={{
+                textAlign: "left",
+                justifyContent: "space-between",
+                backgroundColor: "#f5f5f5",
+                padding: "10px 15px",
+                fontWeight: "bold",
+                color: "black",
+              }}
+            >
+              Size Chart
+            </Button>
+            <Collapse in={openSizeChart} timeout="auto" unmountOnExit>
+              <TableContainer component={Paper} sx={{ mt: 1 }}>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>SIZE</TableCell>
+                      <TableCell>S</TableCell>
+                      <TableCell>M</TableCell>
+                      <TableCell>L</TableCell>
+                      <TableCell>XL</TableCell>
+                      <TableCell>XXL</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {[
+                      ["UK", 8, 10, 12, 14, 16],
+                      ["EU", 36, 38, 40, 42, 44],
+                      ["US", 6, 8, 10, 12, 14],
+                      ["BUST", 34, 36, 38, 40, 42],
+                      ["WAIST", 26, 28, 30, 32, 34],
+                      ["HIPS", 36, 38, 40, 42, 44],
+                    ].map((row, index) => (
+                      <TableRow key={index}>
+                        {row.map((cell, i) => (
+                          <TableCell key={i}>{cell}</TableCell>
+                        ))}
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Collapse>
+
+            {/* Legal Section */}
+            <Button
+              fullWidth
+              onClick={() => setOpenLegal(!openLegal)}
+              endIcon={
+                <ExpandMoreIcon
+                  sx={{ transform: openLegal ? "rotate(180deg)" : "rotate(0deg)", transition: "0.3s" }}
+                />
+              }
+              sx={{
+                textAlign: "left",
+                justifyContent: "space-between",
+                backgroundColor: "#f5f5f5",
+                padding: "10px 15px",
+                fontWeight: "bold",
+                color: "black",
+              }}
+            >
+              Legal
+            </Button>
+            <Collapse in={openLegal} timeout="auto" unmountOnExit>
+              <TableContainer component={Paper} sx={{ mt: 1 }}>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>SIZE</TableCell>
+                      <TableCell>S</TableCell>
+                      <TableCell>M</TableCell>
+                      <TableCell>L</TableCell>
+                      <TableCell>XL</TableCell>
+                      <TableCell>XXL</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {[
+                      ["UK", 8, 10, 12, 14, 16],
+                      ["EU", 36, 38, 40, 42, 44],
+                      ["US", 6, 8, 10, 12, 14],
+                      ["BUST", 34, 36, 38, 40, 42],
+                      ["WAIST", 26, 28, 30, 32, 34],
+                      ["HIPS", 36, 38, 40, 42, 44],
+                    ].map((row, index) => (
+                      <TableRow key={index}>
+                        {row.map((cell, i) => (
+                          <TableCell key={i}>{cell}</TableCell>
+                        ))}
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Collapse>
+          </Box>
         </Box>
       </Box>
 
-      {/* Details Section */}
-      <Box sx={{ flex: 1, paddingLeft: "40px" }}>
-        <Typography variant="h5" sx={{ fontWeight: 600, mb: 1 }}>
-          {product.name} 
-          {/* (User ID: {id}) */}
+      {/* Side form overlay and drawer */}
+      <Box
+        sx={{
+          position: "fixed",
+          top: 0,
+          right: sideFormOpen ? 0 : "-400px", // Slide in/out from right
+          height: "100vh",
+          width: "400px",
+          backgroundColor: "white",
+          boxShadow: "-5px 0 15px rgba(0,0,0,0.3)",
+          transition: "right 0.3s ease-in-out",
+          zIndex: 1300,
+          padding: "20px",
+          overflowY: "auto",
+        }}
+      >
+        <Button
+          onClick={() => setSideFormOpen(false)}
+          sx={{
+            marginBottom: 2,
+            borderColor: "black",
+            color: "black"
+          }}
+          variant="outlined"
+        >
+          Close
+        </Button>
+
+        <Typography variant="h6" gutterBottom>
+          Custom Side Form
         </Typography>
 
-        <Typography sx={{ color: "gray", mb: 2 }}>{product.description}</Typography>
-
-
-
-<Box sx={{ display: "flex", gap: 2, mb: 3 }}>
-          {/* You might want to dynamically generate sizes from product attributes */}
-          {/* {["XS", "S", "M", "L", "XL", "CUSTOM"].map((size) => ( */}
-          {color.length > 0 ? color.map((colors, index) => (
-            <Button
-              key={colors}
-              variant={selectedSize === colors ? "contained" : "outlined"}
-              onClick={() => setSelectedColor(colors)}
-              sx={{
-                backgroundColor: selectedSize === colors ? "black" : "transparent",
-                color: selectedSize === colors ? {colors} : {colors},
-                borderColor: "black",
-                "&:hover": {
-                  backgroundColor: "black",
-                  color: "white",
-                },
-              }}
-            >
-             Color: {colors}
-            </Button>
-         )) : <Typography>No  available</Typography>}
-
-
-      
-        </Box>
-
-
-        {/* <Typography sx={{ color: "gray", mb: 3 }}>
-  Color: {product.attributes
-    .filter(attr => attr.name.toLowerCase() === "color")
-    .map(attr => attr.type)
-    .join(", ") || "N/A"}
-</Typography> */}
-
-{/* <Typography sx={{ color: "gray", mb: 3 }}>
-  Size: {product.attributes
-    .filter(attr => attr.name.toLowerCase() === "size")
-    .map(attr => attr.type)
-    .join(", ") || "N/A"}
-</Typography> */}
-
-        <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
-          MRP: ₹ {product.price.toFixed(2)} &nbsp; <span style={{ textDecoration: "line-through", color:"#e04a4a" }}>₹ {product.price.toFixed(2)}</span>
+        {/* Add your form fields here */}
+        <Typography>
+          This is where the custom form or content can go.
         </Typography>
-
-        {/* Size Selection */}
-        <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
-          {/* You might want to dynamically generate sizes from product attributes */}
-          {/* {["XS", "S", "M", "L", "XL", "CUSTOM"].map((size) => ( */}
-          {sizes.length > 0 ? sizes.map((size, index) => (
-            <Button
-              key={size}
-              variant={selectedSize === size ? "contained" : "outlined"}
-              onClick={() => setSelectedSize(size)}
-              sx={{
-                backgroundColor: selectedSize === size ? "black" : "transparent",
-                color: selectedSize === size ? "white" : "black",
-                borderColor: "black",
-                "&:hover": {
-                  backgroundColor: "black",
-                  color: "white",
-                },
-              }}
-            >
-              {size}
-            </Button>
-         )) : <Typography>No sizes available</Typography>}
-
-
-         <Button
-              sx={{
-                backgroundColor:  "black",
-                color:"white",
-                borderColor: "black",
-                "&:hover": {
-                  backgroundColor: "black",
-                  color: "white",
-                },
-              }}
-            >
-             CUSTOM
-            </Button>
-        </Box>
-
-        <Box sx={{ display: "flex", gap: 2, mb: 4 }}>
-          <Button
-            onClick={() => handleAddToCartDetail(product)}
-            variant="contained"
-            sx={{ padding: "10px 30px", backgroundColor: "black", "&:hover": { backgroundColor: "#333" } }}
-          >
-            ADD TO CART
-          </Button>
-
-          <Button variant="contained" sx={{ padding: "10px 30px", backgroundColor: "black", "&:hover": { backgroundColor: "#333" } }}>
-            BUY NOW
-          </Button>
-
-          <Button variant="outlined" sx={{ padding: "10px 30px" }}>
-            ENQUIRE
-          </Button>
-        </Box>
-
-        {/* Example additional info - replace or enhance as needed */}
-        <Typography sx={{ color: "gray", mb: 2, mt: 5 }}>
-          {product.longDescription}
-        </Typography>
-        <Typography sx={{ color: "gray", mb: 2, mt: 5 }}>Material:  Pure Brass</Typography>
-        <Typography sx={{ color: "gray", mb: 2, mt: 5 }}>
-          Approximate weight: 20 gm
-        </Typography>
-
-        {/* Size Chart Section */}
-        <Box sx={{ mb: 3 }}>
-          <Button
-            fullWidth
-            onClick={() => setOpenSizeChart(!openSizeChart)}
-            endIcon={
-              <ExpandMoreIcon
-                sx={{ transform: openSizeChart ? "rotate(180deg)" : "rotate(0deg)", transition: "0.3s" }}
-              />
-            }
-            sx={{
-              textAlign: "left",
-              justifyContent: "space-between",
-              backgroundColor: "#f5f5f5",
-              padding: "10px 15px",
-              fontWeight: "bold",
-              color: "black",
-            }}
-          >
-            Size Chart
-          </Button>
-          <Collapse in={openSizeChart} timeout="auto" unmountOnExit>
-            <TableContainer component={Paper} sx={{ mt: 1 }}>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>SIZE</TableCell>
-                    <TableCell>S</TableCell>
-                    <TableCell>M</TableCell>
-                    <TableCell>L</TableCell>
-                    <TableCell>XL</TableCell>
-                    <TableCell>XXL</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {[
-                    ["UK", 8, 10, 12, 14, 16],
-                    ["EU", 36, 38, 40, 42, 44],
-                    ["US", 6, 8, 10, 12, 14],
-                    ["BUST", 34, 36, 38, 40, 42],
-                    ["WAIST", 26, 28, 30, 32, 34],
-                    ["HIPS", 36, 38, 40, 42, 44],
-                  ].map((row, index) => (
-                    <TableRow key={index}>
-                      {row.map((cell, i) => (
-                        <TableCell key={i}>{cell}</TableCell>
-                      ))}
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Collapse>
-
-          {/* Legal Section */}
-          <Button
-            fullWidth
-            onClick={() => setOpenLegal(!openLegal)}
-            endIcon={
-              <ExpandMoreIcon
-                sx={{ transform: openLegal ? "rotate(180deg)" : "rotate(0deg)", transition: "0.3s" }}
-              />
-            }
-            sx={{
-              textAlign: "left",
-              justifyContent: "space-between",
-              backgroundColor: "#f5f5f5",
-              padding: "10px 15px",
-              fontWeight: "bold",
-              color: "black",
-            }}
-          >
-            Legal
-          </Button>
-          <Collapse in={openLegal} timeout="auto" unmountOnExit>
-            <TableContainer component={Paper} sx={{ mt: 1 }}>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>SIZE</TableCell>
-                    <TableCell>S</TableCell>
-                    <TableCell>M</TableCell>
-                    <TableCell>L</TableCell>
-                    <TableCell>XL</TableCell>
-                    <TableCell>XXL</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {[
-                    ["UK", 8, 10, 12, 14, 16],
-                    ["EU", 36, 38, 40, 42, 44],
-                    ["US", 6, 8, 10, 12, 14],
-                    ["BUST", 34, 36, 38, 40, 42],
-                    ["WAIST", 26, 28, 30, 32, 34],
-                    ["HIPS", 36, 38, 40, 42, 44],
-                  ].map((row, index) => (
-                    <TableRow key={index}>
-                      {row.map((cell, i) => (
-                        <TableCell key={i}>{cell}</TableCell>
-                      ))}
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Collapse>
-        </Box>
       </Box>
-    </Box>
+
+      {/* Optional overlay to close side form when clicking outside */}
+      {sideFormOpen && (
+        <Box
+          onClick={() => setSideFormOpen(false)}
+          sx={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            backgroundColor: "rgba(0,0,0,0.4)",
+            zIndex: 1200,
+          }}
+        />
+      )}
+    </>
   );
 };
 
