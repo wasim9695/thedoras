@@ -83,7 +83,20 @@ const logOuts = () =>{
         {/* Top centered logo */}
         <Box sx={{ display: 'flex', justifyContent: 'center', pt: 2 }}>
           <motion.div whileHover={{ scale: 1.1 }} style={{ cursor: "pointer" }} onClick={onpageHome}>
-            <Image src={pathlogo2} alt="top logo" width={200} height={200} style={{ borderRadius: '0%' }} />
+            {/* <Image src={pathlogo2} alt="top logo" width={200} height={200} style={{ borderRadius: '0%' }} /> */}
+            <Typography
+  variant="h5"
+  sx={{
+    fontWeight: 700,
+    letterSpacing: 1.5,
+    textTransform: 'uppercase',
+    color: '#1a1a1a',
+    fontFamily: 'Poppins, sans-serif',
+  }}
+>
+  THE DORA
+</Typography>
+
           </motion.div>
         </Box>
 

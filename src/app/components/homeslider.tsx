@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import {
   Box,
   Button,
-  Container,
   CssBaseline,
   Grid,
   Typography,
@@ -13,6 +12,11 @@ import {
 import Image from "next/image";
 import Link from "next/link"; // Added for linking to pathUrl
 import { keyframes } from "@mui/system";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Pagination, Navigation } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/pagination";
+import "swiper/css/navigation";
 import { HomeSwiperMain } from "../components";
 import { fetchLeftBanner, fetchRightBanner, fetchBottomTwoBanner } from "../api/bannerAll/banners";
 
@@ -34,8 +38,6 @@ interface BannerResponse {
   message: string;
   data: BannerData[];
 }
-
-const imgss1 = "/imgs2.jpg";
 
 // Define keyframe animations
 const fadeIn = keyframes`
@@ -62,17 +64,16 @@ const holographicShine = keyframes`
 `;
 
 const HomeSlider: React.FC = () => {
-  const [leftBanner, setLeftBanner] = useState<BannerData | null>(null);
+  const [leftBanners, setLeftBanners] = useState<BannerData[]>([]);
   const [rightBanner, setRightBanner] = useState<BannerData[]>([]);
- const [bottomBanners, setBottomBanners] = useState<BannerData[]>([]);
+  const [bottomBanners, setBottomBanners] = useState<BannerData[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   const getBanner = async () => {
     try {
       const bannerData: BannerResponse = await fetchLeftBanner();
-      // Use the first banner from the data array
       if (bannerData.data && bannerData.data.length > 0) {
-        setLeftBanner(bannerData.data[0]);
+        setLeftBanners(bannerData.data);
       } else {
         setError("No banner data available");
       }
@@ -83,62 +84,163 @@ const HomeSlider: React.FC = () => {
   };
 
   const getRightBanner = async () => {
-  try {
-    const bannerData = await fetchRightBanner();
-    if (bannerData.data && bannerData.data.length > 0) {
-      setRightBanner(bannerData.data); // set as array
-    } else {
+    try {
+      const bannerData = await fetchRightBanner();
+      if (bannerData.data && bannerData.data.length > 0) {
+        setRightBanner(bannerData.data);
+      } else {
+        setRightBanner([]);
+        setError("No right banner data available");
+      }
+    } catch (err) {
+      setError("Failed to load right banners");
       setRightBanner([]);
-      setError("No right banner data available");
     }
-  } catch (err) {
-    setError("Failed to load right banners");
-    setRightBanner([]);
-  }
-};
+  };
 
-
-const getBottomBanners = async () => {
-  try {
-    const bannerData: BannerResponse = await fetchBottomTwoBanner();
-    if (bannerData.data && bannerData.data.length > 0) {
-      setBottomBanners(bannerData.data);
+  const getBottomBanners = async () => {
+    try {
+      const bannerData: BannerResponse = await fetchBottomTwoBanner();
+      if (bannerData.data && bannerData.data.length > 0) {
+        setBottomBanners(bannerData.data);
+      }
+    } catch (err) {
+      // Optionally handle error
     }
-  } catch (err) {
-    // Optionally handle error
-  }
-};
+  };
 
   useEffect(() => {
     getBanner();
     getRightBanner();
-     getBottomBanners();
+    getBottomBanners();
   }, []);
 
   return (
     <>
       <CssBaseline />
-      <Container
-        maxWidth="xl"
+      <Box
         sx={{
           mt: 0.3,
           fontFamily: "Roboto, sans-serif",
+          width: "100vw",
+          mx: "calc(-50vw + 50%)",
         }}
       >
         <Box sx={{ flexGrow: 1 }}>
           <Grid container spacing={2}>
             <Grid
               item
-              xs={7}
+              xs={12}
               sx={{ animation: `${fadeIn} 1s ease-out`, position: "relative" }}
             >
               {error ? (
                 <Typography color="error">{error}</Typography>
-              ) : leftBanner ? (
-                <>
+              ) : leftBanners.length > 0 ? (
+                <Swiper
+                  modules={[Autoplay, Pagination, Navigation]}
+                  spaceBetween={0}
+                  slidesPerView={1}
+                  autoplay={{ delay: 5000, disableOnInteraction: false }}
+                  pagination={{ clickable: true }}
+                  navigation={{
+                    nextEl: ".swiper-button-next",
+                    prevEl: ".swiper-button-prev",
+                  }}
+                  style={{ height: "720px" }}
+                  loop
+                >
+                  {leftBanners.map((banner) => (
+                    <SwiperSlide key={banner.id}>
+                      <Box sx={{ position: "relative", width: "100%", height: "100%" }}>
+                        <Image
+                          src={banner.imageUrl}
+                          alt={banner.altText}
+                          fill
+                          sizes="100vw"
+                          style={{
+                            objectFit: "cover",
+                            animation: `${holographicShine} 3s infinite`,
+                          }}
+                        />
+                        <Box
+                          sx={{
+                            position: "absolute",
+                            top: "50%",
+                            left: "50%",
+                            transform: "translate(-50%, -50%)",
+                            color: "white",
+                            textAlign: "center",
+                            bgcolor: "rgba(0, 0, 0, 0.5)",
+                            p: 2,
+                            borderRadius: 2,
+                            maxWidth: "90%",
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <Typography variant="h4" fontWeight="bold" mb={1}>
+                            {banner.heading}
+                          </Typography>
+                          <Typography variant="body1" mb={2}>
+                            {banner.subheading}
+                          </Typography>
+                          <Link
+                            href={`/shop/${banner.pathUrl}/${banner.categoriesId}`}
+                            passHref
+                            legacyBehavior
+                          >
+                            <Button
+                              variant="contained"
+                              component="a"
+                              sx={{
+                                background: "#ba9e75",
+                                "&:hover": {
+                                  background: "#a78b63",
+                                  transform: "scale(1.05)",
+                                  transition: "all 0.3s ease",
+                                },
+                              }}
+                            >
+                              Shop Now
+                            </Button>
+                          </Link>
+                        </Box>
+                      </Box>
+                    </SwiperSlide>
+                  ))}
+                  <div className="swiper-button-next"></div>
+                  <div className="swiper-button-prev"></div>
+                </Swiper>
+              ) : (
+                <Typography>Loading banner...</Typography>
+              )}
+            </Grid>
+          </Grid>
+        </Box>
+      </Box>
+
+      <HomeSwiperMain />
+
+      <Box
+        className="secondGried"
+        sx={{ mb: 5, width: "100vw", mx: "calc(-50vw + 50%)" }}
+      >
+        <Box sx={{ flexGrow: 1 }}>
+          <Grid container spacing={2}>
+            {bottomBanners.length > 0 ? (
+              bottomBanners.slice(0, 2).map((banner) => (
+                <Grid
+                  key={banner.id}
+                  item
+                  xs={3}
+                  sx={{ animation: `${fadeIn} 1s ease-out 0.5s`, position: "relative" }}
+                >
                   <Image
-                    src={leftBanner.imageUrl}
-                    alt={leftBanner.altText}
+                    className="secondImg"
+                    src={banner.imageUrl}
+                    alt={banner.altText}
                     width={1080}
                     height={720}
                     style={{ animation: `${holographicShine} 3s infinite` }}
@@ -149,310 +251,109 @@ const getBottomBanners = async () => {
                       top: "50%",
                       left: "50%",
                       transform: "translate(-50%, -50%)",
-                      color: "white",
                       textAlign: "center",
-                      bgcolor: "rgba(0, 0, 0, 0.5)",
-                      p: 2,
-                      borderRadius: 2,
-                      maxWidth: "90%",
+                      color: "white",
                       display: "flex",
                       flexDirection: "column",
                       alignItems: "center",
                       justifyContent: "center",
                     }}
                   >
-                    <Typography variant="h4" fontWeight="bold" mb={1}>
-                      {leftBanner.heading}
-                    </Typography>
-                    <Typography variant="body1" mb={2}>
-                      {leftBanner.subheading}
-                    </Typography>
-                   <Link
-  href={`/shop/${leftBanner.pathUrl}/${leftBanner.categoriesId}`}
-  passHref
-  legacyBehavior
->
-  <Button
-    variant="contained"
-    component="a"
-    sx={{
-      background: "#ba9e75",
-      "&:hover": {
-        background: "#a78b63",
-        transform: "scale(1.05)",
-        transition: "all 0.3s ease",
-      },
-    }}
-  >
-    Shop Now
-  </Button>
-</Link>
+                    <Box sx={{ fontSize: "2rem", fontWeight: "bold" }}>
+                      {banner.heading}
+                    </Box>
+                    <Box sx={{ fontSize: "1.2rem" }}>{banner.subheading}</Box>
+                    <Link
+                      href={`/shop/${banner.pathUrl}/${banner.categoriesId}`}
+                      passHref
+                      legacyBehavior
+                    >
+                      <Button
+                        variant="contained"
+                        sx={{
+                          mt: 2,
+                          backgroundColor: "black",
+                          color: "white",
+                          "&:hover": {
+                            backgroundColor: "#333",
+                            transform: "scale(1.05)",
+                            transition: "all 0.3s ease",
+                          },
+                        }}
+                      >
+                        EXPLORE NOW
+                      </Button>
+                    </Link>
                   </Box>
-                </>
-              ) : (
-                <Typography>Loading banner...</Typography>
-              )}
-            </Grid>
+                </Grid>
+              ))
+            ) : (
+              <Typography>Loading banners...</Typography>
+            )}
 
-             {error ? (
-    <Typography color="error">{error}</Typography>
-  ) : rightBanner && rightBanner.length > 0 ? (
-    rightBanner.map((banner) => (
-            <Grid
-              item
-              xs={2.5}
-              sx={{
-                animation: `${fadeIn} 1s ease-out 0.5s`,
-                position: "relative",
-              }}
-            >
-               
-    
-        <Image
-          className="secondImg"
-          src={banner.imageUrl}
-          alt={banner.altText || "Secondary banner"}
-           width={1080}
-                height={720}
-                style={{ height: "92%", animation: `${holographicShine} 3s infinite` }}
-        />
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            color: "white",
-            textAlign: "center",
-            bgcolor: "rgba(0, 0, 0, 0.5)",
-            p: 2,
-            borderRadius: 2,
-            maxWidth: "90%",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Typography variant="h4" fontWeight="bold" mb={1}>
-            {banner.heading || "New Collection"}
-          </Typography>
-          <Typography variant="body1" mb={2}>
-            {banner.subheading || "Discover our latest fashion arrivals"}
-          </Typography>
-          <Link
-            href={`/shop/${banner.pathUrl}/${banner.categoriesId}`}
-            passHref
-            legacyBehavior
-          >
-            <Button
-              variant="contained"
-              component="a"
-              sx={{
-                background: "#ba9e75",
-                "&:hover": {
-                  background: "#a78b63",
-                  transform: "scale(1.05)",
-                  transition: "all 0.3s ease",
-                },
-              }}
-            >
-              Shop Now
-            </Button>
-          </Link>
-        </Box>
-    
-    
-            </Grid>
-             ))
-  ) : (
-    <Typography>Loading banner...</Typography>
-  )}
-            {/* <Grid
-              item
-              xs={2.5}
-              sx={{ animation: `${fadeIn} 1s ease-out 1s`, position: "relative" }}
-            >
-              <Image
-                className="secondImg"
-                src="https://sakshigirri.com/cdn/shop/files/preview_images/cd8da969291f4aadbc2f51c4e0231233.thumbnail.0000000000_360x.jpg?v=1714636716"
-                alt="Secondary banner"
-                width={1080}
-                height={720}
-                style={{ height: "92%", animation: `${holographicShine} 3s infinite` }}
-              />
-              <Box
-                sx={{
-                  position: "absolute",
-                  top: "50%",
-                  left: "50%",
-                  transform: "translate(-50%, -50%)",
-                  color: "white",
-                  textAlign: "center",
-                  bgcolor: "rgba(0, 0, 0, 0.5)",
-                  p: 2,
-                  borderRadius: 2,
-                  maxWidth: "90%",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Typography variant="h4" fontWeight="bold" mb={1}>
-                  New Collection
-                </Typography>
-                <Typography variant="body1" mb={2}>
-                  Discover our latest fashion arrivals
-                </Typography>
-                <Button
-                  variant="contained"
-                  sx={{
-                    background: "#ba9e75",
-                    "&:hover": {
-                      background: "#a78b63",
-                      transform: "scale(1.05)",
-                      transition: "all 0.3s ease",
-                    },
-                  }}
+            {bottomBanners.length > 0 ? (
+              bottomBanners.slice(2, 3).map((banner) => (
+                <Grid
+                  key={banner.id}
+                  item
+                  xs={6}
+                  sx={{ animation: `${fadeIn} 1s ease-out 1.5s`, position: "relative" }}
                 >
-                  Shop Now
-                </Button>
-              </Box>
-            </Grid> */}
+                  <Image
+                    src={banner.imageUrl}
+                    alt={banner.altText}
+                    width={1080}
+                    height={720}
+                    style={{ animation: `${holographicShine} 3s infinite` }}
+                  />
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      top: "50%",
+                      left: "50%",
+                      transform: "translate(-50%, -50%)",
+                      textAlign: "center",
+                      color: "white",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Box sx={{ fontSize: "2rem", fontWeight: "bold" }}>
+                      {banner.heading}
+                    </Box>
+                    <Box sx={{ fontSize: "1.2rem" }}>{banner.subheading}</Box>
+                    <Link
+                      href={`/shop/${banner.pathUrl}/${banner.categoriesId}`}
+                      passHref
+                      legacyBehavior
+                    >
+                      <Button
+                        variant="contained"
+                        sx={{
+                          mt: 2,
+                          backgroundColor: "black",
+                          color: "white",
+                          "&:hover": {
+                            backgroundColor: "#333",
+                            transform: "scale(1.05)",
+                            transition: "all 0.3s ease",
+                          },
+                        }}
+                      >
+                        EXPLORE NOW
+                      </Button>
+                    </Link>
+                  </Box>
+                </Grid>
+              ))
+            ) : (
+              <Typography>Loading banners...</Typography>
+            )}
           </Grid>
         </Box>
-      </Container>
-      <HomeSwiperMain />
-      <Container className="secondGried" maxWidth="xl" sx={{ mb: 5 }}>
-        <Box sx={{ flexGrow: 1 }}>
-          <Grid container spacing={2}>
-             {bottomBanners.length > 0 ? (
-        bottomBanners.slice(0, 2).map((banner) => (
-            <Grid
-              item
-              xs={3}
-              sx={{ animation: `${fadeIn} 1s ease-out 0.5s`, position: "relative" }}
-            >
-              <Image
-                className="secondImg"
-                src={banner.imageUrl}
-                alt={banner.altText}
-                width={1080}
-                height={720}
-                style={{ animation: `${holographicShine} 3s infinite` }}
-              />
-              <Box
-                sx={{
-                  position: "absolute",
-                  top: "50%",
-                  left: "50%",
-                  transform: "translate(-50%, -50%)",
-                  textAlign: "center",
-                  color: "white",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Box sx={{ fontSize: "2rem", fontWeight: "bold" }}>
-              {banner.heading}
-                </Box>
-                <Box sx={{ fontSize: "1.2rem" }}> {banner.subheading}</Box>
-                <Link
-                                href={`/shop/${banner.pathUrl}/${banner.categoriesId}`}
-                                passHref
-                                legacyBehavior
-                              >
-                <Button
-                  variant="contained"
-                  sx={{
-                    mt: 2,
-                    backgroundColor: "black",
-                    color: "white",
-                    "&:hover": {
-                      backgroundColor: "#333",
-                      transform: "scale(1.05)",
-                      transition: "all 0.3s ease",
-                    },
-                  }}
-                >
-                  EXPLORE NOW
-                </Button>
-                </Link>
-              </Box>
-            </Grid>
-            ))
-      ) : (
-        // Optionally, show a loading or fallback UI
-        <Typography>Loading banners...</Typography>
-      )}
-
-       {bottomBanners.length > 0 ? (
-        bottomBanners.slice(2, 3).map((banner) => (
-            
-            <Grid
-              item
-              xs={6}
-              sx={{ animation: `${fadeIn} 1s ease-out 1.5s`, position: "relative" }}
-            >
-              <Image
-                src={banner.imageUrl}
-                alt={banner.altText}
-                width={1080}
-                height={720}
-                style={{ animation: `${holographicShine} 3s infinite` }}
-              />
-              <Box
-                sx={{
-                  position: "absolute",
-                  top: "50%",
-                  left: "50%",
-                  transform: "translate(-50%, -50%)",
-                  textAlign: "center",
-                  color: "white",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Box sx={{ fontSize: "2rem", fontWeight: "bold" }}>
-                  {banner.heading}
-                </Box>
-                <Box sx={{ fontSize: "1.2rem" }}>{banner.subheading}</Box>
-                <Link
-                                href={`/shop/${banner.pathUrl}/${banner.categoriesId}`}
-                                passHref
-                                legacyBehavior
-                              >
-                <Button
-                  variant="contained"
-                  sx={{
-                    mt: 2,
-                    backgroundColor: "black",
-                    color: "white",
-                    "&:hover": {
-                      backgroundColor: "#333",
-                      transform: "scale(1.05)",
-                      transition: "all 0.3s ease",
-                    },
-                  }}
-                >
-                  EXPLORE NOW
-                </Button>
-                </Link>
-              </Box>
-            </Grid>
-                ))
-      ) : (
-        // Optionally, show a loading or fallback UI
-        <Typography>Loading banners...</Typography>
-      )}
-          </Grid>
-        </Box>
-      </Container>
+      </Box>
     </>
   );
 };
