@@ -9,7 +9,7 @@ import { useAnimation, AnimationControls, motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import InstagramIcon from "@mui/icons-material/Instagram"
 import {HomeSlider, OfferHomes, HomeSwiper, ShopCards, FeaturedProduct, DiscountBanner,
-   NewArrival} from './components';
+   NewArrival, BannerProductsone} from './components';
 
    import ShoppingCart from './components/shoppingcart';
 
@@ -74,8 +74,8 @@ export default function Home() {
     <React.Fragment>
       <CssBaseline />
       <HomeSlider/>
-      
-      <OfferHomes/>
+       <BannerProductsone/>
+      {/* <OfferHomes/> */}
     
       <HomeSwiper/>
      

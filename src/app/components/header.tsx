@@ -100,7 +100,7 @@ const logOuts = () =>{
           </motion.div>
         </Box>
 
-        <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 2 }}>
+        <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 0 }}>
           {/* Left logo */}
           <motion.div whileHover={{ scale: 1.1 }} style={{ cursor: "pointer" }} onClick={onpageHome}>
             <Image src={pathlogo} alt="left logo" width={150} height={150} style={{ borderRadius: '0%' }} />

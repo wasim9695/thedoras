@@ -85,7 +85,7 @@ const HomeSwiper = () => {
           marginBottom: 2,
         }}
       >
-        Explore Now - Exclusive Discounts!
+        Explore Now - Exclusive Discounts! Shop By Category
       </Typography>
       {products.length === 0 ? (
         <Typography variant="h6" sx={{ textAlign: "center", mt: 4 }}>

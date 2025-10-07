@@ -221,12 +221,19 @@ const HomeSlider: React.FC = () => {
         </Box>
       </Box>
 
-      <HomeSwiperMain />
+      {/* <HomeSwiperMain /> */}
 
       <Box
         className="secondGried"
-        sx={{ mb: 5, width: "100vw", mx: "calc(-50vw + 50%)" }}
+        sx={{ mb: 1, width: "100vw", mx: "calc(-50vw + 50%)" }}
       >
+
+                 <Typography className='headingProduct' variant="h5" fontWeight="bold" sx={{ color: 'black', textAlign:'center' }}>
+                  NEW THIS SEASON
+                </Typography>
+                <Typography  sx={{ color: 'black', marginBottom: 2, textAlign:'center' }}>
+                  Special Discounts Available!
+                </Typography>
         <Box sx={{ flexGrow: 1 }}>
           <Grid container spacing={2}>
             {bottomBanners.length > 0 ? (
@@ -237,6 +244,7 @@ const HomeSlider: React.FC = () => {
                   xs={3}
                   sx={{ animation: `${fadeIn} 1s ease-out 0.5s`, position: "relative" }}
                 >
+                  
                   <Image
                     className="secondImg"
                     src={banner.imageUrl}
@@ -259,10 +267,10 @@ const HomeSlider: React.FC = () => {
                       justifyContent: "center",
                     }}
                   >
-                    <Box sx={{ fontSize: "2rem", fontWeight: "bold" }}>
+                    {/* <Box sx={{ fontSize: "2rem", fontWeight: "bold" }}>
                       {banner.heading}
-                    </Box>
-                    <Box sx={{ fontSize: "1.2rem" }}>{banner.subheading}</Box>
+                    </Box> */}
+                    <Box sx={{ fontSize: "2rem" }}>{banner.subheading}</Box>
                     <Link
                       href={`/shop/${banner.pathUrl}/${banner.categoriesId}`}
                       passHref
@@ -320,10 +328,10 @@ const HomeSlider: React.FC = () => {
                       justifyContent: "center",
                     }}
                   >
-                    <Box sx={{ fontSize: "2rem", fontWeight: "bold" }}>
+                    {/* <Box sx={{ fontSize: "2rem", fontWeight: "bold" }}>
                       {banner.heading}
-                    </Box>
-                    <Box sx={{ fontSize: "1.2rem" }}>{banner.subheading}</Box>
+                    </Box> */}
+                    <Box sx={{ fontSize: "2rem" }}>{banner.subheading}</Box>
                     <Link
                       href={`/shop/${banner.pathUrl}/${banner.categoriesId}`}
                       passHref

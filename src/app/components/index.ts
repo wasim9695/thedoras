@@ -9,3 +9,4 @@ export * from './newarrivale';
 export * from './footer';
 export * from './searchpage';
 export * from './homeswipermain';
+export * from './bannerProductsone';
