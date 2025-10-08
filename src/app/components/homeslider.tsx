@@ -225,7 +225,7 @@ const HomeSlider: React.FC = () => {
 
       <Box
         className="secondGried"
-        sx={{ mb: 1, width: "100vw", mx: "calc(-50vw + 50%)" }}
+        sx={{ mb: 1, mt: 1, width: "100vw", mx: "calc(-50vw + 50%)" }}
       >
 
                  <Typography className='headingProduct' variant="h5" fontWeight="bold" sx={{ color: 'black', textAlign:'center' }}>

@@ -1,7 +1,7 @@
 "use client";
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { Box, Typography, Button } from "@mui/material";
+import { Box, Typography, Button, Grid } from "@mui/material";
 import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
@@ -92,36 +92,21 @@ const HomeSwiper = () => {
           No banners available
         </Typography>
       ) : (
-        <Swiper
-          modules={[Navigation, Pagination, Autoplay]}
-          spaceBetween={24}
-          slidesPerView={3}
-          style={{
-            width: "100%",
-            marginTop: "10px",
-            marginBottom: "20px",
-          }}
-          pagination={{ clickable: true }}
-          navigation
-          autoplay={{
-            delay: 3000,
-            disableOnInteraction: false,
-          }}
-          breakpoints={{
-            640: { slidesPerView: 1, spaceBetween: 16 },
-            1024: { slidesPerView: 3, spaceBetween: 24 },
-          }}
-        >
-          {products.map((product) => (
-            <SwiperSlide key={product.id}>
+        <Grid container spacing={2}>
+          {products.slice(0, 4).map((product) => (
+           <Grid
+                             
+                             item
+                             xs={3}
+                             sx={{position: "relative" }}
+                           >
               <Box
                 sx={{
                   position: "relative",
                   textAlign: "center",
-                  borderRadius: 4,
                   overflow: "hidden",
                   width: "100%",
-                  height: "400px",
+                  height: "600px",
                 }}
               >
                 <Image
@@ -147,7 +132,7 @@ const HomeSwiper = () => {
                     padding: 2,
                   }}
                 >
-                  <Box
+                  {/* <Box
                     sx={{
                       position: "absolute",
                       top: 16,
@@ -161,7 +146,7 @@ const HomeSwiper = () => {
                     }}
                   >
                     {product.subheading}%
-                  </Box>
+                  </Box> */}
                   <Typography
                     variant="h5"
                     sx={{
@@ -195,9 +180,9 @@ const HomeSwiper = () => {
                   </Link>
                 </Box>
               </Box>
-            </SwiperSlide>
+           </Grid>
           ))}
-        </Swiper>
+        </Grid>
       )}
     </>
   );

@@ -9,7 +9,7 @@ import { useAnimation, AnimationControls, motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import InstagramIcon from "@mui/icons-material/Instagram"
 import {HomeSlider, OfferHomes, HomeSwiper, ShopCards, FeaturedProduct, DiscountBanner,
-   NewArrival, BannerProductsone} from './components';
+   NewArrival, BannerProductsone, TrendingProduct} from './components';
 
    import ShoppingCart from './components/shoppingcart';
 
@@ -30,7 +30,7 @@ export default function Home() {
     threshold: 0.2, // Trigger when 20% is visible
   });
   const { ref: rightRef, inView: rightInView } = useInView({
-    threshold: 0.2, // Trigger when 20% is visible
+    threshold: 0.5, // Trigger when 20% is visible
   });
 
   const images = [ "https://chawkbazar.vercel.app/_next/image?url=%2Fassets%2Fimages%2Finstagram%2F1.jpg&w=384&q=75", 
@@ -79,17 +79,18 @@ export default function Home() {
     
       <HomeSwiper/>
      
-      <div ref={leftRef} style={{overflow: "hidden"}}>
+      {/* <div ref={leftRef} style={{overflow: "hidden"}}>
       <motion.div animate={leftAnimation} initial={{ x: "-100vw", opacity: 0 }}>
       <ShopCards/>
       </motion.div>
-      </div>
-      <div ref={rightRef} style={{overflow: "hidden"}}>
-      <motion.div animate={rightAnimation} initial={{ x: "100vw", opacity: 0 }}>
+      </div> */}
+      
+     
       <FeaturedProduct/>
-      </motion.div></div>
+     
       <DiscountBanner/>
-      <NewArrival/>
+      <TrendingProduct/>
+      {/* <NewArrival/> */}
       {/* Social Icons */}
        {/* Social Icons */} <Grid item xs={12}> <Grid container spacing={2}> {images.map((image, index) => ( <Grid item xs={2} key={index}> <Item> <Image src={image} width={50} height={50} alt={`Instagram ${index + 1}`} /> <HoverOverlay> <InstagramIcon style={{ fontSize: 40 }} /> </HoverOverlay> </Item> </Grid> ))} </Grid> </Grid>
        <Divider

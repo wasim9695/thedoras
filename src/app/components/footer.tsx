@@ -116,7 +116,7 @@ const Footer = () => {
           <List>
             {[
               { icon: <EmailIcon />, text: "Golf View Apartments Saket, South Delhi, New Delhi - 110017", url: "mailto:yourexample@email.com" },
-              { icon: <EmailIcon />, text: "alienagargi@gmail.com", url: "mailto:alienagargi@gmail.com" },
+              { icon: <EmailIcon />, text: "yourdomain@gmail.com", url: "mailto:your@gmail.com" },
               { icon: <PhoneIcon />, text: "+91 956046 1148", url: "tel:+919560461148" },
             ].map((item, index) => (
               <StyledListItem

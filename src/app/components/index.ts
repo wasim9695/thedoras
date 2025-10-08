@@ -10,3 +10,4 @@ export * from './footer';
 export * from './searchpage';
 export * from './homeswipermain';
 export * from './bannerProductsone';
+export * from './TrendingProduct';

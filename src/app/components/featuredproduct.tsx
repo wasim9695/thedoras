@@ -51,7 +51,7 @@ const FeaturedProduct = () => {
         }}
       >
         <Typography className="headingProduct" variant="h4" fontWeight="bold">
-          Featured Products
+          Fresh Products
         </Typography>
 
         {/* Left Column */}
@@ -127,15 +127,15 @@ const FeaturedProduct = () => {
                 </Link>
               </Box>
             </Box>
-            <Typography variant="h6" sx={{ mt: 2, fontWeight: 'bold' }}>
+            {/* <Typography variant="h6" sx={{ mt: 2, fontWeight: 'bold' }}>
              {product.heading}
-            </Typography>
-            <Typography variant="body2" sx={{ color: '#757575', marginBottom: 1 }}>
+            </Typography> */}
+            {/* <Typography variant="body2" sx={{ color: '#757575', marginBottom: 1 }}>
               {product.subheading}
-            </Typography>
-            <Typography variant="h6" sx={{ color: '#ff5722', fontWeight: 'bold' }}>
+            </Typography> */}
+            {/* <Typography variant="h6" sx={{ color: '#ff5722', fontWeight: 'bold' }}>
               ${product.banner_price}
-            </Typography>
+            </Typography> */}
           </Grid>
 
                  ))}
@@ -213,7 +213,7 @@ const FeaturedProduct = () => {
                         </Link>
                       </Box>
                     </Box>
-                    <Typography variant="h6" sx={{ mt: 2, fontWeight: 'bold' }}>
+                    {/* <Typography variant="h6" sx={{ mt: 2, fontWeight: 'bold' }}>
                      {product.heading}
                     </Typography>
                     <Typography variant="body2" sx={{ color: '#757575', marginBottom: 1 }}>
@@ -221,7 +221,7 @@ const FeaturedProduct = () => {
                     </Typography>
                     <Typography variant="h6" sx={{ color: '#ff5722', fontWeight: 'bold' }}>
                       ${product.banner_price}
-                    </Typography>
+                    </Typography> */}
                   </Item>
                 </Grid>
               ))}

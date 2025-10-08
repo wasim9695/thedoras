@@ -39,7 +39,7 @@ const DiscountBanner = () => {
               }}
             >
               <Image
-                src="https://chawkbazar.vercel.app/_next/image?url=%2Fassets%2Fimages%2Fbanner%2Fbanner-3.jpg&w=1920&q=100"
+                src="https://sabyasachi.com/cdn/shop/files/Hero-01_7858bb31-290f-4fca-83b4-c14acec97ab9_1920x@2x.jpg?v=1721306155"
                 alt="Discount Banner"
                 width={1920}
                 height={720}
@@ -75,14 +75,14 @@ const DiscountBanner = () => {
                   fontWeight="bold"
                   sx={{ textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)' }}
                 >
-                  Big Discounts!
+                 BRIDAL COUTURE 2024
                 </Typography>
-                <Typography
+                {/* <Typography
                   variant="h5"
                   sx={{ mt: 1, textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)' }}
                 >
                   Limited Time Offer
-                </Typography>
+                </Typography> */}
                 <Button
                   variant="contained"
                   sx={{
