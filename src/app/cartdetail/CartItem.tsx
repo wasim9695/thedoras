@@ -1,5 +1,4 @@
-// CartItem.tsx
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import {
   Card,
   CardMedia,
@@ -26,14 +25,16 @@ interface CartItemProps {
   sizename: string;
   totalPrice: number;
   quantity: number;
-  onRemove: (cartId: any, productId: any) => void;
+  onRemove: (cartId: number, productId: number) => void;
   onQuantityChange: (cartId: number, newQuantity: number) => void;
 }
+
+
 
 const StyledCard = styled(Card)(({ theme }) => ({
   display: 'flex',
   marginBottom: theme.spacing(2),
-  borderBottom: '1px solid rgba(0, 0, 0, 0.12)', // Subtle border
+  borderBottom: '1px solid rgba(0, 0, 0, 0.12)',
 }));
 
 const StyledCardMedia = styled(CardMedia)({
@@ -55,110 +56,108 @@ const CartItem: React.FC<CartItemProps> = ({
   onRemove,
   onQuantityChange,
 }) => {
-  const handleDecrement = () => {
-    if (quantity > 1) {
-      onQuantityChange(cartId, quantity - 1);
-      console.log(cartId, quantity, productId);
-      updateCarts(productId, cartId , quantity - 1);
+  const router = useRouter();
+  // const [cartItems, setCartItems] = useState<CartItemProps[]>([]);
+
+  const updateCarts = async (productId: number, cartId: number, quantity: number) => {
+    const dataResponse = [{
+      "productId": productId,
+      "quantity": quantity,
+      "_id": cartId,
+    }];
+    try {
+      const res = await fetchSingleUpdate(dataResponse);
+      console.log('Update response:', res);
+    } catch (error) {
+      console.error('Error updating cart:', error);
     }
   };
-const router = useRouter();
 
-const [cartItems, setCartItems] = useState<any[]>([]);
-
-const getCarts = async () => {
+  const getCarts = useCallback(async () => {
     try {
       const response = await fetchCartsAll();
-      if ((!localStorage.getItem('authToken')) || (response.status !== 1)) {
-        router.push('/signin'); // Redirect to sign-in page
+      
+      if (!localStorage.getItem('authToken') || response.status !== 1) {
+        router.push('/signin');
         return;
       }
+
       console.log('Fetched cart data:', response);
 
-      if (response.status === 1 && response.data?.cartDetails?.length > 0) {
+       if (response.status === 1 && response.data?.cartDetails?.length > 0) {
         const { cartItems } = response.data.cartDetails[0];
 
         if (!Array.isArray(cartItems)) {
           console.error('cartItems is not an array:', cartItems);
-          setCartItems([]);
+          // setCartItems([]);
           return;
         }
 
-        const formattedItems: any[] = cartItems.map((item: any) => ({
-          productId: Number(item.productId),
-          name: item.name,
-          cartId: item.cartId,
-          productImage: item.productImage,
-          totalPrice: Number(item.totalPrice),
-          quantity: Number(item.quantity),
-          sizename: item.sizename || 'N/A',
-          colorname: item.colorname || 'N/A',
-        }));
+        // const formattedItems: CartItemProps[] = cartItems.map((item) => ({
+        //   productId: Number(item.productId),
+        //   name: item.name,
+        //   cartId: item.cartId,
+        //   productImage: item.productImage,
+        //   totalPrice: Number(item.totalPrice),
+        //   quantity: Number(item.quantity),
+        //   sizename: item.sizename || 'N/A',
+        //   colorname: item.colorname || 'N/A',
+        //   onRemove: () => {}, // Provide default function
+        //   onQuantityChange: () => {}, // Provide default function
+        // }));
 
-        setCartItems(formattedItems);
+        // setCartItems(formattedItems);
       } else {
-        setCartItems([]);
+        // setCartItems([]);
       }
     } catch (err) {
       console.error('Error fetching cart:', err);
-      setCartItems([]);
+      // setCartItems([]);
+    }
+  }, [router]);
+
+  const handleDecrement = () => {
+    if (quantity > 1) {
+      const newQuantity = quantity - 1;
+      onQuantityChange(cartId, newQuantity);
+      console.log(cartId, newQuantity, productId);
+      updateCarts(productId, cartId, newQuantity);
     }
   };
 
-
-  const updateCarts = async (productId: number, cartId: number, quantity: number) =>{
-    const dataRespons = [{
-      "productId":productId,
-      "quantity":quantity,
-      "_id": cartId,
-    }]
-    const res = await fetchSingleUpdate(dataRespons);
-    try {
-      console.log(res);
-    } catch (error) {
-      console.error('Error updating cart:', error);
-      }
-  }
-
-  useEffect(() => {
-    getCarts();
-  }, []);
-
-  const subtotal = cartItems.reduce(
-    (acc, item) => acc + item.totalPrice * item.quantity,
-    0
-  );
-
-  const calculateTotal = () => {
-    return subtotal.toLocaleString('en-IN', {
-      style: 'currency',
-      currency: 'INR',
-      maximumFractionDigits: 2,
-    });
-  };
-
-
-
   const handleIncrement = () => {
-    onQuantityChange(cartId, quantity + 1);
-   console.log(quantity + 1);
-   updateCarts(productId, cartId , quantity + 1)
-   
+    const newQuantity = quantity + 1;
+    onQuantityChange(cartId, newQuantity);
+    console.log(newQuantity);
+    updateCarts(productId, cartId, newQuantity);
   };
 
   const handleQuantityInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newQuantity = parseInt(event.target.value);
     if (!isNaN(newQuantity) && newQuantity > 0) {
       onQuantityChange(cartId, newQuantity);
+      updateCarts(productId, cartId, newQuantity);
     } else {
-      // Handle invalid input (e.g., show an error message)
       console.error("Invalid quantity input");
     }
   };
 
+  // const subtotal = cartItems.reduce(
+  //   (acc, item) => acc + item.totalPrice * item.quantity,
+  //   0
+  // );
+
+  // Removed unused calculateTotal function since it wasn't being used
+
+  useEffect(() => {
+    getCarts();
+  }, [getCarts]); // Added getCarts to dependency array
+
   return (
     <StyledCard>
-      <Link href={`/productdetail/${productId}`}><StyledCardMedia image={ productImage} title={name} /></Link>
+      <Link href={`/productdetail/${productId}`}>
+        <StyledCardMedia image={productImage} title={name} />
+      </Link>
       <CardContent sx={{ flex: '1 1 auto', padding: 2 }}>
         <Typography component="h3" variant="h6" color="text.primary" fontWeight="semibold">
           {name}
@@ -167,9 +166,9 @@ const getCarts = async () => {
           Color: {colorname}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Size:  {sizename}
+          Size: {sizename}
         </Typography>
-        <Box sx={{ display: 'flex', alignItems: 'center', mt: 1, mb:1 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', mt: 1, mb: 1 }}>
           <IconButton aria-label="remove" size="small" onClick={handleDecrement}>
             <RemoveIcon />
           </IconButton>
@@ -179,7 +178,10 @@ const getCarts = async () => {
             type="number"
             value={quantity}
             onChange={handleQuantityInputChange}
-            inputProps={{ min: 1, style: { textAlign: 'center', width: '40px' } }} // Adjust width as needed
+            inputProps={{ 
+              min: 1, 
+              style: { textAlign: 'center', width: '40px' } 
+            }}
           />
 
           <IconButton aria-label="add" size="small" onClick={handleIncrement}>
@@ -190,8 +192,16 @@ const getCarts = async () => {
           (INR) ₹{totalPrice.toLocaleString()}
         </Typography>
       </CardContent>
-      <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-around', padding: 1}}>
-        <IconButton aria-label="delete" onClick={() => onRemove(cartId, productId)}>
+      <Box sx={{ 
+        display: 'flex', 
+        flexDirection: 'column', 
+        justifyContent: 'space-around', 
+        padding: 1 
+      }}>
+        <IconButton 
+          aria-label="delete" 
+          onClick={() => onRemove(cartId, productId)}
+        >
           <DeleteIcon />
         </IconButton>
       </Box>

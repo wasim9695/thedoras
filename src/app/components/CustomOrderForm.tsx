@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import React, { useState } from "react";
+import React from "react";
 import {
   TextField,
   Button,
@@ -14,23 +14,13 @@ import {
   Select,
   Typography,
   Box,
-  IconButton
 } from "@mui/material";
-
-
-type OrderFormData = {
-  size: string;
-  color: string;
-  customText: string;
-  quantity: number;
-  notes?: string;
-};
 
 const sizes = ["S", "M", "L", "XL"];
 const colors = ["Black", "White", "Red", "Blue"];
 
 export default function CustomOrderForm() {
-  const [open, setOpen] = useState(true);
+  const [open] = React.useState(true);
 
   if (!open) return null; // Hide form when closed
 
@@ -46,9 +36,6 @@ export default function CustomOrderForm() {
         position: "relative",
       }}
     >
-      {/* Close Icon */}
-      
-
       <Typography variant="h6" mb={2}>
         Custom Order
       </Typography>

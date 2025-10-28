@@ -33,7 +33,7 @@ async function fetchJson(path: string, options = {}) {
  * @param {object} credentials - An object containing user credentials (e.g., { email, password }).
  * @returns {Promise<any>} - A promise that resolves to the API response (e.g., user token, user data).
  */
-export const signIn = (credentials: object): Promise<any> => fetchJson('/signIn', {
+export const signIn = (credentials: object) => fetchJson('/signIn', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify(credentials),

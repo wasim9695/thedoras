@@ -28,7 +28,7 @@ async function fetchJson(path: string, options = {}) {
  * Fetches the left banner from the /common/leftbanner endpoint.
  * @returns {Promise<any>} - A promise that resolves to the banner data.
  */
-export const fetchgetCog = (): Promise<any> => fetchJson('/categoryList', {
+export const fetchgetCog = () => fetchJson('/categoryList', {
   method: 'GET',
   headers: { 'Content-Type': 'application/json' },
 });

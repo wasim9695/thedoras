@@ -1,17 +1,12 @@
 "use client";
+
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { Box, Typography, Button, Grid } from "@mui/material";
 import Image from "next/image";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
-import "swiper/css/pagination";
-import Link from "next/link"; // Added for linking to pathUrl
-import "swiper/css/navigation";
-import { Navigation, Pagination, Autoplay } from "swiper/modules";
+import Link from "next/link";
 import { fetchBottomThreeBanner } from "../api/bannerAll/banners";
 
-// Define the Product type for better type safety
 interface BannerData {
   id: number;
   categoriesId: number;
@@ -24,35 +19,27 @@ interface BannerData {
   typeImages: string;
 }
 
-
-interface BannerResponse {
-  status: number;
-  message: string;
-  data: BannerData[];
-}
-
 const HomeSwiper = () => {
   const [products, setProducts] = useState<BannerData[] | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const getFastivalBanner = async () => {
+  const getFestivalBanner = async () => {
     try {
       const bannerData = await fetchBottomThreeBanner();
       if (bannerData.data && bannerData.data.length > 0) {
-        console.log(bannerData.data);
         setProducts(bannerData.data);
       } else {
         setProducts([]);
         setError("No festival banner data available");
       }
-    } catch (err) {
+    } catch {
       setError("Failed to load festival banners");
       setProducts([]);
     }
   };
 
   useEffect(() => {
-    getFastivalBanner();
+    getFestivalBanner();
   }, []);
 
   if (error) {
@@ -77,13 +64,7 @@ const HomeSwiper = () => {
     <>
       <Typography
         variant="h4"
-        sx={{
-          textAlign: "center",
-          fontWeight: "bold",
-          color: "black",
-          marginTop: 4,
-          marginBottom: 2,
-        }}
+        sx={{ textAlign: "center", fontWeight: "bold", color: "black", mt: 4, mb: 2 }}
       >
         Explore Now - Exclusive Discounts! Shop By Category
       </Typography>
@@ -94,12 +75,7 @@ const HomeSwiper = () => {
       ) : (
         <Grid container spacing={2}>
           {products.slice(0, 4).map((product) => (
-           <Grid
-                             
-                             item
-                             xs={3}
-                             sx={{position: "relative" }}
-                           >
+            <Grid item xs={3} key={product.id} sx={{ position: "relative" }}>
               <Box
                 sx={{
                   position: "relative",
@@ -113,9 +89,7 @@ const HomeSwiper = () => {
                   src={product.imageUrl}
                   alt={product.subheading}
                   fill
-                  style={{
-                    objectFit: "cover",
-                  }}
+                  style={{ objectFit: "cover" }}
                 />
                 <Box
                   sx={{
@@ -129,24 +103,9 @@ const HomeSwiper = () => {
                     flexDirection: "column",
                     justifyContent: "center",
                     alignItems: "center",
-                    padding: 2,
+                    p: 2,
                   }}
                 >
-                  {/* <Box
-                    sx={{
-                      position: "absolute",
-                      top: 16,
-                      right: 16,
-                      backgroundColor: "#ff5722",
-                      color: "white",
-                      padding: "4px 8px",
-                      borderRadius: 2,
-                      fontSize: "14px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    {product.subheading}%
-                  </Box> */}
                   <Typography
                     variant="h5"
                     sx={{
@@ -162,25 +121,25 @@ const HomeSwiper = () => {
                     passHref
                     legacyBehavior
                   >
-                  <Button
-                    variant="contained"
-                    sx={{
-                      mt: 2,
-                      fontWeight: "bold",
-                      padding: "10px 20px",
-                      backgroundColor: "black",
-                      color: "white",
-                      "&:hover": {
-                        backgroundColor: "#333",
-                      },
-                    }}
-                  >
-                    Explore
-                  </Button>
+                    <Button
+                      variant="contained"
+                      sx={{
+                        mt: 2,
+                        fontWeight: "bold",
+                        padding: "10px 20px",
+                        backgroundColor: "black",
+                        color: "white",
+                        "&:hover": {
+                          backgroundColor: "#333",
+                        },
+                      }}
+                    >
+                      Explore
+                    </Button>
                   </Link>
                 </Box>
               </Box>
-           </Grid>
+            </Grid>
           ))}
         </Grid>
       )}
@@ -188,4 +147,4 @@ const HomeSwiper = () => {
   );
 };
 
-export {HomeSwiper};
+export { HomeSwiper };

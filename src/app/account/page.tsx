@@ -44,7 +44,7 @@ const accountMenuItems = [
 ];
 
 // Helper function to render the correct content based on the active item
-function renderContent(activeItem: any) {
+function renderContent(activeItem: string) {
   switch (activeItem) {
     case 'DashboardContent':
       return <DashboardContent />;
@@ -174,12 +174,12 @@ function ChangePasswordContent() {
   const [showNewPassword, setShowNewPassword] = useState(false);
 
   const handleClickShowOldPassword = () => setShowOldPassword((show) => !show);
-  const handleMouseDownOldPassword = (event: any) => {
+  const handleMouseDownOldPassword = (event: { preventDefault: () => void; }) => {
     event.preventDefault();
   };
 
   const handleClickShowNewPassword = () => setShowNewPassword((show) => !show);
-  const handleMouseDownNewPassword = (event: any) => {
+  const handleMouseDownNewPassword = (event: { preventDefault: () => void; }) => {
     event.preventDefault();
   };
 

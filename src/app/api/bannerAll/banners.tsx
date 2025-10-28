@@ -28,41 +28,41 @@ async function fetchJson(path: string, options = {}) {
  * Fetches the left banner from the /common/leftbanner endpoint.
  * @returns {Promise<any>} - A promise that resolves to the banner data.
  */
-export const fetchLeftBanner = (): Promise<any> => fetchJson('/common/leftbanner', {
+export const fetchLeftBanner = () => fetchJson('/common/leftbanner', {
   method: 'GET',
   headers: { 'Content-Type': 'application/json' },
 });
 
-export const fetchRightBanner = (): Promise<any> => fetchJson('/common/rightbanner', {
+export const fetchRightBanner = () => fetchJson('/common/rightbanner', {
   method: 'GET',
   headers: { 'Content-Type': 'application/json' },
 });
-export const fetchBottomBanner = (): Promise<any> => fetchJson('/common/bottombanner', {
+export const fetchBottomBanner = () => fetchJson('/common/bottombanner', {
   method: 'GET',
   headers: { 'Content-Type': 'application/json' },
 });
-export const fetchBottomTwoBanner = (): Promise<any> => fetchJson('/common/bottombannerTwo', {
-  method: 'GET',
-  headers: { 'Content-Type': 'application/json' },
-});
-
-export const fetchBottomThreeBanner = (): Promise<any> => fetchJson('/common/bottombannerThree', {
+export const fetchBottomTwoBanner = () => fetchJson('/common/bottombannerTwo', {
   method: 'GET',
   headers: { 'Content-Type': 'application/json' },
 });
 
-export const fetchFeatured = (): Promise<any> => fetchJson('/common/getFetauredProducts', {
+export const fetchBottomThreeBanner = () => fetchJson('/common/bottombannerThree', {
   method: 'GET',
   headers: { 'Content-Type': 'application/json' },
 });
 
-export const fetchFastivalOffer = (): Promise<any> => fetchJson('/getfastival', {
+export const fetchFeatured = () => fetchJson('/common/getFetauredProducts', {
+  method: 'GET',
+  headers: { 'Content-Type': 'application/json' },
+});
+
+export const fetchFastivalOffer = () => fetchJson('/getfastival', {
   method: 'GET',
   headers: { 'Content-Type': 'application/json' },
 });
 
 
-export const fetchGetAllProducts = (): Promise<any> => fetchJson('/getProductList', {
+export const fetchGetAllProducts = () => fetchJson('/getProductList', {
   method: 'GET',
   headers: { 'Content-Type': 'application/json' },
 });

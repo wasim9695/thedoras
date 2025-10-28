@@ -13,7 +13,7 @@ const getAuthToken = (): string | null => {
   return process.env.AUTH_TOKEN || null; // Removed NEXT_PUBLIC_ prefix as auth tokens shouldn't be public
 };
 
-async function fetchJson(path: string, options: RequestInit = {}): Promise<any> {
+async function fetchJson(path: string, options: RequestInit = {}) {
   if (!API_BASE_URL) {
     throw new Error('API_BASE_URL is not defined');
   }
@@ -54,18 +54,18 @@ async function fetchJson(path: string, options: RequestInit = {}): Promise<any> 
  * Fetches all products from the /getTodayDeal endpoint.
  * @returns {Promise<any>} - A promise that resolves to the products data.
  */
-export const fetchGetProfileDetails = (): Promise<any> =>
+export const fetchGetProfileDetails = () =>
   fetchJson('/getUserProfile', {
     method: 'GET',
   });
 
-  export const fetchGetFetchDetails = (): Promise<any> =>
+  export const fetchGetFetchDetails = () =>
   fetchJson('/getuserAddr', {
     method: 'GET',
   });
 
 
-  export const fetchLogout = (): Promise<any> =>
+  export const fetchLogout = () =>
   fetchJson('/logOut', {
     method: 'GET',
   });

@@ -1,21 +1,28 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
-import { Box, Container, Typography } from '@mui/material';
-import Image from 'next/image';
-import Link from 'next/link';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Pagination, Navigation, Autoplay } from 'swiper/modules';
-import 'swiper/css';
-import 'swiper/css/pagination';
-import 'swiper/css/navigation';
+import React, { useEffect, useState } from "react";
+import { Box, Container, Typography } from "@mui/material";
+import Image from "next/image";
+import Link from "next/link";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Pagination, Navigation, Autoplay } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/pagination";
+import "swiper/css/navigation";
 
-import { fetchgetCog } from '../api/categories/categ';
+import { fetchgetCog } from "../api/categories/categ";
 
-const defaultImage = '/img4.jpg';
+const defaultImage = "/img4.jpg";
+
+interface Category {
+  _id: string;
+  image?: string;
+  metaTitle?: string;
+  categoryName: string;
+}
 
 const ShopCards = () => {
-  const [categories, setCategories] = useState<any[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -25,11 +32,11 @@ const ShopCards = () => {
         if (resData.data && Array.isArray(resData.data)) {
           setCategories(resData.data);
         } else {
-          setError('No category data available');
+          setError("No category data available");
         }
       } catch (err) {
-        console.error('Failed to fetch categories:', err);
-        setError('Failed to load categories');
+        console.error("Failed to fetch categories:", err);
+        setError("Failed to load categories");
       }
     };
 
@@ -53,7 +60,7 @@ const ShopCards = () => {
           modules={[Pagination, Navigation, Autoplay]}
           spaceBetween={24}
           slidesPerView={5}
-          style={{ width: '100%', marginTop: '10px', marginBottom: '20px' }}
+          style={{ width: "100%", marginTop: "10px", marginBottom: "20px" }}
           pagination={{ clickable: true }}
           navigation
           autoplay={{ delay: 3000, disableOnInteraction: false }}
@@ -62,42 +69,41 @@ const ShopCards = () => {
             1024: { slidesPerView: 5, spaceBetween: 24 },
           }}
         >
-          {categories.map((category: any) => (
+          {categories.map((category) => (
             <SwiperSlide key={category._id}>
               <Link href={`/shop/${category._id}`} passHref>
                 <Box
                   className="group relative overflow-hidden"
                   sx={{
-                    textAlign: 'center',
-                    border: '1px solid #ddd',
+                    textAlign: "center",
+                    border: "1px solid #ddd",
                     borderRadius: 4,
                     padding: 2,
-                    width: '100%',
-                    boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-                    cursor: 'pointer',
-                    transition: 'transform 0.3s ease-in-out',
-                    '&:hover': {
-                      transform: 'scale(1.05)',
+                    width: "100%",
+                    boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+                    cursor: "pointer",
+                    transition: "transform 0.3s ease-in-out",
+                    "&:hover": {
+                      transform: "scale(1.05)",
                     },
                   }}
                 >
-                  {/* Product Image */}
                   <Box
                     sx={{
-                      position: 'relative',
-                      width: '100%',
-                      height: '300px',
-                      overflow: 'hidden',
+                      position: "relative",
+                      width: "100%",
+                      height: "300px",
+                      overflow: "hidden",
                       borderRadius: 4,
                     }}
                   >
                     <Image
                       src={category.image || defaultImage}
-                      alt={category.metaTitle || 'Category'}
+                      alt={category.metaTitle || "Category"}
                       fill
                       style={{
-                        objectFit: 'cover',
-                        transition: 'transform 0.3s ease-in-out',
+                        objectFit: "cover",
+                        transition: "transform 0.3s ease-in-out",
                       }}
                       className="group-hover:scale-110"
                     />
@@ -106,17 +112,17 @@ const ShopCards = () => {
                     <Box
                       className="group-hover:opacity-100"
                       sx={{
-                        position: 'absolute',
+                        position: "absolute",
                         top: 0,
                         left: 0,
                         right: 0,
                         bottom: 0,
-                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                        backgroundColor: "rgba(0, 0, 0, 0.5)",
                         opacity: 0,
-                        transition: 'opacity 0.3s ease-in-out',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
+                        transition: "opacity 0.3s ease-in-out",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
                         borderRadius: 4,
                       }}
                     >
@@ -130,13 +136,12 @@ const ShopCards = () => {
                         width="1em"
                         xmlns="http://www.w3.org/2000/svg"
                       >
-                        <path d="M326.612 185.391c59.747 59.809..."></path> {/* Keep shortened for clarity */}
+                        <path d="M326.612 185.391c59.747 59.809..."></path>
                       </svg>
                     </Box>
                   </Box>
 
-                  {/* Category Title */}
-                  <Typography variant="h6" sx={{ mt: 2, fontWeight: 'bold' }}>
+                  <Typography variant="h6" sx={{ mt: 2, fontWeight: "bold" }}>
                     {category.categoryName}
                   </Typography>
                 </Box>

@@ -2,25 +2,17 @@
 
 import * as React from "react";
 import { useEffect, useState } from "react";
-import {
-  Box,
-  Button,
-  CssBaseline,
-  Grid,
-  Typography,
-} from "@mui/material";
+import { Box, Button, CssBaseline, Grid, Typography } from "@mui/material";
 import Image from "next/image";
-import Link from "next/link"; // Added for linking to pathUrl
+import Link from "next/link";
 import { keyframes } from "@mui/system";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
-import { HomeSwiperMain } from "../components";
-import { fetchLeftBanner, fetchRightBanner, fetchBottomTwoBanner } from "../api/bannerAll/banners";
+import { fetchLeftBanner, fetchBottomTwoBanner } from "../api/bannerAll/banners";
 
-// Define the expected banner data structure
 interface BannerData {
   id: number;
   categoriesId: number;
@@ -39,7 +31,6 @@ interface BannerResponse {
   data: BannerData[];
 }
 
-// Define keyframe animations
 const fadeIn = keyframes`
   0% {
     opacity: 0;
@@ -65,7 +56,6 @@ const holographicShine = keyframes`
 
 const HomeSlider: React.FC = () => {
   const [leftBanners, setLeftBanners] = useState<BannerData[]>([]);
-  const [rightBanner, setRightBanner] = useState<BannerData[]>([]);
   const [bottomBanners, setBottomBanners] = useState<BannerData[]>([]);
   const [error, setError] = useState<string | null>(null);
 
@@ -77,24 +67,9 @@ const HomeSlider: React.FC = () => {
       } else {
         setError("No banner data available");
       }
-    } catch (err) {
-      console.error("Failed to fetch left banner:", err);
+    } catch (error) {
+      console.error("Failed to fetch left banner:", error);
       setError("Failed to load banner");
-    }
-  };
-
-  const getRightBanner = async () => {
-    try {
-      const bannerData = await fetchRightBanner();
-      if (bannerData.data && bannerData.data.length > 0) {
-        setRightBanner(bannerData.data);
-      } else {
-        setRightBanner([]);
-        setError("No right banner data available");
-      }
-    } catch (err) {
-      setError("Failed to load right banners");
-      setRightBanner([]);
     }
   };
 
@@ -104,14 +79,13 @@ const HomeSlider: React.FC = () => {
       if (bannerData.data && bannerData.data.length > 0) {
         setBottomBanners(bannerData.data);
       }
-    } catch (err) {
-      // Optionally handle error
+    } catch {
+      // Optionally handle error silently
     }
   };
 
   useEffect(() => {
     getBanner();
-    getRightBanner();
     getBottomBanners();
   }, []);
 
@@ -128,11 +102,7 @@ const HomeSlider: React.FC = () => {
       >
         <Box sx={{ flexGrow: 1 }}>
           <Grid container spacing={2}>
-            <Grid
-              item
-              xs={12}
-              sx={{ animation: `${fadeIn} 1s ease-out`, position: "relative" }}
-            >
+            <Grid item xs={12} sx={{ animation: `${fadeIn} 1s ease-out`, position: "relative" }}>
               {error ? (
                 <Typography color="error">{error}</Typography>
               ) : leftBanners.length > 0 ? (
@@ -142,10 +112,7 @@ const HomeSlider: React.FC = () => {
                   slidesPerView={1}
                   autoplay={{ delay: 5000, disableOnInteraction: false }}
                   pagination={{ clickable: true }}
-                  navigation={{
-                    nextEl: ".swiper-button-next",
-                    prevEl: ".swiper-button-prev",
-                  }}
+                  navigation={{ nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" }}
                   style={{ height: "720px" }}
                   loop
                 >
@@ -157,10 +124,7 @@ const HomeSlider: React.FC = () => {
                           alt={banner.altText}
                           fill
                           sizes="100vw"
-                          style={{
-                            objectFit: "cover",
-                            animation: `${holographicShine} 3s infinite`,
-                          }}
+                          style={{ objectFit: "cover", animation: `${holographicShine} 3s infinite` }}
                         />
                         <Box
                           sx={{
@@ -186,11 +150,7 @@ const HomeSlider: React.FC = () => {
                           <Typography variant="body1" mb={2}>
                             {banner.subheading}
                           </Typography>
-                          <Link
-                            href={`/shop/${banner.pathUrl}/${banner.categoriesId}`}
-                            passHref
-                            legacyBehavior
-                          >
+                          <Link href={`/shop/${banner.pathUrl}/${banner.categoriesId}`} passHref legacyBehavior>
                             <Button
                               variant="contained"
                               component="a"
@@ -221,30 +181,16 @@ const HomeSlider: React.FC = () => {
         </Box>
       </Box>
 
-      {/* <HomeSwiperMain /> */}
-
-      <Box
-        className="secondGried"
-        sx={{ mb: 1, mt: 1, width: "100vw", mx: "calc(-50vw + 50%)" }}
-      >
-
-                 <Typography className='headingProduct' variant="h5" fontWeight="bold" sx={{ color: 'black', textAlign:'center' }}>
-                  NEW THIS SEASON
-                </Typography>
-                <Typography  sx={{ color: 'black', marginBottom: 2, textAlign:'center' }}>
-                  Special Discounts Available!
-                </Typography>
+      <Box className="secondGried" sx={{ mb: 1, mt: 1, width: "100vw", mx: "calc(-50vw + 50%)" }}>
+        <Typography className="headingProduct" variant="h5" fontWeight="bold" sx={{ color: "black", textAlign: "center" }}>
+          NEW THIS SEASON
+        </Typography>
+        <Typography sx={{ color: "black", marginBottom: 2, textAlign: "center" }}>Special Discounts Available!</Typography>
         <Box sx={{ flexGrow: 1 }}>
           <Grid container spacing={2}>
             {bottomBanners.length > 0 ? (
               bottomBanners.slice(0, 2).map((banner) => (
-                <Grid
-                  key={banner.id}
-                  item
-                  xs={3}
-                  sx={{ animation: `${fadeIn} 1s ease-out 0.5s`, position: "relative" }}
-                >
-                  
+                <Grid key={banner.id} item xs={3} sx={{ animation: `${fadeIn} 1s ease-out 0.5s`, position: "relative" }}>
                   <Image
                     className="secondImg"
                     src={banner.imageUrl}
@@ -267,15 +213,8 @@ const HomeSlider: React.FC = () => {
                       justifyContent: "center",
                     }}
                   >
-                    {/* <Box sx={{ fontSize: "2rem", fontWeight: "bold" }}>
-                      {banner.heading}
-                    </Box> */}
                     <Box sx={{ fontSize: "2rem" }}>{banner.subheading}</Box>
-                    <Link
-                      href={`/shop/${banner.pathUrl}/${banner.categoriesId}`}
-                      passHref
-                      legacyBehavior
-                    >
+                    <Link href={`/shop/${banner.pathUrl}/${banner.categoriesId}`} passHref legacyBehavior>
                       <Button
                         variant="contained"
                         sx={{
@@ -301,12 +240,7 @@ const HomeSlider: React.FC = () => {
 
             {bottomBanners.length > 0 ? (
               bottomBanners.slice(2, 3).map((banner) => (
-                <Grid
-                  key={banner.id}
-                  item
-                  xs={6}
-                  sx={{ animation: `${fadeIn} 1s ease-out 1.5s`, position: "relative" }}
-                >
+                <Grid key={banner.id} item xs={6} sx={{ animation: `${fadeIn} 1s ease-out 1.5s`, position: "relative" }}>
                   <Image
                     src={banner.imageUrl}
                     alt={banner.altText}
@@ -328,15 +262,8 @@ const HomeSlider: React.FC = () => {
                       justifyContent: "center",
                     }}
                   >
-                    {/* <Box sx={{ fontSize: "2rem", fontWeight: "bold" }}>
-                      {banner.heading}
-                    </Box> */}
                     <Box sx={{ fontSize: "2rem" }}>{banner.subheading}</Box>
-                    <Link
-                      href={`/shop/${banner.pathUrl}/${banner.categoriesId}`}
-                      passHref
-                      legacyBehavior
-                    >
+                    <Link href={`/shop/${banner.pathUrl}/${banner.categoriesId}`} passHref legacyBehavior>
                       <Button
                         variant="contained"
                         sx={{
