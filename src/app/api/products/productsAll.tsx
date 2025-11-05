@@ -85,8 +85,8 @@ export const fetchAddToCart = (data: object) =>
   });
 
 
-  export const fetchProductListDetail = (data: object) =>
-  fetchJson(`/getProductListDetail/${data}`, {
+  export const fetchProductListDetail = (id: number) =>
+  fetchJson(`/getProductListDetail/${id}`, {
     method: 'GET', // Changed to POST as adding to cart typically modifies server state
   });
 

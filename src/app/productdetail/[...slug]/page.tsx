@@ -65,8 +65,9 @@ interface Product {
 
 const ProductDetailList: React.FC = () => {
   const params = useParams();
-  const slug = params.slug as string[] | undefined;
+  const slug = params.slug as number[] | undefined;
   const id = slug ? slug[slug.length - 1] : undefined;
+  console.log(id);
 
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -87,7 +88,7 @@ const ProductDetailList: React.FC = () => {
       setError(null);
 
       // ✅ FIX: Pass as an object, not a string
-      const response = await fetchProductListDetail({ id });
+      const response = await fetchProductListDetail(id);
 
       if (response?.data?.length > 0) {
         const fetchedProduct: Product = response.data[0];
