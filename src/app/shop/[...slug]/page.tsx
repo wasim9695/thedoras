@@ -5,18 +5,11 @@ import {
   Box,
   Typography,
   Grid,
-  Checkbox,
-  FormControlLabel,
   Button,
-  Divider,
-  Select,
-  MenuItem,
-  Slider,
   Container,
   Paper,
   Breadcrumbs,
   Pagination,
-  Stack,
 } from "@mui/material";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import Image from "next/image";
@@ -24,7 +17,7 @@ import { styled } from "@mui/material/styles";
 import ShoppingCart, { ShoppingCartHandle } from "../../components/shoppingcart";
 import Link from "next/link";
 import { fetchGetAllProducts } from "../../api/bannerAll/banners";
-import { useParams } from "next/navigation";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: "#fff",
@@ -43,6 +36,7 @@ const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: "#1A2027",
   }),
 }));
+const backgroundImg = "/DSabyasachi-05.03_1920x (1).jpg";
 
 const ImageContainer = styled("div")({
   position: "relative",
@@ -82,9 +76,6 @@ interface Product {
 }
 
 const ProductListID: React.FC = () => {
-  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
-  const [sortOption, setSortOption] = useState<string>("default");
-  const [priceRange, setPriceRange] = useState<number[]>([50, 500]);
   const [currentPage, setCurrentPage] = useState(1);
   const [listProducts, setListProducts] = useState<Product[]>([]);
   const cartRef = useRef<ShoppingCartHandle>(null);
@@ -124,39 +115,38 @@ const ProductListID: React.FC = () => {
     fetchProducts();
   }, []);
 
-  const categories = ["All", "Clothing", "Accessories", "Electronics", "Home"];
-  const colors = ["Black", "Red", "Green", "Blue", "White"];
+  // const categories = ["All", "Clothing", "Accessories", "Electronics", "Home"];
+  // const colors = ["Black", "Red", "Green", "Blue", "White"];
   const itemsPerPage = 8;
   const totalPages = Math.ceil(listProducts.length / itemsPerPage);
   const paginatedProducts = listProducts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
-  const handleFilterChange = (filter: string) => {
-    setSelectedFilters((prev) => (prev.includes(filter) ? prev.filter((f) => f !== filter) : [...prev, filter]));
-    setCurrentPage(1);
-  };
+  // const handleFilterChange = (filter: string) => {
+  //   setSelectedFilters((prev) => (prev.includes(filter) ? prev.filter((f) => f !== filter) : [...prev, filter]));
+  //   setCurrentPage(1);
+  // };
 
-  const handlePriceChange = (event: Event, newValue: number | number[]) => {
-    setPriceRange(newValue as number[]);
-    setCurrentPage(1);
-  };
+  // const handlePriceChange = (event: Event, newValue: number | number[]) => {
+  //   // setPriceRange(newValue as number[]);
+  //   setCurrentPage(1);
+  // };
 
   const handlePageChange = (event: React.ChangeEvent<unknown>, page: number) => {
     setCurrentPage(page);
   };
 
-  const params = useParams();
-  const slug = params.slug as string[];
-  const id = slug?.[slug.length - 1];
+  
 
   return (
     <Container maxWidth="xl">
       <Box sx={{ flexGrow: 1, padding: 4, boxSizing: "border-box" }}>
-        User ID: {id}
+        {/* User ID: {id} */}
         <Box
           sx={{
             textAlign: "center",
             mb: 4,
-            py: 6,
+            py: 20,
+            pb: 8,
             position: "relative",
             borderRadius: "12px",
             overflow: "hidden",
@@ -167,7 +157,7 @@ const ProductListID: React.FC = () => {
               left: 0,
               right: 0,
               bottom: 0,
-              // backgroundImage: `url(${backgroundImg})`,
+              backgroundImage: `url('${API_BASE_URL}/products/upload${backgroundImg}')`,
               backgroundSize: "cover",
               backgroundPosition: "center",
               opacity: 0.7,
@@ -195,7 +185,7 @@ const ProductListID: React.FC = () => {
         </Box>
 
         <Grid container spacing={3}>
-          <Grid item xs={12} md={2}>
+          {/* <Grid item xs={12} md={2}>
             <Paper elevation={3} sx={{ p: 1.5, background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)", borderRadius: "8px" }}>
               <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: "bold" }}>
                 Categories
@@ -235,10 +225,10 @@ const ProductListID: React.FC = () => {
                 <Typography variant="caption">${priceRange[0]} - ${priceRange[1]}</Typography>
               </Box>
             </Paper>
-          </Grid>
+          </Grid> */}
 
-          <Grid item xs={12} md={10}>
-            <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
+          <Grid item xs={12} md={12}>
+            {/* <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
               <Select
                 value={sortOption}
                 onChange={(e) => setSortOption(e.target.value)}
@@ -249,7 +239,7 @@ const ProductListID: React.FC = () => {
                 <MenuItem value="price-high">Price: High to Low</MenuItem>
                 <MenuItem value="name">Name: A-Z</MenuItem>
               </Select>
-            </Box>
+            </Box> */}
 
             <Grid container spacing={2}>
               {paginatedProducts.map((product, index) => (

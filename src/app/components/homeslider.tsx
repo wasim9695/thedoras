@@ -106,6 +106,7 @@ const HomeSlider: React.FC = () => {
               {error ? (
                 <Typography color="error">{error}</Typography>
               ) : leftBanners.length > 0 ? (
+                <Box sx={{ height: { xs: '400px', sm: '500px', md: '720px' }, width: '100%' }}>
                 <Swiper
                   modules={[Autoplay, Pagination, Navigation]}
                   spaceBetween={0}
@@ -113,8 +114,10 @@ const HomeSlider: React.FC = () => {
                   autoplay={{ delay: 5000, disableOnInteraction: false }}
                   pagination={{ clickable: true }}
                   navigation={{ nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" }}
-                  style={{ height: "720px" }}
+                  // Add responsive height for the main slider
+                  
                   loop
+                  style={{ height: '100%' }} 
                 >
                   {leftBanners.map((banner) => (
                     <SwiperSlide key={banner.id}>
@@ -144,10 +147,20 @@ const HomeSlider: React.FC = () => {
                             justifyContent: "center",
                           }}
                         >
-                          <Typography variant="h4" fontWeight="bold" mb={1}>
+                          {/* Add responsive typography */}
+                          <Typography 
+                            variant="h4" 
+                            fontWeight="bold" 
+                            mb={1} 
+                            sx={{ fontSize: { xs: '1.5rem', md: '2.5rem' } }}
+                          >
                             {banner.heading}
                           </Typography>
-                          <Typography variant="body1" mb={2}>
+                          <Typography 
+                            variant="body1" 
+                            mb={2} 
+                            sx={{ fontSize: { xs: '0.875rem', md: '1rem' } }}
+                          >
                             {banner.subheading}
                           </Typography>
                           <Link href={`/shop/${banner.pathUrl}/${banner.categoriesId}`} passHref legacyBehavior>
@@ -173,6 +186,7 @@ const HomeSlider: React.FC = () => {
                   <div className="swiper-button-next"></div>
                   <div className="swiper-button-prev"></div>
                 </Swiper>
+                </Box>
               ) : (
                 <Typography>Loading banner...</Typography>
               )}
@@ -190,101 +204,128 @@ const HomeSlider: React.FC = () => {
           <Grid container spacing={2}>
             {bottomBanners.length > 0 ? (
               bottomBanners.slice(0, 2).map((banner) => (
-                <Grid key={banner.id} item xs={3} sx={{ animation: `${fadeIn} 1s ease-out 0.5s`, position: "relative" }}>
-                  <Image
-                    className="secondImg"
-                    src={banner.imageUrl}
-                    alt={banner.altText}
-                    width={1080}
-                    height={720}
-                    style={{ animation: `${holographicShine} 3s infinite` }}
-                  />
-                  <Box
-                    sx={{
-                      position: "absolute",
-                      top: "50%",
-                      left: "50%",
-                      transform: "translate(-50%, -50%)",
-                      textAlign: "center",
-                      color: "white",
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Box sx={{ fontSize: "2rem" }}>{banner.subheading}</Box>
-                    <Link href={`/shop/${banner.pathUrl}/${banner.categoriesId}`} passHref legacyBehavior>
-                      <Button
-                        variant="contained"
-                        sx={{
-                          mt: 2,
-                          backgroundColor: "black",
-                          color: "white",
-                          "&:hover": {
-                            backgroundColor: "#333",
-                            transform: "scale(1.05)",
-                            transition: "all 0.3s ease",
-                          },
-                        }}
-                      >
-                        EXPLORE NOW
-                      </Button>
-                    </Link>
+                // **CHANGE FOR RESPONSIVENESS**: xs={12} makes it full width on small screens. md={6} makes it 50% on medium screens. This overrides the original xs={3} on medium screens to prevent layout break.
+                <Grid 
+                  key={banner.id} 
+                  item 
+                  xs={12} // Full width on extra small
+                  sm={6}  // Half width on small screens
+                  md={6} // Half width on medium screens (50% wide)
+                  lg={3} // Reverts to original 25% width on large screens
+                  sx={{ animation: `${fadeIn} 1s ease-out 0.5s`, position: "relative" }}
+                >
+                  <Box sx={{ position: 'relative', width: '100%', height: 'auto', minHeight: { xs: '200px', sm: '350px' } }}>
+                    <Image
+                      className="secondImg"
+                      src={banner.imageUrl}
+                      alt={banner.altText}
+                      fill // Use fill for responsiveness
+                      sizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                      style={{ objectFit: "cover", animation: `${holographicShine} 3s infinite`, display: 'block' }}
+                    />
+                    <Box
+                      sx={{
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                        textAlign: "center",
+                        color: "white",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {/* Responsive font size */}
+                      <Box sx={{ fontSize: { xs: "1.2rem", md: "1.5rem" } }}>{banner.subheading}</Box>
+                      <Link href={`/shop/${banner.pathUrl}/${banner.categoriesId}`} passHref legacyBehavior>
+                        <Button
+                          variant="contained"
+                          sx={{
+                            mt: 2,
+                            backgroundColor: "black",
+                            color: "white",
+                            "&:hover": {
+                              backgroundColor: "#333",
+                              transform: "scale(1.05)",
+                              transition: "all 0.3s ease",
+                            },
+                          }}
+                        >
+                          EXPLORE NOW
+                        </Button>
+                      </Link>
+                    </Box>
                   </Box>
                 </Grid>
               ))
             ) : (
-              <Typography>Loading banners...</Typography>
+              // Ensure loading text is inside a Grid item
+              <Grid item xs={12}>
+                <Typography>Loading banners...</Typography>
+              </Grid>
             )}
 
             {bottomBanners.length > 0 ? (
               bottomBanners.slice(2, 3).map((banner) => (
-                <Grid key={banner.id} item xs={6} sx={{ animation: `${fadeIn} 1s ease-out 1.5s`, position: "relative" }}>
-                  <Image
-                    src={banner.imageUrl}
-                    alt={banner.altText}
-                    width={1080}
-                    height={720}
-                    style={{ animation: `${holographicShine} 3s infinite` }}
-                  />
-                  <Box
-                    sx={{
-                      position: "absolute",
-                      top: "50%",
-                      left: "50%",
-                      transform: "translate(-50%, -50%)",
-                      textAlign: "center",
-                      color: "white",
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Box sx={{ fontSize: "2rem" }}>{banner.subheading}</Box>
-                    <Link href={`/shop/${banner.pathUrl}/${banner.categoriesId}`} passHref legacyBehavior>
-                      <Button
-                        variant="contained"
-                        sx={{
-                          mt: 2,
-                          backgroundColor: "black",
-                          color: "white",
-                          "&:hover": {
-                            backgroundColor: "#333",
-                            transform: "scale(1.05)",
-                            transition: "all 0.3s ease",
-                          },
-                        }}
-                      >
-                        EXPLORE NOW
-                      </Button>
-                    </Link>
+                // **CHANGE FOR RESPONSIVENESS**: xs={12} makes it full width on small/medium screens. md={12} makes it full width on medium screens. This overrides the original xs={6} on medium screens which would break the layout with the two 50% items.
+                <Grid 
+                  key={banner.id} 
+                  item 
+                  xs={12} // Full width on extra small/small
+                  md={12} // Full width on medium screens
+                  lg={6} // Reverts to original 50% width on large screens
+                  sx={{ animation: `${fadeIn} 1s ease-out 1.5s`, position: "relative" }}
+                >
+                  <Box sx={{ position: 'relative', width: '100%', height: 'auto', minHeight: { xs: '250px', sm: '350px' } }}>
+                    <Image
+                      src={banner.imageUrl}
+                      alt={banner.altText}
+                      fill // Use fill for responsiveness
+                      sizes="(max-width: 1200px) 100vw, 50vw"
+                      style={{ objectFit: "cover", animation: `${holographicShine} 3s infinite`, display: 'block' }}
+                    />
+                    <Box
+                      sx={{
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
+                        textAlign: "center",
+                        color: "white",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {/* Responsive font size */}
+                      <Box sx={{ fontSize: { xs: "1.5rem", md: "2rem" } }}>{banner.subheading}</Box>
+                      <Link href={`/shop/${banner.pathUrl}/${banner.categoriesId}`} passHref legacyBehavior>
+                        <Button
+                          variant="contained"
+                          sx={{
+                            mt: 2,
+                            backgroundColor: "black",
+                            color: "white",
+                            "&:hover": {
+                              backgroundColor: "#333",
+                              transform: "scale(1.05)",
+                              transition: "all 0.3s ease",
+                            },
+                          }}
+                        >
+                          EXPLORE NOW
+                        </Button>
+                      </Link>
+                    </Box>
                   </Box>
                 </Grid>
               ))
             ) : (
-              <Typography>Loading banners...</Typography>
+              // If bottomBanners is empty but not erroring, handle the display
+              null
             )}
           </Grid>
         </Box>

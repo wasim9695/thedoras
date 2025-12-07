@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { Box, Typography, Button, Grid } from "@mui/material";
+import { Box, Typography, Button, Grid, Container } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
 import { fetchBottomThreeBanner } from "../api/bannerAll/banners";
@@ -61,13 +61,21 @@ const HomeSwiper = () => {
   }
 
   return (
-    <>
+    <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
       <Typography
         variant="h4"
-        sx={{ textAlign: "center", fontWeight: "bold", color: "black", mt: 4, mb: 2 }}
+        sx={{
+          textAlign: "center",
+          fontWeight: "bold",
+          color: "black",
+          mb: 4,
+          // Responsive font size
+          fontSize: { xs: '1.5rem', md: '2.125rem' } 
+        }}
       >
         Explore Now - Exclusive Discounts! Shop By Category
       </Typography>
+
       {products.length === 0 ? (
         <Typography variant="h6" sx={{ textAlign: "center", mt: 4 }}>
           No banners available
@@ -75,21 +83,31 @@ const HomeSwiper = () => {
       ) : (
         <Grid container spacing={2}>
           {products.slice(0, 4).map((product) => (
-            <Grid item xs={3} key={product.id} sx={{ position: "relative" }}>
+            <Grid 
+              item 
+              key={product.id} 
+              // RESPONSIVE BREAKPOINTS:
+              xs={12}      // Full width on mobile
+              sm={6}       // 2 items per row on tablets
+              md={3}       // 4 items per row on desktop
+            >
               <Box
                 sx={{
                   position: "relative",
                   textAlign: "center",
                   overflow: "hidden",
                   width: "100%",
-                  height: "600px",
+                  // Responsive height: Shorter on mobile, taller on desktop
+                  height: { xs: "300px", md: "600px" },
+                  borderRadius: "8px", // Added styling
                 }}
               >
                 <Image
                   src={product.imageUrl}
-                  alt={product.subheading}
+                  alt={product.altText || product.heading}
                   fill
                   style={{ objectFit: "cover" }}
+                  sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 25vw"
                 />
                 <Box
                   sx={{
@@ -111,7 +129,9 @@ const HomeSwiper = () => {
                     sx={{
                       color: "white",
                       fontWeight: "bold",
+                      textAlign: "center",
                       textShadow: "2px 2px 4px rgba(0, 0, 0, 0.5)",
+                      fontSize: { xs: '1.2rem', md: '1.5rem' }
                     }}
                   >
                     {product.heading}
@@ -143,7 +163,7 @@ const HomeSwiper = () => {
           ))}
         </Grid>
       )}
-    </>
+    </Container>
   );
 };
 

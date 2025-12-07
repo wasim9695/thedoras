@@ -15,6 +15,7 @@ import { styled } from "@mui/material/styles";
 import ShoppingCart, { ShoppingCartHandle } from "../components/shoppingcart";
 import Link from "next/link";
 import { fetchGetAllProducts } from "../api/bannerAll/banners";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: "#fff",
@@ -51,7 +52,7 @@ const ImageContainer = styled("div")({
   "&:hover .secondary-image": { opacity: 1 },
 });
 
-const backgroundImg = "/offerimages.jpg";
+const backgroundImg = "/DSabyasachi-05.03_1920x (1).jpg";
 
 interface Product {
   _id: number;
@@ -120,7 +121,8 @@ const Collection: React.FC = () => {
           sx={{
             textAlign: "center",
             mb: 4,
-            py: 6,
+            py: 20,
+            pb: 8,
             position: "relative",
             borderRadius: "12px",
             overflow: "hidden",
@@ -131,10 +133,10 @@ const Collection: React.FC = () => {
               left: 0,
               right: 0,
               bottom: 0,
-              backgroundImage: `url(${backgroundImg})`,
+              backgroundImage: `url('${API_BASE_URL}/products/upload${backgroundImg}')`,
               backgroundSize: "cover",
               backgroundPosition: "center",
-              opacity: 0.7,
+             
               zIndex: 0,
             },
           }}
