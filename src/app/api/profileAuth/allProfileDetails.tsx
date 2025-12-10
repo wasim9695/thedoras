@@ -64,6 +64,16 @@ export const fetchGetProfileDetails = () =>
     method: 'GET',
   });
 
+  export const aaddNewAddressHere = (data: any) =>{
+    console.log("data in api",data);
+  fetchJson(`/users/addresses/${data.addressId}`, {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  });
+}
+
+
+  
 
   export const fetchLogout = () =>
   fetchJson('/logOut', {
