@@ -66,8 +66,8 @@ export const fetchGetProfileDetails = () =>
 
   export const aaddNewAddressHere = (data: any) =>{
     console.log("data in api",data);
-  fetchJson(`/users/addresses/${data.addressId}`, {
-    method: 'PUT',
+  fetchJson(`/users/addresses`, {
+    method: 'POST',
     body: JSON.stringify(data),
   });
 }
