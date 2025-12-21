@@ -104,6 +104,17 @@ export const fetchAddToCart = (data: object) =>
   });
 
 
+  export const placeorders = (data: object) =>
+  fetchJson('/place-order', {
+    method: 'POST', // Changed to POST as adding to cart typically modifies server state
+    body: JSON.stringify(data),
+  });
+
+  export const getPlaceorders = () =>
+  fetchJson('/orders', {
+    method: 'GET', // Changed to POST as adding to cart typically modifies server state
+  });
+
 
 
   

@@ -1,5 +1,6 @@
 "use client";
-// components/MyAccountLayout.js
+
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Container,
@@ -17,13 +18,14 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Button, // For the "view" button in Orders
-  TextField, // For form inputs
+  Button,
+  TextField,
   RadioGroup,
   FormControlLabel,
   Radio,
-  IconButton, // For password visibility toggle
-  InputAdornment, // For placing icon in TextField
+  IconButton,
+  InputAdornment,
+  CircularProgress,
 } from '@mui/material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
@@ -32,10 +34,29 @@ import LockIcon from '@mui/icons-material/Lock';
 import LogoutIcon from '@mui/icons-material/Logout';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { useState } from 'react';
+import { getPlaceorders } from '../api/products/productsAll';
 
-// Define the menu items and their corresponding component names
-const accountMenuItems = [
+// --- Types updated to match your JSON ---
+interface Product {
+  name: string;
+  totalPrice: number;
+}
+
+interface OrderData {
+  orderId: string;
+  orderDate: string;
+  totalAmount: number;
+  orderStatus: string;
+  products: Product[];
+}
+
+interface MenuItem {
+  text: string;
+  icon: React.ReactNode;
+  component: string;
+}
+
+const accountMenuItems: MenuItem[] = [
   { text: 'Dashboard', icon: <DashboardIcon />, component: 'DashboardContent' },
   { text: 'Orders', icon: <ShoppingBagIcon />, component: 'OrdersContent' },
   { text: 'Account Details', icon: <PersonIcon />, component: 'AccountDetailsContent' },
@@ -43,73 +64,81 @@ const accountMenuItems = [
   { text: 'Logout', icon: <LogoutIcon />, component: 'LogoutContent' },
 ];
 
-// Helper function to render the correct content based on the active item
-function renderContent(activeItem: string) {
-  switch (activeItem) {
-    case 'DashboardContent':
-      return <DashboardContent />;
-    case 'OrdersContent':
-      return <OrdersContent />;
-    case 'AccountDetailsContent':
-      return <AccountDetailsContent />;
-    case 'ChangePasswordContent':
-      return <ChangePasswordContent />;
-    case 'LogoutContent':
-      return <Typography variant="h5">Logging you out...</Typography>;
-    default:
-      return <DashboardContent />;
-  }
-}
+// --- Sub-Components ---
 
-// 1. Dashboard Content (remains the same)
 function DashboardContent() {
   return (
     <>
-      <Typography variant="h5" component="h2" gutterBottom>
-        Dashboard
-      </Typography>
+      <Typography variant="h5" component="h2" gutterBottom>Dashboard</Typography>
       <Typography variant="body1">
-        From your account dashboard, you can view your <Link href="#">recent orders</Link>, manage your <Link href="#">account details</Link>, and <Link href="#">change your password</Link>.
+        From your account dashboard, you can view your <Link href="#">recent orders</Link>, 
+        manage your <Link href="#">account details</Link>, and <Link href="#">change your password</Link>.
       </Typography>
     </>
   );
 }
 
-// 2. Orders Content (updated to match Image 1)
 function OrdersContent() {
-  const orders = [
-    { order: '3203', date: 'March 18, 2021', status: 'Completed', total: '$16,950.00 for 93 items' },
-    { order: '3204', date: 'March 18, 2021', status: 'Completed', total: '$16,950.00 for 93 items' },
-  ];
+  const [orders, setOrders] = useState<OrderData[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const response = await getPlaceorders();
+        const result = response;
+        console.log("Orders fetched:", result);
+        if (result.status === 1) {
+          setOrders(result.data);
+        } else {
+          setError(result.message);
+        }
+      } catch (err) {
+        setError("Failed to fetch orders from server");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOrders();
+  }, []);
+
+  if (loading) return <Box sx={{ display: 'flex', justifyContent: 'center', p: 5 }}><CircularProgress /></Box>;
+  if (error) return <Typography color="error">{error}</Typography>;
 
   return (
     <>
-      <Typography variant="h5" component="h2" gutterBottom>
-        Orders
-      </Typography>
+      <Typography variant="h5" component="h2" gutterBottom>Orders</Typography>
       <TableContainer component={Paper} elevation={0}>
         <Table sx={{ minWidth: 650 }} aria-label="orders table">
-          <TableHead sx={{ backgroundColor: '#f5f5f5' }}> {/* Light grey background for header */}
+          <TableHead sx={{ backgroundColor: '#f5f5f5' }}>
             <TableRow>
-              <TableCell>Order</TableCell>
+              <TableCell>Order ID</TableCell>
               <TableCell>Date</TableCell>
               <TableCell>Status</TableCell>
               <TableCell>Total</TableCell>
-              <TableCell align="right">Actions</TableCell> {/* Align right for consistency with button */}
+              <TableCell align="right">Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {orders.map((row) => (
-              <TableRow
-                key={row.order}
-                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-              >
+              <TableRow key={row.orderId} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                 <TableCell component="th" scope="row">
-                  <Link href={`/orders/${row.order}`}>#{row.order}</Link>
+                  <Typography variant="body2" sx={{ fontWeight: 'bold' }}>#{row.orderId}</Typography>
                 </TableCell>
-                <TableCell>{row.date}</TableCell>
-                <TableCell>{row.status}</TableCell>
-                <TableCell>{row.total}</TableCell>
+                <TableCell>{new Date(row.orderDate).toLocaleDateString()}</TableCell>
+                <TableCell>
+                  <Box component="span" sx={{ 
+                    textTransform: 'capitalize', 
+                    color: row.orderStatus === 'pending' ? 'orange' : 'green' 
+                  }}>
+                    {row.orderStatus}
+                  </Box>
+                </TableCell>
+                <TableCell>
+                  ₹{row.totalAmount.toLocaleString()} for {row.products.length} items
+                </TableCell>
                 <TableCell align="right">
                   <Button variant="contained" sx={{ backgroundColor: 'black', '&:hover': { backgroundColor: '#333' } }}>
                     view
@@ -124,43 +153,28 @@ function OrdersContent() {
   );
 }
 
-// 3. Account Details Content (new, matching Image 2)
 function AccountDetailsContent() {
   return (
     <>
-      <Typography variant="h5" component="h2" gutterBottom>
-        Account Details
-      </Typography>
+      <Typography variant="h5" component="h2" gutterBottom>Account Details</Typography>
       <Box component="form" noValidate autoComplete="off">
         <Grid container spacing={2}>
-          <Grid item xs={12} sm={6}>
-            <TextField fullWidth label="First Name *" variant="outlined" margin="normal" />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField fullWidth label="Last Name *" variant="outlined" margin="normal" />
-          </Grid>
+          <Grid item xs={12} sm={6}><TextField fullWidth label="First Name *" variant="outlined" margin="normal" /></Grid>
+          <Grid item xs={12} sm={6}><TextField fullWidth label="Last Name *" variant="outlined" margin="normal" /></Grid>
           <Grid item xs={12}>
-            <TextField fullWidth label="Display Name *" variant="outlined" margin="normal" helperText="This will be how your name will be displayed in the account section and in reviews" />
+            <TextField fullWidth label="Display Name *" variant="outlined" margin="normal" helperText="How your name appears in the account and reviews" />
           </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField fullWidth label="Phone/Mobile *" variant="outlined" margin="normal" />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField fullWidth label="Email *" variant="outlined" margin="normal" type="email" />
-          </Grid>
+          <Grid item xs={12} sm={6}><TextField fullWidth label="Phone/Mobile *" variant="outlined" margin="normal" /></Grid>
+          <Grid item xs={12} sm={6}><TextField fullWidth label="Email *" variant="outlined" margin="normal" type="email" /></Grid>
           <Grid item xs={12}>
-            <Typography variant="subtitle1" gutterBottom sx={{ mt: 2 }}>
-              Gender
-            </Typography>
-            <RadioGroup row aria-label="gender" name="gender-radio-buttons-group">
+            <Typography variant="subtitle1" gutterBottom sx={{ mt: 2 }}>Gender</Typography>
+            <RadioGroup row name="gender">
               <FormControlLabel value="male" control={<Radio />} label="Male" />
               <FormControlLabel value="female" control={<Radio />} label="Female" />
             </RadioGroup>
           </Grid>
           <Grid item xs={12} sx={{ mt: 3 }}>
-            <Button variant="contained" sx={{ backgroundColor: 'black', '&:hover': { backgroundColor: '#333' }, color: 'white' }}>
-              Save
-            </Button>
+            <Button variant="contained" sx={{ backgroundColor: 'black', color: 'white', '&:hover': { backgroundColor: '#333' } }}>Save</Button>
           </Grid>
         </Grid>
       </Box>
@@ -168,87 +182,64 @@ function AccountDetailsContent() {
   );
 }
 
-// 4. Change Password Content (new, matching Image 3)
 function ChangePasswordContent() {
-  const [showOldPassword, setShowOldPassword] = useState(false);
-  const [showNewPassword, setShowNewPassword] = useState(false);
-
-  const handleClickShowOldPassword = () => setShowOldPassword((show) => !show);
-  const handleMouseDownOldPassword = (event: { preventDefault: () => void; }) => {
-    event.preventDefault();
-  };
-
-  const handleClickShowNewPassword = () => setShowNewPassword((show) => !show);
-  const handleMouseDownNewPassword = (event: { preventDefault: () => void; }) => {
-    event.preventDefault();
-  };
-
+  const [showOld, setShowOld] = useState(false);
+  const [showNew, setShowNew] = useState(false);
   return (
     <>
-      <Typography variant="h5" component="h2" gutterBottom>
-        Change Password
-      </Typography>
-      <Box component="form" noValidate autoComplete="off" sx={{ maxWidth: 400 }}> {/* Limit width for better form presentation */}
+      <Typography variant="h5" component="h2" gutterBottom>Change Password</Typography>
+      <Box component="form" sx={{ maxWidth: 400 }}>
         <TextField
-          fullWidth
-          label="Old Password"
-          type={showOldPassword ? 'text' : 'password'}
-          variant="outlined"
-          margin="normal"
+          fullWidth label="Old Password" type={showOld ? 'text' : 'password'} margin="normal"
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={handleClickShowOldPassword}
-                  onMouseDown={handleMouseDownOldPassword}
-                  edge="end"
-                >
-                  {showOldPassword ? <VisibilityOff /> : <Visibility />}
+                <IconButton onClick={() => setShowOld(!showOld)} edge="end">
+                  {showOld ? <VisibilityOff /> : <Visibility />}
                 </IconButton>
               </InputAdornment>
             ),
           }}
         />
         <TextField
-          fullWidth
-          label="New Password"
-          type={showNewPassword ? 'text' : 'password'}
-          variant="outlined"
-          margin="normal"
+          fullWidth label="New Password" type={showNew ? 'text' : 'password'} margin="normal"
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={handleClickShowNewPassword}
-                  onMouseDown={handleMouseDownNewPassword}
-                  edge="end"
-                >
-                  {showNewPassword ? <VisibilityOff /> : <Visibility />}
+                <IconButton onClick={() => setShowNew(!showNew)} edge="end">
+                  {showNew ? <VisibilityOff /> : <Visibility />}
                 </IconButton>
               </InputAdornment>
             ),
           }}
         />
-        <Button variant="contained" sx={{ backgroundColor: 'black', '&:hover': { backgroundColor: '#333' }, color: 'white', mt: 3 }}>
-          Change Password
-        </Button>
+        <Button variant="contained" sx={{ backgroundColor: 'black', mt: 3 }}>Change Password</Button>
       </Box>
     </>
   );
 }
 
-// Main Layout Component
+// --- Main Layout ---
+
 export default function MyAccountLayout() {
-  const [activeItem, setActiveItem] = useState('DashboardContent'); // Default to Dashboard
+  const [activeItem, setActiveItem] = useState<string>('DashboardContent');
+
+  const renderContent = () => {
+    switch (activeItem) {
+      case 'DashboardContent': return <DashboardContent />;
+      case 'OrdersContent': return <OrdersContent />;
+      case 'AccountDetailsContent': return <AccountDetailsContent />;
+      case 'ChangePasswordContent': return <ChangePasswordContent />;
+      case 'LogoutContent': return <Typography variant="h5">Logging you out...</Typography>;
+      default: return <DashboardContent />;
+    }
+  };
 
   return (
     <Container maxWidth="lg" sx={{ my: 4 }}>
       <Grid container spacing={4}>
-        {/* Sidebar */}
         <Grid item xs={12} md={3}>
-          <Paper elevation={0} sx={{ p: 2 }}>
+          <Paper elevation={0} sx={{ p: 2, border: '1px solid #eee' }}>
             <List component="nav">
               {accountMenuItems.map((item) => (
                 <ListItemButton
@@ -263,10 +254,9 @@ export default function MyAccountLayout() {
             </List>
           </Paper>
         </Grid>
-        {/* Main Content Area */}
         <Grid item xs={12} md={9}>
-          <Paper elevation={0} sx={{ p: 3 }}>
-            {renderContent(activeItem)}
+          <Paper elevation={0} sx={{ p: 3, border: '1px solid #eee' }}>
+            {renderContent()}
           </Paper>
         </Grid>
       </Grid>

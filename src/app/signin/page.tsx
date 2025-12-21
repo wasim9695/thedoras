@@ -70,7 +70,9 @@ const SignIn: React.FC = () => {
       const response = await signIn({ username, password });
       if (response && response.access_token) {
         localStorage.setItem("authToken", response.access_token);
-        setMessage({ type: "success", text: "Sign-in successful! Redirecting..." });
+        localStorage.setItem("userID", response.data._id);
+        console.log("Sign-in successful, token stored.", response);
+        setMessage({ type: "success", text: "Sign-in successful! Redirecting..." }, );
         router.push("/");
       } else {
         throw new Error("Authentication failed: No token received.");

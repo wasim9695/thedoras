@@ -72,6 +72,16 @@ export const fetchGetProfileDetails = () =>
   });
 }
 
+export const setAddAddressDefoult = (data: any) =>{
+    console.log("data in api",data);
+  fetchJson(`/updateuserAddrD/${data.addressId}`, {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  });
+}
+
+
+
 
   
 
